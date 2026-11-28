@@ -4522,7 +4522,7 @@ theorem evalIntToIntCast_unsupported_target (v : Val) {castTy : MirTy}
     | char => exact False.elim (hNotChar rfl)
     | bool | unit | never | str | ordering | enum _ | ref _ _ | rawPtr _ _
     | slice _ | array _ _ | rangeTo _ | rangeFrom _ | range _ | option _
-    | tuple _ | unsupported => rfl
+    | tuple _ | unsupported | box _ | vec _ => rfl
 
 end Anneal.Core
 

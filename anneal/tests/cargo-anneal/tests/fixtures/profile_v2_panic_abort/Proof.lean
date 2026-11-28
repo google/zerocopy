@@ -21,6 +21,102 @@ namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
+/-! ## Profile v2 Return Memory -/
+
+private theorem rm2_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem rm2_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem rm2_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [rm2_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact rm2_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- If the call created no allocation outside the caller's ids, the Profile v2
+return memory is exactly the updated caller memory. -/
+private theorem rm2_extractReturnMemoryV2_eq {cm : CallerMemory}
+    {mem : MemoryState} (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [rm2_calleeLive_nil_of_sub h, List.append_nil]
+
+private theorem rm2_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  rm2_extractReturnMemoryV2_eq locals (fun _ ha => rm2_mem_allocIdsOf ha)
+
+private theorem rm2_mem_replaceAllocation_ids {a' : Allocation}
+    {ids : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      ∀ a, a ∈ replaceAllocation a' l → a.allocId ∈ ids
+  | [], _, _, h => by cases h
+  | b :: _, hl, a, ha => by
+    unfold replaceAllocation at ha
+    cases hB : Nat.beq b.allocId a'.allocId with
+    | true =>
+      rw [hB, ite_eq_left rfl] at ha
+      cases ha with
+      | head _ =>
+        rw [← Nat.eq_of_beq_eq_true hB]
+        exact hl b (.head _)
+      | tail _ hr => exact hl a (.tail _ hr)
+    | false =>
+      rw [hB, ite_eq_right (fun h => Bool.noConfusion h)] at ha
+      cases ha with
+      | head _ => exact hl b (.head _)
+      | tail _ hr =>
+        exact rm2_mem_replaceAllocation_ids (fun c hc => hl c (.tail _ hc)) a hr
+
+private theorem rm2_writeBytes_ids {ids : List AllocId} {m m' : MemoryState}
+    {place : MemPlace} {al : Nat} {bs : List AllocByte}
+    (h : writeBytes m place al bs = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold writeBytes at h
+  split at h
+  · cases h
+  · split at h
+    · split at h
+      · cases h
+      · cases h; exact hm
+    · split at h
+      · cases h
+      · split at h
+        · cases h
+        · cases h; exact rm2_mem_replaceAllocation_ids hm
+
+private theorem rm2_storeIndirectV2_ids {ids : List AllocId}
+    {m m' : MemoryState} {ty : MirTy} {place : MemPlace} {v : Val}
+    (h : storeIndirectV2 m ty place v = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold storeIndirectV2 at h
+  split at h
+  · cases h
+  · split at h
+    · cases h
+    · exact rm2_writeBytes_ids h hm
+
 private theorem execOutcomeStateV2_step {p : Program} {onDone : TerminalOut → Prop}
     {onFault : FaultKind → Prop} {fuel : Nat} {s s' : State}
     (hStep : evalStepV2 p s = .step s')
@@ -837,7 +933,8 @@ private theorem evalStepV2_return_isize_body0 (cm : CallerMemory)
       !spansPairwiseDisjoint (refAccessSpans (.int .isize false)
         (.scalar ⟨.isize, false, BitVec.ofNat 128 ret⟩))) = false := by
     rw [h1, h2, h3]; rfl
-  rw [ite_bool_false h0, ite_bool_false hGuard, extractCallerMemory_entry cm hValidCm]
+  rw [ite_bool_false h0, ite_bool_false hGuard, rm2_extractReturnMemoryV2_entry,
+    extractCallerMemory_entry cm hValidCm]
 
 private theorem checkValV2_isize_fields {s : ScalarVal}
     (h : checkValV2 (.scalar s) (.int .isize false) = true) :
@@ -875,6 +972,8 @@ private theorem checkValV2_isize_scalar {v : Val}
   | tuple _ => cases h
   | range _ _ => cases h
   | optionVal o => cases o <;> cases h
+  | vec _ _ _ => cases h
+  | boxPtr _ o => cases o <;> cases h
 
 private theorem checkArgsMatchV2_two_isize {args : List Val}
     (h : checkArgsMatchV2 args [.int .isize false, .int .isize false] = true) :
@@ -1729,7 +1828,8 @@ private theorem checkValV2_ptr_mut_isize {v : Val}
   | optionVal o => cases o <;> cases h
   | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
   | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _
-  | array _ => cases h
+  | array _ | vec _ _ _ => cases h
+  | boxPtr _ o => cases o <;> cases h
 
 private theorem checkArgsMatchV2_body1 {args : List Val}
     (h : checkArgsMatchV2 args [.ref .mut (.int .isize false), .int .isize false, .int .isize false] = true) :
@@ -1787,7 +1887,8 @@ private theorem ref_mut_isize_store_ok (cm : CallerMemory) (pv : PtrVal) (a : Na
         ⟨aid, pv.offsetBytes.toNat⟩ (.scalar ⟨.isize, false, BitVec.ofNat 128 a⟩) = .ok mem' := by
   unfold refValidInMem at hRef
   dsimp only at hRef
-  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.int .isize false)) rfl,
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.int .isize false) &&
+      !isHeapHandleTyV2 (.int .isize false)) rfl,
     show layoutOfTyV2 (.int .isize false) = some ⟨8, 3⟩ from rfl] at hRef
   dsimp only at hRef
   cases hAid : pv.allocId with
@@ -2210,6 +2311,8 @@ private theorem body1_satisfies (q : Query)
           !spansPairwiseDisjoint (refAccessSpans (.int .isize false) retVal)) = false := by
         rw [h1, h2, h3]; rfl
       rw [ite_bool_false h0, ite_bool_false hGuard]
+      rw [rm2_extractReturnMemoryV2_eq _
+        (rm2_storeIndirectV2_ids hStore (fun _ hb => rm2_mem_allocIdsOf hb))]
       rfl
     have hToDone := ReachesV2_step (ReachesV2_step (ReachesV2_step (ReachesV2_step (.refl _)
       hTerm0) hB1_01) hB1_12) hB1_23

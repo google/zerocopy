@@ -26,6 +26,59 @@ namespace Anneal.Framework.Canaries
 open Trusted.MirAst Trusted.MirSemantics Trusted.Framework
 open Anneal.MirWp Anneal.Framework
 
+private theorem fw_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem fw_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem fw_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [fw_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact fw_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- Returning from an unmodified entry memory exposes no callee-created heap
+allocation, so the Profile v2 return memory is the extracted caller memory. -/
+private theorem fw_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) := by
+  unfold extractReturnMemoryV2
+  rw [fw_calleeLive_nil_of_sub (ids := allocIdsOf cm.allocations)
+      (l := (entryMemoryWithCaller cm).allocations)
+      (fun _ ha => fw_mem_allocIdsOf (l := cm.allocations) ha),
+    List.append_nil]
+
+/-- `fw_extractReturnMemoryV2_entry` for any memory with the entry memory's
+allocations, such as `entryMemoryForArgsV2`. -/
+private theorem fw_extractReturnMemoryV2_of_allocations_eq (cm : CallerMemory)
+    {mem : MemoryState}
+    (hMem : mem.allocations = (entryMemoryWithCaller cm).allocations)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [fw_calleeLive_nil_of_sub (ids := allocIdsOf cm.allocations)
+      (l := mem.allocations)
+      (fun _ ha => fw_mem_allocIdsOf (l := cm.allocations)
+        (by rw [hMem] at ha; exact ha)),
+    List.append_nil]
+
 /-!
 # Verification Envelope Pass-1 Canaries (`Anneal.Framework.Canaries`)
 
@@ -711,10 +764,11 @@ theorem v2_unit_1arg_envelope_ok (idStr : String) (paramTy : MirTy)
         extractCallerMemory_entryMemoryForArgsV2 callerMem [paramTy] [v] hValCm
       change
         StepResult.done (TerminalOut.returned ⟨.unit,
-          extractCallerMemory callerMem
-            (entryMemoryForArgsV2 callerMem [paramTy] [v])⟩) =
+          extractReturnMemoryV2 callerMem
+            (entryMemoryForArgsV2 callerMem [paramTy] [v]) _⟩) =
         StepResult.done (TerminalOut.returned ⟨.unit, callerMem⟩)
-      rw [hExt]
+      rw [fw_extractReturnMemoryV2_of_allocations_eq callerMem
+        (entryMemoryForArgsV2_allocations_eq callerMem [paramTy] [v]), hExt]
     unfold execProgV2
     rw [hInit]
     change
@@ -1136,10 +1190,10 @@ theorem framework_canary : FrameworkCanaryClaim := by
           extractCallerMemory_entryMemoryWithCaller callerMem hValCm
         change
           StepResult.done (TerminalOut.returned ⟨.unit,
-            extractCallerMemory callerMem
-              (entryMemoryWithCaller callerMem)⟩) =
+            extractReturnMemoryV2 callerMem
+              (entryMemoryWithCaller callerMem) _⟩) =
           StepResult.done (TerminalOut.returned ⟨.unit, callerMem⟩)
-        rw [hExt]
+        rw [fw_extractReturnMemoryV2_entry, hExt]
       unfold execProgV2
       rw [hInit]
       change

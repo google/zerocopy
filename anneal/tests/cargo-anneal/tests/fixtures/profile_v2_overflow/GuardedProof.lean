@@ -24,9 +24,9 @@ returns `255`. -/
 theorem guarded_run (cm : CallerMemory) (m : MemoryState) (bits : BitVec 128)
     (hT : truncateBits .i8 bits = bits) (post : TerminalOut → Prop)
     (hInc : bits.toNat < 255 → post (.returned
-      ⟨u8 (BitVec.ofNat 128 (bits.toNat + 1)), extractCallerMemory cm m⟩))
+      ⟨u8 (BitVec.ofNat 128 (bits.toNat + 1)), extractReturnMemoryV2 cm m []⟩))
     (hSat : ¬ bits.toNat < 255 → post (.returned
-      ⟨u8 255#128, extractCallerMemory cm m⟩)) :
+      ⟨u8 255#128, extractReturnMemoryV2 cm m []⟩)) :
     Runs P post (st 0 0 [N, im (u8 bits), D, D, D, N] cm m) := by
   have hC := checkVal_u8 hT
   let x := im (u8 bits)
@@ -104,7 +104,7 @@ theorem guarded_correct (q : Query)
     dsimp only at hArgs
     subst hArgs
     let out : Out := ⟨u8 (BitVec.ofNat 128 (Spec.saturatingInc bits.toNat)),
-      extractCallerMemory cm (entryMemoryWithCaller cm)⟩
+      extractReturnMemoryV2 cm (entryMemoryWithCaller cm) []⟩
     have hInit : initStateV2 P ⟨[u8 bits], cm⟩ =
         .ok (st 0 0 [N, im (u8 bits), D, D, D, N] cm
           (entryMemoryWithCaller cm)) :=

@@ -22,6 +22,7 @@ public import Anneal.InitLemmas
 public import Anneal.MirWp.Core
 public import Anneal.MirWp.Scalars
 public import Anneal.MirWp.V2Memory
+public import Anneal.MirWp.V2StepShield
 public import Anneal.CnfOrd.Ord
 public import Anneal.CnfOrd.Worklist
 public import Anneal.StepBound
@@ -896,7 +897,8 @@ private theorem sliceScan_bb4_return (acc : Nat) (curPtr : PtrVal)
       (ps := .unwind) (hLocal := true) (oc := false)
       (retTy := usizeTy) (retVal := usizeVal acc)
       rfl rfl rfl rfl rfl rfl rfl rfl
-  rw [hRet, extractCallerMemory_entry cm hCm]
+  rw [hRet, extractReturnMemoryV2_entryMemory,
+    extractCallerMemory_entry cm hCm]
 
 private theorem sliceScan_exit_3steps {q : Query} {origLen : Nat} {s : State}
     (hInv : SliceScanInv q origLen 0 s) :

@@ -775,7 +775,7 @@ theorem constAdmitted_of_exact (c : ConstOperand)
       cases lit <;> cases h
     | bool | int _ _ | unit | never | ordering | enum _ | ref _ _
     | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-    | option _ | tuple _ | unsupported =>
+    | option _ | tuple _ | vec _ | box _ | unsupported =>
       cases lit <;> exact h
 
 /-- Every exact-admitted operand is forward-admitted. -/
@@ -830,7 +830,7 @@ theorem rvalueAdmitted_of_exact (bodyLocals : List MirTy) (dstTy : MirTy)
         exact h
   | cast kind opnd castTy =>
     cases kind with
-    | ptrToPtr | intToPtr | unsize | unsupported => cases h
+    | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => cases h
     | intToInt =>
       dsimp only [rvalueAdmitted] at h; dsimp only [rvalueAdmitted]
       cases ho : operandAdmitted true bodyLocals opnd with
@@ -1471,7 +1471,7 @@ theorem translateConst_variantWF (c : ConstOperand)
                   dsimp only [Bool.true_and]
                   exact mrType_beq_emptySizedTy_self tagW.byteSize tagW.byteSize
     | never | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _
-    | rangeFrom _ | option _ | tuple _ | unsupported =>
+    | rangeFrom _ | option _ | tuple _ | vec _ | box _ | unsupported =>
       cases lit <;> cases hadm
 
 theorem translateOperand_variantWF (bodyLocals : List MirTy) (opnd : Operand)
@@ -1511,7 +1511,7 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
             rfl
           | int _ _ | unit | never | char | ordering | enum _ | ref _ _
           | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-          | option _ | tuple _ | unsupported => exact hw
+          | option _ | tuple _ | vec _ | box _ | unsupported => exact hw
       | neg =>
         cases operandTy? bodyLocals opnd with
         | none => exact hw
@@ -1520,7 +1520,7 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | int _ s => cases s <;> exact hw
           | bool | unit | never | char | ordering | enum _ | ref _ _
           | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-          | option _ | tuple _ | unsupported => exact hw
+          | option _ | tuple _ | vec _ | box _ | unsupported => exact hw
   | binaryOp op lhs rhs =>
     dsimp only [rvalueAdmitted] at hadm
     cases hl : operandAdmitted false bodyLocals lhs with
@@ -1544,11 +1544,11 @@ theorem translateRvalue_variantWF (bodyLocals : List MirTy) (dstTy : MirTy)
           | char => cases op <;> first | exact hboth | exact hlw
           | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
           | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _ | option _
-          | tuple _ | unsupported =>
+          | tuple _ | vec _ | box _ | unsupported =>
             exact hlw
   | cast kind opnd castTy =>
     cases kind with
-    | ptrToPtr | intToPtr | unsize | unsupported => cases hadm
+    | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => cases hadm
     | intToInt =>
       dsimp only [rvalueAdmitted] at hadm
       cases hoa : operandAdmitted false bodyLocals opnd with
@@ -1920,7 +1920,7 @@ theorem minirust_admitted_prog_wellFormed {p : Program} {q : Query}
                                     | unit | never | ordering | enum _ | ref _ _
                                     | rawPtr _ _ | slice _ | str | array _ _
                                     | range _ | rangeTo _ | rangeFrom _
-                                    | option _ | tuple _ | unsupported =>
+                                    | option _ | tuple _ | vec _ | box _ | unsupported =>
                                       cases hbb
                             | unwindResume => rw [htm] at hbb; cases hbb
                             | assert _ _ _ _ _ => rw [htm] at hbb; cases hbb

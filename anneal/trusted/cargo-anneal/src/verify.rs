@@ -4339,17 +4339,30 @@ fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
          aliasing model (Stacked or Tree Borrows); bodies mixing reference \
          and non-fake raw-pointer locals are refused, reference validity and \
          mutable-reference disjointness are checked at entry and return, \
-         and raw-pointer arguments are assumed to carry provenance that \
-         permits the accesses made through them; every reference argument, \
-         including those of unsafe functions, is assumed to be non-null and \
-         aligned, to lie in bounds of a live allocation whenever it carries \
-         provenance (even for zero-sized and empty pointees), to point into \
-         a mutable allocation if it is a mutable reference with provenance, \
-         to point to initialized bytes that decode to a valid value of the \
-         pointee type (a Rust validity rule the Rust Reference calls \
-         debated), and to be disjoint from every other mutable reference \
-         argument, so results say nothing about calls that pass references \
-         to uninitialized, invalid, or dangling memory"
+         raw-pointer arguments are assumed to carry provenance that \
+         permits the accesses made through them, and Vec/Box heap \
+         allocation is assumed never to fail (out-of-memory is not \
+         modeled); every reference argument, including those of unsafe \
+         functions, is assumed to be non-null and aligned, to lie in bounds \
+         of a live allocation whenever it carries provenance (even for \
+         zero-sized and empty pointees), to point into a mutable allocation \
+         if it is a mutable reference with provenance, to point to \
+         initialized bytes that decode to a valid value of the pointee type \
+         (a Rust validity rule the Rust Reference calls debated), and to be \
+         disjoint from every other mutable reference argument; every Vec or \
+         Box argument, owned or behind a reference, is assumed to satisfy \
+         its library invariant (a non-empty buffer starts at offset 0 of a \
+         live allocation with exactly the buffer's layout, len is at most \
+         cap, the first len elements are initialized and valid, a Box \
+         pointee is initialized and valid, and an empty or zero-sized buffer \
+         pointer is aligned and, if it carries provenance, points into a \
+         live allocation), the heap buffer behind a Vec or Box reference \
+         argument is assumed disjoint from that handle and from every other \
+         argument (this uniqueness is not checked), and under panic=abort \
+         the caller \
+         memory that post-abort conditions see omits heap buffers that the \
+         call allocated, so results say nothing about calls that pass \
+         references to uninitialized, invalid, or dangling memory"
     } else {
         "experimental pointer-free MIR semantics"
     };

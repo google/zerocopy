@@ -56,7 +56,7 @@ theorem body0_correct (q : Query)
   -- bb0 term: return_
   exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
     (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
-    spansDisjoint_single) (by rw [hExt])
+    spansDisjoint_single) (by rw [extractReturnMemoryV2_entryMemory, hExt])
 
 /-- `<&mut [u8] as IntoByteSlice>::into_byte_slice`: `_0 = &(*_1)`. -/
 theorem body1_correct (q : Query)
@@ -97,7 +97,7 @@ theorem body1_correct (q : Query)
   -- bb0 term: return_
   exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
     (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
-    spansDisjoint_single) (by rw [hExt])
+    spansDisjoint_single) (by rw [extractReturnMemoryV2_entryMemory, hExt])
 
 /-- `<&mut [u8] as IntoByteSliceMut>::into_byte_slice_mut`:
 `StorageLive 2; _2 = &mut (*_1); _0 = &mut (*_2); StorageDead 2`. -/
@@ -147,7 +147,7 @@ theorem body2_correct (q : Query)
   -- bb0 term: return_
   exact execOutcomeStateV2_done (evalStepV2_return_ok (by rfl) (by rfl)
     (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) (by rfl) hStay hRV
-    spansDisjoint_single) (by rw [hExt])
+    spansDisjoint_single) (by rw [extractReturnMemoryV2_entryMemory, hExt])
 
 /-! ## Top-Level Claim -/
 

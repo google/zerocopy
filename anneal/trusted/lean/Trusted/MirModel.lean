@@ -130,6 +130,8 @@ inductive Val where
   | scalar (v : ScalarVal)
   | ptr (p : PtrVal)
   | slicePtr (p : PtrVal) (len : UInt64)
+  | vec (ptr : PtrVal) (cap len : UInt64)
+  | boxPtr (ptr : PtrVal) (len : Option UInt64)
   | rangeTo (endOffset : UInt64)
   | rangeFrom (startOffset : UInt64)
   | range (startOffset endOffset : UInt64)

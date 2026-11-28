@@ -651,7 +651,8 @@ noncomputable def checkValAgainstSpec (v : Val) (spec : TypeLayoutSpec) :
             Nat.beq s₁ s₂ && byteRolesBeq r₁ r₂
         | _, _, _, _ => false
     | .tuple _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _
-    | .array _ | .optionVal _ | .range _ _ => false
+    | .array _ | .optionVal _ | .range _ _ | .vec _ _ _ | .boxPtr _ _ =>
+        false
 
 /-- Check a `Val` against an optional `TypeLayoutSpec`. -/
 noncomputable def checkOpenValOnSpec (v : Val) :

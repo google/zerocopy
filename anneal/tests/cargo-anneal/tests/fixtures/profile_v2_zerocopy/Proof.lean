@@ -18,6 +18,51 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
 /-! ## Problem-Specific Helpers & Shared `split_at_unchecked` Correctness -/
 
+/-! ## Profile v2 Return Memory -/
+
+theorem natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+theorem mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+/-- No allocation whose id the caller already owns is a callee allocation. -/
+theorem calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- If the call created no allocation outside the caller's ids, the Profile v2
+return memory is exactly the updated caller memory. -/
+theorem extractReturnMemoryV2_eq {cm : CallerMemory} {mem : MemoryState}
+    (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [calleeLive_nil_of_sub h, List.append_nil]
+
+theorem extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  extractReturnMemoryV2_eq locals (fun _ ha => mem_allocIdsOf ha)
+
 theorem initLocalsLoop_body0 (ptrAid : Option AllocId) (ptrOff : UInt64) (len : UInt64)
     (midBits : BitVec 128) :
     initLocalsLoop Captured.body_0
@@ -28,6 +73,20 @@ theorem initLocalsLoop_body0 (ptrAid : Option AllocId) (ptrOff : UInt64) (len : 
      .immediate (some (.scalar ⟨.isize, false, midBits⟩)),
      .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead] :=
   rfl
+
+theorem execCoreCallOpWithMem_nonAlloc {m : MemoryState} {op : CoreCallOp}
+    {args : List (MirTy × Val)} {dstTy : MirTy} {res : Val}
+    (hNon : execAllocCoreCall m op args dstTy = none)
+    (hRO : execCoreCallWithMem m op args dstTy =
+      match execCoreCallOp m op args dstTy with
+      | .ok v => .ok (v, m)
+      | .error k => .error k)
+    (hOp : execCoreCallOp m op args dstTy = .ok res) :
+    execCoreCallOpWithMem m op args dstTy = .ok (res, m) := by
+  unfold execCoreCallOpWithMem
+  rw [hNon]
+  dsimp only
+  rw [hRO, hOp]
 
 theorem split_at_shared_correct (q : Query)
     (hValid : ValidEntryArgsV2 Captured.body_0 q)
@@ -268,8 +327,10 @@ theorem split_at_shared_correct (q : Query)
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
-        dsimp only [execCoreCallWithMem]
-        rw [execCoreCallOp_sliceGetUncheckedRangeTo_shared_ok hRefValid0 hGetTo]
+        dsimp only
+        rw [execCoreCallOpWithMem_nonAlloc rfl rfl
+          (execCoreCallOp_sliceGetUncheckedRangeTo_shared_ok hRefValid0
+            hGetTo)]
         dsimp only
         rw [writePlaceV2_immediate_ok (by rfl) (by rfl) (by rfl)]
         rfl)
@@ -326,8 +387,9 @@ theorem split_at_shared_correct (q : Query)
         dsimp only
         rw [readPlaceV2_move_local (by rfl) (by rfl) (by rfl) (by rfl)]
         dsimp only
-        dsimp only [execCoreCallWithMem]
-        rw [execCoreCallOp_sliceGetUncheckedRangeFrom_shared_ok hRefValid0 hGetFrom]
+        rw [execCoreCallOpWithMem_nonAlloc rfl rfl
+          (execCoreCallOp_sliceGetUncheckedRangeFrom_shared_ok hRefValid0
+            hGetFrom)]
         dsimp only
         rw [writePlaceV2_immediate_ok
           (by dsimp only [checkValV2]; rw [hPRW]; rfl)
@@ -377,7 +439,7 @@ theorem split_at_shared_correct (q : Query)
           Trusted.MirSemantics.getElem?]
         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl) hStay
           (by dsimp only [refsValidInMem, refsValidInMemList]; rw [hRefValidL, hRefValidR]; rfl)
-          hDisjOut, hExt]
+          hDisjOut, extractReturnMemoryV2_entry, hExt]
         rfl)
       rfl
     have hRes := spec_and_behaviorV2_of_exec_eq hExec

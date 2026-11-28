@@ -148,6 +148,8 @@ end BinOp
 
   > "Unsize a pointer/reference value, e.g., `&[T; n]` to `&[T]`. Note that
   > the source could be a thin or wide pointer."
+- `.boxAsRef` represents a verified single-purpose shared dereference of
+  `Box<P>` promoted to `&P` (`MirTy.ref .shared P`).
 - `.unsupported` represents every other `CastKind` variant, causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive CastKind where
@@ -155,6 +157,7 @@ inductive CastKind where
   | ptrToPtr
   | intToPtr
   | unsize
+  | boxAsRef
   | unsupported
 
 /-- MIR unary operators (`rustc_middle::mir::UnOp` in

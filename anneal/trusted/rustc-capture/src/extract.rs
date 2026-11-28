@@ -370,6 +370,68 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         // new language-item-keyed arm needs a matching check in
         // `check_stdlib_capability`).
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
+        // `Box<T, A>` is the `owned_box` lang item, a pointer plus an allocator
+        // (`library/alloc/src/boxed.rs:227-237`, `rust-lang/rust`
+        // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+        //
+        // > #[lang = "owned_box"]
+        // > ...
+        // > pub struct Box<
+        // >     T: ?Sized,
+        // >     #[unstable(...)] A: Allocator = Global,
+        // > >(Unique<T>, A);
+        //
+        // (with the `#[unstable]` attribute's arguments elided here).
+        // Only `A = Global` is modeled (`Trusted.MirSemantics.AllocContracts`).
+        // The lang item alone does not pin the type: under `--stdlib-crate` a
+        // crate-local `#[lang = "owned_box"]` item is possible, so the path
+        // must also be the sysroot `alloc::boxed::Box`.
+        ty::Adt(adt, args)
+            if tcx.is_lang_item(adt.did(), rustc_hir::LangItem::OwnedBox)
+                && core_or_alloc_def_path(tcx, adt.did()).as_deref() == Some("alloc::boxed::Box")
+                && matches!(args.len(), 1 | 2)
+                && args.get(1).is_none_or(|a| {
+                    a.as_type().is_some_and(|alloc_ty| is_global_allocator(tcx, alloc_ty))
+                }) =>
+        {
+            let Some(pointee_ty) = args[0].as_type() else {
+                return Err(format!("unsupported Box type argument: {t:?}"));
+            };
+            Ok(ir::Ty::Box {
+                pointee: Box::new(ty(tcx, pointee_ty)?),
+            })
+        }
+        // `alloc::vec::Vec<T, A>` (`library/alloc/src/vec/mod.rs:438-441`, at
+        // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+        //
+        // > pub struct Vec<T, #[unstable(...)] A: Allocator = Global> {
+        // >     buf: RawVec<T, A>,
+        // >     len: usize,
+        // > }
+        //
+        // (with the `#[unstable]` attribute's arguments elided here).
+        // Only `A = Global` and sized `T` are modeled. The field order is not a
+        // layout guarantee ("The order of these fields is completely
+        // unspecified", `:312-314`), which is why raw pointers to a `Vec` are
+        // not admitted (`ir::Ty::is_supported_v2_local`).
+        ty::Adt(adt, args)
+            if core_or_alloc_def_path(tcx, adt.did()).as_deref() == Some("alloc::vec::Vec")
+                && matches!(args.len(), 1 | 2)
+                && args.get(1).is_none_or(|a| {
+                    a.as_type().is_some_and(|alloc_ty| is_global_allocator(tcx, alloc_ty))
+                }) =>
+        {
+            let Some(elem_ty) = args[0].as_type() else {
+                return Err(format!("unsupported Vec element type: {t:?}"));
+            };
+            let elem = ty(tcx, elem_ty)?;
+            if !elem.is_sized() {
+                return Err(format!("unsized Vec element in {t:?} is unsupported"));
+            }
+            Ok(ir::Ty::Vec {
+                elem: Box::new(elem),
+            })
+        }
         ty::Adt(adt, args)
             if args.is_empty()
                 && tcx.is_lang_item(adt.did(), rustc_hir::LangItem::OrderingEnum) =>
@@ -387,9 +449,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L77-L89
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L192-L201
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L276-L285
-        ty::Adt(adt, args)
-            if args.len() == 1 && adt.is_struct() && core_range(tcx, adt.did()).is_some() =>
-        {
+        ty::Adt(adt, args) if args.len() == 1 && adt.is_struct() && core_range(tcx, adt.did()).is_some() => {
             let range = core_range(tcx, adt.did()).expect("checked above");
             let Some(arg_ty) = args[0].as_type() else {
                 return Err(format!("unsupported core ADT argument: {t:?}"));
@@ -738,6 +798,8 @@ fn operand<'tcx>(
                 | ir::Ty::Tuple { .. }
                 | ir::Ty::Slice { .. }
                 | ir::Ty::Str
+                | ir::Ty::Vec { .. }
+                | ir::Ty::Box { .. }
                 | ir::Ty::RangeTo { .. }
                 | ir::Ty::RangeFrom { .. }
                 | ir::Ty::Range { .. }
@@ -1143,6 +1205,27 @@ fn rvalue<'tcx>(
             op: un_op(*op)?,
             operand: operand(tcx, typing_env, value)?,
         },
+        mir::Rvalue::Cast(mir::CastKind::Transmute, value, target_ty) => {
+            if let Some(opnd) = try_peel_box_raw_ptr_transmute(
+                tcx,
+                typing_env,
+                local_decls,
+                value,
+                *target_ty,
+            )? {
+                ir::Rvalue::Cast {
+                    cast_kind: ir::CastKind::BoxAsRawPtr,
+                    operand: opnd,
+                    ty: ty(tcx, *target_ty)?,
+                }
+            } else {
+                ir::Rvalue::Cast {
+                    cast_kind: cast_kind(mir::CastKind::Transmute)?,
+                    operand: operand(tcx, typing_env, value)?,
+                    ty: ty(tcx, *target_ty)?,
+                }
+            }
+        }
         mir::Rvalue::Cast(kind, value, target_ty) => ir::Rvalue::Cast {
             cast_kind: cast_kind(*kind)?,
             operand: operand(tcx, typing_env, value)?,
@@ -1445,6 +1528,373 @@ fn core_def_path(tcx: TyCtxt<'_>, def: DefId) -> Option<String> {
     ))
 }
 
+/// The semantic path of `def` if, and only if, `def` belongs to the sysroot
+/// `alloc` crate or, via [`core_def_path`], to the authenticated sysroot
+/// `core` crate.
+///
+/// Modeled library items (`Vec`, `Box`, `Global`, and the `Vec`/`Box`
+/// methods in `core_call_op`) are matched by these paths. A local item is
+/// never accepted, even when the local crate is itself named `core` or
+/// `alloc`, because `def_path_str` prints crate-local paths without a crate
+/// prefix (see [`core_def_path`]). `verify_sysroot_only_crates` admits only
+/// external crates whose artifacts match the authenticated target sysroot,
+/// so the external crate named `alloc` is the sysroot `alloc`.
+fn core_or_alloc_def_path(tcx: TyCtxt<'_>, def: DefId) -> Option<String> {
+    if def.is_local() {
+        return None;
+    }
+    if tcx.crate_name(def.krate).as_str() != "alloc" {
+        return core_def_path(tcx, def);
+    }
+    Some(rustc_middle::ty::print::with_no_trimmed_paths!(
+        rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(def))
+    ))
+}
+
+fn is_global_allocator(tcx: TyCtxt<'_>, alloc_ty: ty::Ty<'_>) -> bool {
+    match *alloc_ty.kind() {
+        ty::Adt(adt, args) if args.is_empty() => {
+            core_or_alloc_def_path(tcx, adt.did()).as_deref() == Some("alloc::alloc::Global")
+        }
+        _ => false,
+    }
+}
+
+// RUSTC-WORKAROUND(#4367): match the private `Box`/`Unique`/`NonNull` fields
+// that the rustc 1.98 `ElaborateBoxDerefs` transmute reaches through.
+fn is_unique_ptr_ty(tcx: TyCtxt<'_>, t: ty::Ty<'_>) -> bool {
+    match *t.kind() {
+        ty::Adt(adt, _) => matches!(
+            core_or_alloc_def_path(tcx, adt.did()).as_deref(),
+            Some("core::ptr::Unique" | "core::ptr::unique::Unique")
+        ),
+        _ => false,
+    }
+}
+
+fn is_nonnull_ptr_ty(tcx: TyCtxt<'_>, t: ty::Ty<'_>) -> bool {
+    match *t.kind() {
+        ty::Adt(adt, _) => matches!(
+            core_or_alloc_def_path(tcx, adt.did()).as_deref(),
+            Some("core::ptr::NonNull" | "core::ptr::non_null::NonNull")
+        ),
+        _ => false,
+    }
+}
+
+/// Recognize the pointer temporary that `rustc`'s `ElaborateBoxDerefs` pass
+/// introduces for each `*b` dereference of a `Box<P>` and lower it to
+/// `CastKind::BoxAsRawPtr` of the box itself. The pass builds a `*const P`
+/// temporary from a transmute of the box's `Unique<P>`/`NonNull<P>` pointer
+/// field (`compiler/rustc_mir_transform/src/elaborate_box_derefs.rs`, lines
+/// 23, 29-34, and 68-83, `rust-lang/rust`
+/// `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+///
+/// > let ptr_ty = Ty::new_imm_ptr(tcx, pointee);
+///
+/// > [PlaceElem::Field(FieldIdx::ZERO, unique_ty),
+/// > PlaceElem::Field(FieldIdx::ZERO, nonnull_ty)]
+///
+/// (one line upstream)
+///
+/// > Rvalue::Cast(
+/// >     CastKind::Transmute,
+/// >     Operand::Copy(
+/// >         Place::from(place.local)
+/// >             .project_deeper(&build_projection(unique_ty, nonnull_ty),
+/// > tcx),
+/// >     ),
+/// >     ptr_ty,
+/// > ),
+///
+/// (the `project_deeper` line is wrapped here), so this matches exactly a
+/// transmute of `<place>.0.0` (with `Unique` and
+/// `NonNull` field types) of a `Box<P, Global>` place to a raw pointer to `P`.
+/// `promote_box_as_ref` turns admitted uses into `CastKind::BoxAsRef`, and
+/// `ir::check_cast_types` refuses the rest. Any other transmute is left to the
+/// caller, which refuses it.
+// RUSTC-WORKAROUND(#4367): peel rustc 1.98's `ElaborateBoxDerefs` transmute
+// of `<box>.0.0`; rustc 1.99 lowers `*b` with `BoxDerefTransmute` instead.
+fn try_peel_box_raw_ptr_transmute<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    local_decls: &mir::LocalDecls<'tcx>,
+    value: &mir::Operand<'tcx>,
+    target_ty: ty::Ty<'tcx>,
+) -> Result<Option<ir::Operand>> {
+    let ty::RawPtr(target_pointee, _) = *target_ty.kind() else {
+        return Ok(None);
+    };
+    let (is_move, src_place) = match value {
+        mir::Operand::Copy(p) => (false, p),
+        mir::Operand::Move(p) => (true, p),
+        mir::Operand::Constant(_) | mir::Operand::RuntimeChecks(_) => return Ok(None),
+    };
+    let proj = src_place.projection;
+    if proj.len() < 2 {
+        return Ok(None);
+    }
+    let prefix = &proj[..proj.len() - 2];
+    let mir::ProjectionElem::Field(f0, uniq_ty) = proj[proj.len() - 2] else {
+        return Ok(None);
+    };
+    let mir::ProjectionElem::Field(f1, nn_ty) = proj[proj.len() - 1] else {
+        return Ok(None);
+    };
+    if f0.as_usize() != 0
+        || f1.as_usize() != 0
+        || !is_unique_ptr_ty(tcx, uniq_ty)
+        || !is_nonnull_ptr_ty(tcx, nn_ty)
+    {
+        return Ok(None);
+    }
+    let mut place_ty = mir::PlaceTy::from_ty(local_decls[src_place.local].ty);
+    for elem in prefix {
+        place_ty = place_ty.projection_ty(tcx, *elem);
+    }
+    let ty::Adt(adt, args) = *place_ty.ty.kind() else {
+        return Ok(None);
+    };
+    if !tcx.is_lang_item(adt.did(), rustc_hir::LangItem::OwnedBox)
+        || core_or_alloc_def_path(tcx, adt.did()).as_deref() != Some("alloc::boxed::Box")
+        || !matches!(args.len(), 1 | 2)
+        || !args.get(1).is_none_or(|a| {
+            a.as_type().is_some_and(|alloc_ty| is_global_allocator(tcx, alloc_ty))
+        })
+    {
+        return Ok(None);
+    }
+    if args[0].as_type() != Some(target_pointee) {
+        return Ok(None);
+    }
+    let _ = typing_env;
+    let mut peeled_proj = Vec::with_capacity(prefix.len());
+    for elem in prefix {
+        match *elem {
+            mir::ProjectionElem::Deref => peeled_proj.push(ir::PlaceElem::Deref),
+            mir::ProjectionElem::Field(idx, field_ty) => peeled_proj.push(ir::PlaceElem::Field {
+                index: idx.as_usize(),
+                ty: ty(tcx, field_ty)?,
+            }),
+            other => {
+                return Err(format!(
+                    "unsupported Box projection `{other:?}` in `{src_place:?}`"
+                ));
+            }
+        }
+    }
+    let peeled_ir = ir::Place {
+        local: src_place.local.as_u32(),
+        projection: peeled_proj,
+    };
+    Ok(Some(match (is_move, peeled_ir.projection.is_empty()) {
+        (false, true) => ir::Operand::Copy {
+            local: peeled_ir.local,
+        },
+        (false, false) => ir::Operand::CopyPlace { place: peeled_ir },
+        (true, true) => ir::Operand::Move {
+            local: peeled_ir.local,
+        },
+        (true, false) => ir::Operand::MovePlace { place: peeled_ir },
+    }))
+}
+
+/// Promote non-argument locals `_raw : *const P` (never `_0`, arguments, or
+/// `*mut P`) whose only assignments are `try_peel_box_raw_ptr_transmute`
+/// (`CastKind::BoxAsRawPtr` with matching pointee `P`) and whose only uses are
+/// shared `Deref` projection reads, `UnOp::PtrMetadata`, or storage/mention
+/// markers (`StorageLive`, `StorageDead`, `PlaceMention`) to `&P`
+/// (`MirTy::Ref { Mutability::Shared, .. }`) via `CastKind::BoxAsRef`.
+///
+/// Locals escaped to calls, returned, stored in aggregates, cast/offset,
+/// copied/retagged by value, or `&mut`/`&raw`-borrowed remain `.rawPtr` with
+/// `CastKind::BoxAsRawPtr`. Such a body mixes the `Box` (which counts as a
+/// reference, `ir::Ty::has_ref_v2`) with a raw-pointer local, so capture
+/// refuses it.
+///
+/// The promoted temporary is the one `ElaborateBoxDerefs` substitutes for the
+/// box in a `*b` place (`elaborate_box_derefs.rs:83`, `rust-lang/rust`
+/// `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`: `place.local = ptr_local;`),
+/// so it denotes the same shared access to the boxed value as `&*b` in the
+/// source program. `Trusted.MirSemantics.evalCastKindV2` checks the reference
+/// validity of the boxed value when it evaluates the `BoxAsRef` cast.
+// RUSTC-WORKAROUND(#4367): recover `&*b` from the raw-pointer temporary that
+// rustc 1.98's `ElaborateBoxDerefs` introduces.
+fn promote_box_as_ref(
+    arg_count: usize,
+    local_tys: &mut [ir::Ty],
+    blocks: &mut [(Vec<ir::Statement>, RawTerminator)],
+) {
+    fn operand_mentions_local(op: &ir::Operand, lid: u32) -> bool {
+        match op {
+            ir::Operand::Copy { local } | ir::Operand::Move { local } => *local == lid,
+            ir::Operand::CopyPlace { place } | ir::Operand::MovePlace { place } => {
+                place.local == lid
+            }
+            ir::Operand::Constant { .. } => false,
+        }
+    }
+
+    fn operand_only_shared_deref_reads(op: &ir::Operand, lid: u32) -> bool {
+        match op {
+            ir::Operand::Copy { local } | ir::Operand::Move { local } => *local != lid,
+            ir::Operand::CopyPlace { place } => {
+                place.local != lid || matches!(place.projection.as_slice(), [ir::PlaceElem::Deref])
+            }
+            ir::Operand::MovePlace { place } => place.local != lid,
+            ir::Operand::Constant { .. } => true,
+        }
+    }
+
+    fn rvalue_uses_safe_for_ref_promo(rv: &ir::Rvalue, lid: u32) -> bool {
+        match rv {
+            ir::Rvalue::Unary {
+                op: ir::UnOp::PtrMetadata,
+                operand,
+            } => {
+                matches!(
+                    operand,
+                    ir::Operand::Copy { local } | ir::Operand::Move { local } if *local == lid
+                ) || operand_only_shared_deref_reads(operand, lid)
+            }
+            ir::Rvalue::Ref { mutability, place } => {
+                place.local != lid
+                    || (*mutability == ir::Mutability::Shared
+                        && matches!(place.projection.as_slice(), [ir::PlaceElem::Deref]))
+            }
+            ir::Rvalue::AddressOf { place, .. } | ir::Rvalue::FakeAddressOf { place } => {
+                place.local != lid
+            }
+            ir::Rvalue::Discriminant { place } => place.local != lid,
+            ir::Rvalue::Use { operand, .. }
+            | ir::Rvalue::UseRetag { operand }
+            | ir::Rvalue::Unary { operand, .. }
+            | ir::Rvalue::Cast { operand, .. }
+            | ir::Rvalue::AggregateRangeTo { end: operand, .. }
+            | ir::Rvalue::AggregateRangeFrom { start: operand, .. } => {
+                operand_only_shared_deref_reads(operand, lid)
+            }
+            ir::Rvalue::Binary { left, right, .. } => {
+                operand_only_shared_deref_reads(left, lid)
+                    && operand_only_shared_deref_reads(right, lid)
+            }
+            ir::Rvalue::AggregateTuple { fields }
+            | ir::Rvalue::AggregateArray { elems: fields, .. } => {
+                fields.iter().all(|f| operand_only_shared_deref_reads(f, lid))
+            }
+            ir::Rvalue::Repeat { operand, .. } => operand_only_shared_deref_reads(operand, lid),
+            ir::Rvalue::AggregateRange { start, end, .. } => {
+                operand_only_shared_deref_reads(start, lid)
+                    && operand_only_shared_deref_reads(end, lid)
+            }
+            ir::Rvalue::AggregateOption { payload, .. } => {
+                payload.as_deref().is_none_or(|p| operand_only_shared_deref_reads(p, lid))
+            }
+        }
+    }
+
+    if arg_count >= local_tys.len() {
+        return;
+    }
+    for (lid_usize, local_ty) in local_tys.iter_mut().enumerate().skip(arg_count + 1) {
+        let raw_ty = local_ty.clone();
+        let ir::Ty::RawPtr {
+            mutability: ir::Mutability::Shared,
+            pointee,
+        } = local_ty
+        else {
+            continue;
+        };
+        let lid = lid_usize as u32;
+        let mut saw_box_cast = false;
+        let mut eligible = true;
+
+        'scan: for (statements, terminator) in blocks.iter() {
+            for stmt in statements {
+                match stmt {
+                    ir::Statement::Assign { local, value } if *local == lid => match value {
+                        ir::Rvalue::Cast {
+                            cast_kind: ir::CastKind::BoxAsRawPtr,
+                            operand,
+                            ty,
+                        } if *ty == raw_ty && !operand_mentions_local(operand, lid) => {
+                            saw_box_cast = true;
+                        }
+                        _ => {
+                            eligible = false;
+                            break 'scan;
+                        }
+                    },
+                    ir::Statement::Assign { value, .. } => {
+                        if !rvalue_uses_safe_for_ref_promo(value, lid) {
+                            eligible = false;
+                            break 'scan;
+                        }
+                    }
+                    ir::Statement::AssignPlace { place, value } => {
+                        if place.local == lid || !rvalue_uses_safe_for_ref_promo(value, lid) {
+                            eligible = false;
+                            break 'scan;
+                        }
+                    }
+                    ir::Statement::StorageLive { .. }
+                    | ir::Statement::StorageDead { .. }
+                    | ir::Statement::PlaceMention { .. }
+                    | ir::Statement::Nop => {}
+                }
+            }
+            let term_ok = match terminator {
+                RawTerminator::LocalCall { args, dst, .. } => {
+                    *dst != lid && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
+                }
+                RawTerminator::Resolved(terminator) => match terminator {
+                    ir::Terminator::SwitchInt { operand, .. } => {
+                        operand_only_shared_deref_reads(operand, lid)
+                    }
+                    ir::Terminator::Assert { cond, .. } => {
+                        operand_only_shared_deref_reads(cond, lid)
+                    }
+                    ir::Terminator::CoreCall { args, dst, .. } => {
+                        dst.local != lid
+                            && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
+                    }
+                    ir::Terminator::Call { args, dst, .. }
+                    | ir::Terminator::SysrootCall { args, dst, .. } => {
+                        *dst != lid && args.iter().all(|a| operand_only_shared_deref_reads(a, lid))
+                    }
+                    ir::Terminator::Goto { .. }
+                    | ir::Terminator::Ret
+                    | ir::Terminator::Unreachable
+                    | ir::Terminator::Unsupported => true,
+                },
+            };
+            if !term_ok {
+                eligible = false;
+                break 'scan;
+            }
+        }
+
+        if saw_box_cast && eligible {
+            let ref_ty = ir::Ty::Ref {
+                mutability: ir::Mutability::Shared,
+                pointee: pointee.clone(),
+            };
+            *local_ty = ref_ty.clone();
+            for (statements, _) in blocks.iter_mut() {
+                for stmt in statements {
+                    if let ir::Statement::Assign { local, value } = stmt
+                        && *local == lid
+                        && let ir::Rvalue::Cast { cast_kind, ty, .. } = value
+                    {
+                        *cast_kind = ir::CastKind::BoxAsRef;
+                        *ty = ref_ty.clone();
+                    }
+                }
+            }
+        }
+    }
+}
+
 /// The admitted `core::ops::range` structs.
 #[derive(Clone, Copy)]
 enum CoreRange {
@@ -1541,12 +1991,13 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
     Some((ity, method))
 }
 
-/// Map a returning call to a sysroot `core` function onto the closed
-/// [`ir::CoreCallOp`] table, refusing every other callee.
+/// Map a returning call to a sysroot `core` or `alloc` function onto the
+/// closed [`ir::CoreCallOp`] table, refusing every other callee.
 ///
-/// The callee is identified by [`core_def_path`] (pinned to the
-/// authenticated sysroot `core`), and the generic arguments select the
-/// operand types. Each entry corresponds to one pinned `library/core`
+/// The callee is identified by [`core_or_alloc_def_path`] (pinned to the
+/// sysroot `alloc` or the authenticated sysroot `core`), after resolving a
+/// `core`/`alloc` trait method to its impl, and the generic arguments select
+/// the operand types. Each entry corresponds to one pinned `library/core`
 /// definition; `ir::Body::try_new` checks argument and destination types,
 /// and `Trusted.MirSemantics` states the operational semantics:
 ///
@@ -1568,6 +2019,9 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 ///   `core::option::Option::<T>::{is_some, is_none, take, unwrap}`, and
 ///   structural `<[T; N] as core::cmp::PartialEq>::eq`.
 ///
+/// It also maps the `Vec<T, Global>` and `Box<T, Global>` methods matched
+/// below, whose contracts are stated in `Trusted.MirSemantics.AllocContracts`.
+///
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L101-L138
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L606-L647
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/slice/mod.rs#L1953-L1992
@@ -1581,12 +2035,39 @@ fn parse_core_num_impl_method(path: &str) -> Option<(IntTy, &str)> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/option.rs#L632-L1903
 fn core_call_op<'tcx>(
     tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
     def_id: DefId,
     fn_args: ty::GenericArgsRef<'tcx>,
 ) -> Result<ir::CoreCallOp> {
-    let Some(path) = core_def_path(tcx, def_id) else {
+    // `Index`/`IndexMut` on slices and `PartialEq` on arrays are classified
+    // below by their trait method and generic arguments. Resolving them would
+    // yield `core` impl paths that the closed table does not list.
+    let trait_level = matches!(
+        core_or_alloc_def_path(tcx, def_id).as_deref(),
+        Some(
+            "core::ops::index::Index::index"
+                | "core::ops::index::IndexMut::index_mut"
+                | "core::cmp::PartialEq::eq"
+        )
+    ) && fn_args
+        .first()
+        .and_then(|a| a.as_type())
+        .is_some_and(|t| matches!(t.kind(), ty::Slice(_) | ty::Array(..)));
+    let (def_id, fn_args) = if !trait_level
+        && tcx.trait_of_assoc(def_id).is_some()
+        && core_or_alloc_def_path(tcx, def_id).is_some()
+    {
+        if let Ok(Some(inst)) = ty::Instance::try_resolve(tcx, typing_env, def_id, fn_args) {
+            (inst.def_id(), inst.args)
+        } else {
+            (def_id, fn_args)
+        }
+    } else {
+        (def_id, fn_args)
+    };
+    let Some(path) = core_or_alloc_def_path(tcx, def_id) else {
         return Err(format!(
-            "external call to non-core def `{}` is unsupported",
+            "external call to non-core/non-alloc def `{}` is unsupported",
             tcx.def_path_str(def_id)
         ));
     };
@@ -1803,7 +2284,103 @@ fn core_call_op<'tcx>(
                 )),
             }
         }
-        _ => Err(format!("unsupported core call `{path}`")),
+        "alloc::vec::Vec::<T>::new" => {
+            let elem_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Vec element type in {path}"))?;
+            Ok(ir::CoreCallOp::VecNew {
+                elem: ty(tcx, elem_ty)?,
+            })
+        }
+        "alloc::vec::Vec::<T>::with_capacity" => {
+            let elem_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Vec element type in {path}"))?;
+            Ok(ir::CoreCallOp::VecWithCapacity {
+                elem: ty(tcx, elem_ty)?,
+            })
+        }
+        "alloc::vec::Vec::<T, A>::len" | "alloc::vec::Vec::<T>::len" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::VecLen)
+        }
+        "alloc::vec::Vec::<T, A>::push" | "alloc::vec::Vec::<T>::push" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::VecPush)
+        }
+        "alloc::vec::Vec::<T, A>::resize" | "alloc::vec::Vec::<T>::resize" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            check_trivial_clone_arg(tcx, fn_args, &path)?;
+            Ok(ir::CoreCallOp::VecResize)
+        }
+        "alloc::vec::Vec::<T, A>::extend_from_slice"
+        | "alloc::vec::Vec::<T>::extend_from_slice" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            check_trivial_clone_arg(tcx, fn_args, &path)?;
+            Ok(ir::CoreCallOp::VecExtendFromSlice)
+        }
+        "alloc::vec::Vec::<T, A>::reserve" | "alloc::vec::Vec::<T>::reserve" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::VecReserve)
+        }
+        "<alloc::vec::Vec<T, A> as core::ops::index::Index<I>>::index"
+        | "<alloc::vec::Vec<T, A> as core::ops::Index<I>>::index" => {
+            check_vec_index_usize_arg(fn_args, &path)?;
+            check_alloc_global_arg(tcx, fn_args, 2, &path)?;
+            Ok(ir::CoreCallOp::VecIndex)
+        }
+        "<alloc::vec::Vec<T, A> as core::ops::index::IndexMut<I>>::index_mut"
+        | "<alloc::vec::Vec<T, A> as core::ops::IndexMut<I>>::index_mut" => {
+            check_vec_index_usize_arg(fn_args, &path)?;
+            check_alloc_global_arg(tcx, fn_args, 2, &path)?;
+            Ok(ir::CoreCallOp::VecIndexMut)
+        }
+        "<alloc::vec::Vec<T, A> as core::ops::deref::Deref>::deref"
+        | "<alloc::vec::Vec<T, A> as core::ops::Deref>::deref" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::VecDeref)
+        }
+        "<alloc::vec::Vec<T, A> as core::ops::deref::DerefMut>::deref_mut"
+        | "<alloc::vec::Vec<T, A> as core::ops::DerefMut>::deref_mut" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::VecDerefMut)
+        }
+        "<alloc::boxed::Box<[T], A> as core::convert::From<alloc::vec::Vec<T, A>>>::from"
+        | concat!(
+            "alloc::vec::<impl core::convert::From<alloc::vec::Vec<T, A>> ",
+            "for alloc::boxed::Box<[T], A>>::from"
+        ) => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::BoxFromVec)
+        }
+        "<alloc::boxed::Box<T, A> as core::ops::deref::Deref>::deref"
+        | "<alloc::boxed::Box<T, A> as core::ops::Deref>::deref" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::BoxDeref)
+        }
+        "<alloc::boxed::Box<T, A> as core::ops::deref::DerefMut>::deref_mut"
+        | "<alloc::boxed::Box<T, A> as core::ops::DerefMut>::deref_mut" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            Ok(ir::CoreCallOp::BoxDerefMut)
+        }
+        "<alloc::boxed::Box<T, A> as core::clone::Clone>::clone"
+        | "<alloc::boxed::Box<[T], A> as core::clone::Clone>::clone" => {
+            check_alloc_global_arg(tcx, fn_args, 1, &path)?;
+            check_trivial_clone_arg(tcx, fn_args, &path)?;
+            Ok(ir::CoreCallOp::BoxClone)
+        }
+        "alloc::boxed::Box::<T>::new" => {
+            let pt_ty = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing Box pointee type in {path}"))?;
+            Ok(ir::CoreCallOp::BoxNew {
+                pointee: ty(tcx, pt_ty)?,
+            })
+        }
+        _ => Err(format!("unsupported core/alloc call `{path}`")),
     }
 }
 
@@ -2429,6 +3006,79 @@ fn direct_core_call_callee<'tcx>(
     Some((callee_did, generic_args, path))
 }
 
+/// `<Vec<T, A> as Index<I>>` is generic over every `I: SliceIndex<[T]>`
+/// (`impl<T, I: SliceIndex<[T]>, A: Allocator> Index<I> for Vec<T, A>`), but
+/// `CoreCallOp::VecIndex`/`VecIndexMut` model only `I = usize`, which returns
+/// a single element. Ranges and other `SliceIndex` types are refused here
+/// rather than relying on the later IR type check.
+fn check_vec_index_usize_arg(fn_args: ty::GenericArgsRef<'_>, path: &str) -> Result<()> {
+    match fn_args.get(1).and_then(|a| a.as_type()).map(|t| t.kind()) {
+        Some(ty::Uint(ty::UintTy::Usize)) => Ok(()),
+        _ => Err(format!("non-`usize` index type in `{path}` is unsupported")),
+    }
+}
+
+/// `Vec::extend_from_slice`, `Vec::resize`, and `Box::clone` are modeled as
+/// bitwise copies of the element (`CoreCallOp::VecExtendFromSlice`,
+/// `VecResize`, and `BoxClone`), but they call `T::clone` unless `T` is
+/// `TrivialClone`. Only then does the library copy bytes, and only then is
+/// `T::clone` guaranteed to equal a copy. `resize` clones `n - 1` times
+/// (`ptr::write(ptr, value.clone())`), while `extend_from_slice` (through
+/// `append_elements`) and `Box::clone` (through `ConvertVec` and `CopySpec`)
+/// copy bytes only in their `TrivialClone` specializations. `TrivialClone` is
+/// unsafe and documented as: "`Clone::clone` must be equivalent to copying
+/// the value, otherwise calling functions such as `slice::clone_from_slice`
+/// can have undefined behaviour." It is "automatically implemented when using
+/// `#[derive(Clone, Copy)]`" and by every primitive the element fragment
+/// admits, so a hand-written `Clone` (which may, say, return a different enum
+/// variant) is refused here. The trait is resolved as the `trivial_clone`
+/// lang item, never by path.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/clone.rs#L253-L283
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/alloc/src/vec/spec_extend.rs#L40-L58
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/alloc/src/vec/mod.rs#L3655-L3670
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/alloc/src/slice.rs#L408-L460
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/clone/uninit.rs#L12-L82
+fn check_trivial_clone_arg<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    fn_args: ty::GenericArgsRef<'tcx>,
+    path: &str,
+) -> Result<()> {
+    use rustc_trait_selection::infer::{InferCtxtExt as _, TyCtxtInferExt as _};
+    let elem = fn_args
+        .first()
+        .and_then(|a| a.as_type())
+        .ok_or_else(|| format!("missing element type in `{path}`"))?;
+    let Some(trivial_clone) = tcx.lang_items().get(rustc_hir::LangItem::TrivialClone) else {
+        return Err(format!("missing `TrivialClone` lang item for `{path}`"));
+    };
+    let (infcx, param_env) =
+        tcx.infer_ctxt().build_with_typing_env(TypingEnv::fully_monomorphized());
+    if !infcx
+        .type_implements_trait(trivial_clone, [elem], param_env)
+        .must_apply_modulo_regions()
+    {
+        return Err(format!(
+            "`{path}` on element type {elem:?}, which is not `TrivialClone`, \
+             is unsupported"
+        ));
+    }
+    Ok(())
+}
+
+fn check_alloc_global_arg<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    fn_args: ty::GenericArgsRef<'tcx>,
+    alloc_idx: usize,
+    path: &str,
+) -> Result<()> {
+    if let Some(alloc_ty) = fn_args.get(alloc_idx).and_then(|a| a.as_type())
+        && !is_global_allocator(tcx, alloc_ty)
+    {
+        return Err(format!("non-Global allocator in `{path}` is unsupported"));
+    }
+    Ok(())
+}
+
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
 /// `Assert` "Evaluates the operand, which must have type `bool`. If it is not
 /// equal to `expected`, initiates a panic." Its condition, expected value,
@@ -2581,15 +3231,16 @@ fn terminator<'tcx>(
                 .iter()
                 .map(|spanned| operand(tcx, typing_env, &spanned.node))
                 .collect::<Result<Vec<_>>>()?;
-            if let Some(path) = core_def_path(tcx, callee_did) {
-                // `core_def_path` pins the callee to the authenticated sysroot
-                // `core`, so neither a crate-local `mod core` nor a local crate
-                // built with `--crate-name core` reaches this branch. The
-                // closed Profile v2 `CoreCallOp` table takes precedence;
+            if let Some(path) = core_or_alloc_def_path(tcx, callee_did) {
+                // `core_or_alloc_def_path` pins the callee to the authenticated
+                // sysroot `core` or `alloc`, so neither a crate-local
+                // `mod core` nor a local crate built with `--crate-name core`
+                // reaches this branch. The closed Profile v2 `CoreCallOp`
+                // table takes precedence;
                 // remaining `core::num` arithmetic goes through the Profile v1
                 // sysroot path, where `verify_sysroot_num_call` re-checks the
                 // callee's `instance_mir` shape.
-                match core_call_op(tcx, callee_did, generic_args) {
+                match core_call_op(tcx, typing_env, callee_did, generic_args) {
                     Ok(op) => {
                         let unwind = unwind_action(*unwind, "call")?;
                         RawTerminator::Resolved(ir::Terminator::CoreCall {
@@ -3314,23 +3965,41 @@ fn body_inner<'tcx>(
     // renumbering would change the subject and require a separate proof.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L207-L209
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L235-L251
-    let local_tys = body
+    let mut local_tys = body
         .local_decls
         .iter()
         .map(|decl| ty(tcx, decl.ty))
         .collect::<Result<Vec<_>>>()?;
-    // Enforce the Profile v2 local fragment before lowering statements so
-    // disallowed local types (e.g. `&&T` or `*const &T`, or real raw pointers
-    // mixed with references) report the type boundary error rather than
-    // secondary statement errors inside the body. `FakeForPtrMetadata`
-    // temporaries are pre-classified here and independently re-validated on
-    // the lowered `ir::Body` in `ir::Body::try_new_with_callees`.
+    // Enforce the Profile v2 local type fragment before lowering statements so
+    // disallowed local types (e.g. `&&T` or `*const &T`) report the type
+    // boundary error rather than secondary statement errors inside the body.
+    // The full mixed ref/raw-pointer check runs after promoting single-purpose
+    // shared `Box<P>` deref temps to `BoxAsRef`. Only non-argument `*const P`
+    // locals can be promoted, so if the other locals already mix, the body is
+    // refused here, before secondary statement or call errors.
+    // `FakeForPtrMetadata` temporaries are pre-classified here, exempted from
+    // the mixing check, and independently re-validated on the lowered
+    // `ir::Body` in `ir::Body::try_new_with_callees`.
     let fake_meta_locals = collect_mir_fake_ptr_metadata_locals(body, &local_tys);
-    ir::validate_local_tys_with_exemptions(&local_tys, &fake_meta_locals)?;
+    ir::validate_local_ty_fragment(&local_tys)?;
     let mut local_callees = Vec::new();
     let mut seen_callees = BTreeSet::new();
     let mut callees = BTreeSet::new();
-    let blocks = body
+    // RUSTC-WORKAROUND(#4367): `Box` deref temporaries are promoted after
+    // lowering, so only the unpromotable locals are checked here.
+    let unpromotable_tys: Vec<ir::Ty> = local_tys
+        .iter()
+        .enumerate()
+        .map(|(i, t)| match t {
+            ir::Ty::RawPtr {
+                mutability: ir::Mutability::Shared,
+                ..
+            } if i > body.arg_count => ir::Ty::Unit,
+            _ => t.clone(),
+        })
+        .collect();
+    ir::validate_local_tys_with_exemptions(&unpromotable_tys, &fake_meta_locals)?;
+    let mut blocks = body
         .basic_blocks
         .iter_enumerated()
         .map(|(id, block)| {
@@ -3358,6 +4027,7 @@ fn body_inner<'tcx>(
             Ok((statements, terminator))
         })
         .collect::<Result<Vec<_>>>()?;
+    promote_box_as_ref(body.arg_count, &mut local_tys, &mut blocks);
     // fn_sig lowers ordinary declarations with "sig.header.safety()";
     // lower_fn_ty preserves it with ".set_safety(safety)". FnSig::safety
     // delegates to the getter documented as "Returns the safety mode."

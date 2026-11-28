@@ -917,6 +917,131 @@ theorem sliceCheck_of_refValidInMem {m : MemoryState} {reqMut : Mutability}
   | ok v =>
     rw [sliceFromRawPartsCheck_ok_val hS]
 
+/-- Weaken mutable `zeroCapPtrValidInMem` to shared mode. -/
+theorem zeroCapPtrValidInMem_shared_of_mut {m : MemoryState} {alignLog2 : Nat}
+    {p : PtrVal} (h : zeroCapPtrValidInMem m true alignLog2 p = .ok ()) :
+    zeroCapPtrValidInMem m false alignLog2 p = .ok () := by
+  unfold zeroCapPtrValidInMem at h
+  unfold zeroCapPtrValidInMem
+  cases hAid : p.allocId with
+  | none => rw [hAid] at h; exact h
+  | some aid =>
+    rw [hAid] at h
+    dsimp only at h
+    dsimp only
+    cases hFind : findAllocation aid m.allocations with
+    | none => rw [hFind] at h; dsimp only at h; cases h
+    | some a =>
+      rw [hFind] at h
+      dsimp only at h
+      dsimp only
+      have ⟨hG, _⟩ := ite_err_eq_ok h
+      rw [ite_bool_false hG,
+        ite_bool_false
+          (rfl : (false && !Mutability.beq a.mutability .mut) = false)]
+
+/-- Weaken mutable `heapBufValidInMem` to shared mode. -/
+theorem heapBufValidInMem_shared_of_mut {m : MemoryState} {elem : MirTy}
+    {p : PtrVal} {cap len : UInt64}
+    (h : heapBufValidInMem m true elem p cap len = .ok ()) :
+    heapBufValidInMem m false elem p cap len = .ok () := by
+  unfold heapBufValidInMem at h
+  unfold heapBufValidInMem
+  have ⟨hW, h1⟩ := ite_err_eq_ok h
+  rw [ite_bool_false hW]
+  cases hLay : layoutOfTyV2 elem with
+  | none => rw [hLay] at h1; cases h1
+  | some lay =>
+    rw [hLay] at h1
+    dsimp only at h1
+    dsimp only
+    have ⟨hLe, h2⟩ := ite_err_eq_ok h1
+    have ⟨hCap, h3⟩ := ite_err_eq_ok h2
+    rw [ite_bool_false hLe, ite_bool_false hCap]
+    cases hZ : Nat.beq lay.size 0 with
+    | true =>
+      rw [hZ, ite_bool_true rfl] at h3
+      rw [ite_bool_true rfl]
+      cases hZc : zeroCapPtrValidInMem m true lay.alignLog2 p with
+      | error k => rw [hZc] at h3; cases h3
+      | ok u =>
+        rw [hZc] at h3
+        rw [zeroCapPtrValidInMem_shared_of_mut hZc]
+        exact h3
+    | false =>
+      rw [hZ, ite_bool_false rfl] at h3
+      rw [ite_bool_false rfl]
+      cases hC : Nat.beq cap.toNat 0 with
+      | true =>
+        rw [hC, ite_bool_true rfl] at h3
+        rw [ite_bool_true rfl]
+        exact zeroCapPtrValidInMem_shared_of_mut h3
+      | false =>
+        rw [hC, ite_bool_false rfl] at h3
+        rw [ite_bool_false rfl]
+        cases hAid : p.allocId with
+        | none => rw [hAid] at h3; cases h3
+        | some aid =>
+          rw [hAid] at h3
+          dsimp only at h3
+          dsimp only
+          cases hFind : findAllocation aid m.allocations with
+          | none => rw [hFind] at h3; dsimp only at h3; cases h3
+          | some a =>
+            rw [hFind] at h3
+            dsimp only at h3
+            dsimp only
+            have ⟨hG, h4⟩ := ite_err_eq_ok h3
+            have ⟨_, h5⟩ := ite_err_eq_ok h4
+            rw [ite_bool_false hG,
+              ite_bool_false
+                (rfl : (false && !Mutability.beq a.mutability .mut) = false)]
+            exact h5
+
+/-- Weaken mutable `ownedHeapBufValidInMem` to shared mode. -/
+theorem ownedHeapBufValidInMem_shared_of_mut {m : MemoryState} {elem : MirTy}
+    {p : PtrVal} {cap len : UInt64}
+    (h : ownedHeapBufValidInMem m true elem p cap len = .ok ()) :
+    ownedHeapBufValidInMem m false elem p cap len = .ok () := by
+  unfold ownedHeapBufValidInMem at h
+  unfold ownedHeapBufValidInMem
+  cases hB : heapBufValidInMem m true elem p cap len with
+  | error k => rw [hB] at h; cases h
+  | ok u =>
+    rw [hB] at h
+    rw [heapBufValidInMem_shared_of_mut hB]
+    exact h
+
+/-- Weaken mutable `boxPointeeValidInMem` to shared mode. -/
+theorem boxPointeeValidInMem_shared_of_mut {m : MemoryState} {pt : MirTy}
+    {p : PtrVal} {optLen : Option UInt64}
+    (h : boxPointeeValidInMem m true pt p optLen = .ok ()) :
+    boxPointeeValidInMem m false pt p optLen = .ok () := by
+  unfold boxPointeeValidInMem at h
+  unfold boxPointeeValidInMem
+  cases pt with
+  | slice elem =>
+    cases optLen with
+    | none =>
+      dsimp only at h
+      have ⟨hU, _⟩ := ite_err_eq_ok h
+      cases hU
+    | some len =>
+      dsimp only at h
+      dsimp only
+      exact ownedHeapBufValidInMem_shared_of_mut h
+  | int _ _ | bool | char | ordering | unit | tuple _ | enum _
+  | unsupported | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _
+  | array _ _ | never | option _ | range _ | vec _ | box _ | str =>
+    cases optLen with
+    | none =>
+      dsimp only at h
+      dsimp only
+      have ⟨hU, h1⟩ := ite_err_eq_ok h
+      rw [ite_bool_false hU]
+      exact ownedHeapBufValidInMem_shared_of_mut h1
+    | some len => cases h
+
 /-- Weaken `&mut T` / `&mut [T]` `refValidInMem` to shared `&T` / `&[T]`. -/
 theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
     (h : refValidInMem m .mut pointee v = .ok ()) :
@@ -950,7 +1075,7 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
               sliceCheck_shared_of_mut hS]
         | bool | unit | never | char | ordering | str | enum _ | tuple _ | ref _ _
         | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
-        | option _ | range _ | unsupported =>
+        | option _ | range _ | unsupported | box _ | vec _ =>
           dsimp only at h1
           dsimp only
           let ⟨hInh, h2⟩ := ite_err_eq_ok h1
@@ -963,9 +1088,13 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
             rw [show Mutability.beq .shared .mut = false from rfl,
               sliceRefRawCheck_shared_of_mut hS]
             exact h2
+    | ptr _ =>
+      dsimp only at h
+      have ⟨hSup, _⟩ := ite_err_eq_ok h
+      cases hSup
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-    | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
-    | array _ | optionVal _ | range _ _ => cases h
+    | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+    | array _ | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ => cases h
   | str =>
     cases v <;> cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
@@ -984,7 +1113,9 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
         dsimp only at h0
         dsimp only
         cases hAid : p.allocId with
-        | none => rw [hAid] at h0; exact h0
+        | none =>
+          rw [hAid] at h0
+          exact h0
         | some aid =>
           rw [hAid] at h0
           dsimp only at h0
@@ -1004,7 +1135,139 @@ theorem refValid_shared_of_mut {m : MemoryState} {pointee : MirTy} {v : Val}
             exact h4
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
-    | array _ | optionVal _ | range _ _ => cases h
+    | array _ | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ => cases h
+  | vec e =>
+    cases v with
+    | ptr p =>
+      dsimp only at h
+      dsimp only
+      let ⟨hSup, h0⟩ := ite_err_eq_ok h
+      rw [ite_bool_false hSup]
+      cases hLay : layoutOfTyV2 (.vec e) with
+      | none => rw [hLay] at h0; dsimp only at h0; cases h0
+      | some lay =>
+        rw [hLay] at h0
+        dsimp only at h0
+        dsimp only
+        cases hAid : p.allocId with
+        | none =>
+          rw [hAid] at h0
+          dsimp only at h0
+          dsimp only
+          have ⟨hN1, h01⟩ := ite_err_eq_ok h0
+          have ⟨hN2, h02⟩ := ite_err_eq_ok h01
+          rw [ite_bool_false hN1, ite_bool_false hN2]
+          cases hD : decodeValV2 profileV2TargetEndian (.vec e) [] with
+          | error k => rw [hD] at h02; cases h02
+          | ok o =>
+            rw [hD] at h02
+            cases o with
+            | none => cases h02
+            | some decVal =>
+              cases decVal <;>
+                first
+                  | exact ownedHeapBufValidInMem_shared_of_mut h02
+                  | exact boxPointeeValidInMem_shared_of_mut h02
+                  | exact h02
+        | some aid =>
+          rw [hAid] at h0
+          dsimp only at h0
+          dsimp only
+          cases hFind : findAllocation aid m.allocations with
+          | none => rw [hFind] at h0; dsimp only at h0; cases h0
+          | some a =>
+            rw [hFind] at h0
+            dsimp only at h0
+            dsimp only
+            let ⟨hG, h3⟩ := ite_err_eq_ok h0
+            let ⟨_, h4⟩ := ite_err_eq_ok h3
+            rw [ite_bool_false hG,
+              ite_bool_false
+                (rfl : (Mutability.beq .shared .mut &&
+                  !Mutability.beq a.mutability .mut) = false)]
+            cases hD : decodeValV2 profileV2TargetEndian (.vec e)
+                (List.take lay.size
+                  (List.drop p.offsetBytes.toNat a.bytes)) with
+            | error k => rw [hD] at h4; cases h4
+            | ok o =>
+              rw [hD] at h4
+              cases o with
+              | none => cases h4
+              | some decVal =>
+                cases decVal <;>
+                  first
+                    | exact ownedHeapBufValidInMem_shared_of_mut h4
+                    | exact boxPointeeValidInMem_shared_of_mut h4
+                    | exact h4
+    | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+    | array _ | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ => cases h
+  | box e =>
+    cases v with
+    | ptr p =>
+      dsimp only at h
+      dsimp only
+      let ⟨hSup, h0⟩ := ite_err_eq_ok h
+      rw [ite_bool_false hSup]
+      cases hLay : layoutOfTyV2 (.box e) with
+      | none => rw [hLay] at h0; dsimp only at h0; cases h0
+      | some lay =>
+        rw [hLay] at h0
+        dsimp only at h0
+        dsimp only
+        cases hAid : p.allocId with
+        | none =>
+          rw [hAid] at h0
+          dsimp only at h0
+          dsimp only
+          have ⟨hN1, h01⟩ := ite_err_eq_ok h0
+          have ⟨hN2, h02⟩ := ite_err_eq_ok h01
+          rw [ite_bool_false hN1, ite_bool_false hN2]
+          cases hD : decodeValV2 profileV2TargetEndian (.box e) [] with
+          | error k => rw [hD] at h02; cases h02
+          | ok o =>
+            rw [hD] at h02
+            cases o with
+            | none => cases h02
+            | some decVal =>
+              cases decVal <;>
+                first
+                  | exact ownedHeapBufValidInMem_shared_of_mut h02
+                  | exact boxPointeeValidInMem_shared_of_mut h02
+                  | exact h02
+        | some aid =>
+          rw [hAid] at h0
+          dsimp only at h0
+          dsimp only
+          cases hFind : findAllocation aid m.allocations with
+          | none => rw [hFind] at h0; dsimp only at h0; cases h0
+          | some a =>
+            rw [hFind] at h0
+            dsimp only at h0
+            dsimp only
+            let ⟨hG, h3⟩ := ite_err_eq_ok h0
+            let ⟨_, h4⟩ := ite_err_eq_ok h3
+            rw [ite_bool_false hG,
+              ite_bool_false
+                (rfl : (Mutability.beq .shared .mut &&
+                  !Mutability.beq a.mutability .mut) = false)]
+            cases hD : decodeValV2 profileV2TargetEndian (.box e)
+                (List.take lay.size
+                  (List.drop p.offsetBytes.toNat a.bytes)) with
+            | error k => rw [hD] at h4; cases h4
+            | ok o =>
+              rw [hD] at h4
+              cases o with
+              | none => cases h4
+              | some decVal =>
+                cases decVal <;>
+                  first
+                    | exact ownedHeapBufValidInMem_shared_of_mut h4
+                    | exact boxPointeeValidInMem_shared_of_mut h4
+                    | exact h4
+    | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
+    | array _ | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ => cases h
 
 /-- Lift `refValidInMem` into boolean `refsValidInMem`. -/
 theorem refsValidInMem_of_refValid {m : MemoryState} {reqMut : Mutability}
@@ -1063,7 +1326,8 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
                     | some a => exact ⟨a, rfl⟩
               | bool | unit | never | char | ordering | enum _ | tuple _
               | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _
-              | rangeFrom _ | option _ | range _ | unsupported =>
+              | rangeFrom _ | option _ | range _ | unsupported | box _
+              | vec _ =>
                 dsimp only at h1
                 let ⟨_, h1b⟩ := ite_err_eq_ok h1
                 cases hRes : sliceRefRawCheck (entryMemoryWithCaller cm)
@@ -1085,7 +1349,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
             rfl
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ =>
       unfold refValidInMem at h; cases h
   | str =>
     cases v with
@@ -1123,11 +1387,11 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
                   rfl
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ =>
       unfold refValidInMem at h; cases h
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
-  | option _ | range _ =>
+  | option _ | range _ | vec _ | box _ =>
     cases v with
     | ptr p =>
       cases p with
@@ -1153,7 +1417,7 @@ theorem refsStayInCallerMem_of_refValid {cm : CallerMemory}
               rfl
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ =>
       unfold refValidInMem at h; cases h
 
 /-- A single reference's access spans are trivially pairwise disjoint. -/
@@ -1187,7 +1451,7 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
           | some _ => exact Nat.le_refl 1
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ =>
       exact Nat.zero_le 1
   | str =>
     cases v with
@@ -1199,11 +1463,11 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
         | some _ => exact Nat.le_refl 1
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | ptr _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | boxPtr _ _ | vec _ _ _ =>
       exact Nat.zero_le 1
   | int _ _ | bool | char | ordering | unit | tuple _ | enum _ | unsupported
   | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | array _ _ | never
-  | option _ | range _ =>
+  | option _ | range _ | vec _ | box _ =>
     cases v with
     | ptr p =>
       dsimp only
@@ -1217,7 +1481,7 @@ theorem spansDisjoint_single {reqMut : Mutability} {pt : MirTy} {v : Val} :
           | some _ => exact Nat.le_refl 1
     | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _
     | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _ | array _
-    | optionVal _ | range _ _ =>
+    | optionVal _ | range _ _ | vec _ _ _ | boxPtr _ _ =>
       exact Nat.zero_le 1
 
 /-- Pairwise disjointness for two `&[u8]`/`&mut [u8]` subslice pointers from
@@ -1359,8 +1623,10 @@ theorem checkValV2_slice_u8_inv {reqMut : Mutability} {v : Val}
     | i8 | i16 | i32 | i64 | i128 => rw [hW] at h; cases h
     | isize => exact ⟨ptr, len, rfl, hW⟩
   | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-  | rangeTo _ | rangeFrom _ | tuple _ | array _ | bytes _ | range _ _ =>
+  | rangeTo _ | rangeFrom _ | tuple _ | array _ | bytes _ | range _ _
+  | vec _ _ _ =>
     cases h
+  | boxPtr _ o => cases o <;> cases h
   | optionVal o => cases o <;> cases h
 
 /-- Field-level inversion for unsigned `.isize` `checkValV2 (.scalar s)`. -/
@@ -1390,7 +1656,8 @@ theorem checkValV2_isize_scalar {v : Val}
   | scalar s => exact ⟨s, rfl, checkValV2_isize_fields h⟩
   | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
   | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | tuple _
-  | array _ | range _ _ => cases h
+  | array _ | range _ _ | vec _ _ _ => cases h
+  | boxPtr _ o => cases o <;> cases h
   | optionVal optV => cases optV <;> cases h
 
 /-- Bitvector inversion for unsigned `.isize` `checkValV2 v`. -/
@@ -1541,6 +1808,32 @@ private theorem refValidInMem_allocations_eq {m1 m2 : MemoryState}
         | _ => rfl
       | _ => rfl
 
+private theorem ownedHeapBufValidInMem_allocations_eq {m1 m2 : MemoryState}
+    (hEq : m1.allocations = m2.allocations) (isMut : Bool) (elem : MirTy)
+    (p : PtrVal) (cap len : UInt64) :
+    ownedHeapBufValidInMem m1 isMut elem p cap len =
+      ownedHeapBufValidInMem m2 isMut elem p cap len := by
+  cases m1 with
+  | mk n1 a1 =>
+    cases m2 with
+    | mk n2 a2 =>
+      dsimp only at hEq
+      subst hEq
+      rfl
+
+private theorem boxPointeeValidInMem_allocations_eq {m1 m2 : MemoryState}
+    (hEq : m1.allocations = m2.allocations) (isMut : Bool) (pt : MirTy)
+    (p : PtrVal) (optLen : Option UInt64) :
+    boxPointeeValidInMem m1 isMut pt p optLen =
+      boxPointeeValidInMem m2 isMut pt p optLen := by
+  cases m1 with
+  | mk n1 a1 =>
+    cases m2 with
+    | mk n2 a2 =>
+      dsimp only at hEq
+      subst hEq
+      rfl
+
 mutual
   /-- `refsValidInMem` depends only on `m.allocations`, not `m.nextAllocId`. -/
   theorem refsValidInMem_allocations_eq {m1 m2 : MemoryState}
@@ -1557,7 +1850,8 @@ mutual
     | .tuple _, .ordering _ | .tuple _, .unit | .tuple _, .enumVal _ _
     | .tuple _, .ptr _ | .tuple _, .slicePtr _ _ | .tuple _, .rangeTo _
     | .tuple _, .rangeFrom _ | .tuple _, .range _ _ | .tuple _, .optionVal _
-    | .tuple _, .array _ | .tuple _, .bytes _ => rfl
+    | .tuple _, .array _ | .tuple _, .vec _ _ _ | .tuple _, .boxPtr _ _
+    | .tuple _, .bytes _ => rfl
     | .array elem _, .array vs => by
       unfold refsValidInMem
       exact refsValidInMemArray_allocations_eq hEq elem vs
@@ -1566,6 +1860,7 @@ mutual
     | .array _ _, .ptr _ | .array _ _, .slicePtr _ _ | .array _ _, .rangeTo _
     | .array _ _, .rangeFrom _ | .array _ _, .range _ _
     | .array _ _, .optionVal _ | .array _ _, .tuple _
+    | .array _ _, .vec _ _ _ | .array _ _, .boxPtr _ _
     | .array _ _, .bytes _ => rfl
     | .option inner, .optionVal (some innerV) => by
       unfold refsValidInMem
@@ -1575,7 +1870,18 @@ mutual
     | .option _, .ordering _ | .option _, .unit | .option _, .enumVal _ _
     | .option _, .ptr _ | .option _, .slicePtr _ _ | .option _, .rangeTo _
     | .option _, .rangeFrom _ | .option _, .range _ _ | .option _, .tuple _
-    | .option _, .array _ | .option _, .bytes _ => rfl
+    | .option _, .array _ | .option _, .vec _ _ _ | .option _, .boxPtr _ _
+    | .option _, .bytes _ => rfl
+    | .vec _, v => by
+      unfold refsValidInMem
+      cases v <;> first
+        | rfl
+        | (dsimp only; rw [ownedHeapBufValidInMem_allocations_eq hEq])
+    | .box _, v => by
+      unfold refsValidInMem
+      cases v <;> first
+        | rfl
+        | (dsimp only; rw [boxPointeeValidInMem_allocations_eq hEq])
     | .bool, v | .int _ _, v | .unit, v | .never, v | .char, v | .str, v
     | .ordering, v | .enum _, v | .rawPtr _ _, v | .slice _, v
     | .rangeTo _, v | .rangeFrom _, v | .range _, v | .unsupported, v => by
@@ -1986,7 +2292,7 @@ mutual
       | tuple vs => exact ptrOrRefAllocIdsList_eq_refAllocIdsList ts vs hNoRaw
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _
-      | range _ _ => rfl
+      | range _ _ | vec _ _ _ | boxPtr _ _ => rfl
       | optionVal optV => cases optV <;> rfl
     | .array elem _, v, hNoRaw => by
       cases v with
@@ -1994,7 +2300,7 @@ mutual
         exact ptrOrRefAllocIdsArray_eq_refAllocIdsArray elem vs hNoRaw
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _
-      | range _ _ => rfl
+      | range _ _ | vec _ _ _ | boxPtr _ _ => rfl
       | optionVal optV => cases optV <;> rfl
     | .option inner, v, hNoRaw => by
       cases v with
@@ -2005,12 +2311,12 @@ mutual
           exact ptrOrRefAllocIds_eq_refAllocIds_of_noRawPtr inner iv hNoRaw
       | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | array _ | bytes _
-      | range _ _ => rfl
+      | range _ _ | vec _ _ _ | boxPtr _ _ => rfl
     | .ref _ pt, v, _ => by cases pt <;> cases v <;> rfl
     | .int _ _, v, _ | .bool, v, _ | .char, v, _ | .ordering, v, _
     | .unit, v, _ | .slice _, v, _ | .str, v, _ | .enum _, v, _ | .rangeTo _, v, _
     | .rangeFrom _, v, _ | .unsupported, v, _ | .never, v, _
-    | .range _, v, _ => by
+    | .range _, v, _ | .vec _, v, _ | .box _, v, _ => by
       cases v <;> rfl
 
   theorem ptrOrRefAllocIdsList_eq_refAllocIdsList :
@@ -2068,7 +2374,8 @@ theorem evalTerminatorV2_return_ok_of_noRodata {body : Body} {bb : BasicBlock}
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
     evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
-      .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
+      .done (.returned
+        ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
   dsimp only
@@ -2094,7 +2401,8 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
     (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
     evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
-      .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) :=
+      .done (.returned
+        ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) :=
   evalTerminatorV2_return_ok_of_noRodata hTerm hCleanup hRetTy hRetSlot
     (hasEscapingRodataPtr_false_of_refsStay hStay hNoRaw) hStay hValid hDisj
 

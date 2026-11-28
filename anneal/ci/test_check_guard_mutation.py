@@ -408,10 +408,10 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertIn("guard-mutation.json", gm_body)
 
     def test_runner_preserves_module_olean_companion_parts(self):
-        # Fake `lean` emits `.olean`, `.olean.server`, and `.olean.private`
-        # like Lean 4 `module` compilation and requires unmodified base
-        # modules (`Trusted/MirAst.olean.{server,private}`) to be linked into
-        # the mutant's `LEAN_PATH` directory while omitting rebuilt modules.
+        # Fake `lean` emits `.olean*` and `.ir*` artifacts like Lean 4 `module`
+        # compilation and requires unmodified base modules (`Trusted/MirAst.*`)
+        # to be linked into the mutant's `LEAN_PATH` directory while omitting
+        # rebuilt modules.
         ops_span = check_guard_mutation.find_theorem_line_span(
             (
                 ANNEAL_ROOT
@@ -426,17 +426,22 @@ class GuardMutationUnitTests(unittest.TestCase):
             is_mutant = "anneal-gmut-" in str(lean_path) and "anneal-gmut-base-" not in str(lean_path)
             if "-o" in args:
                 out_path = Path(args[args.index("-o") + 1])
+                out_stem = out_path.with_suffix("")
                 src = args[-1]
+                artifacts = (".olean", ".olean.server", ".olean.private", ".ir", ".ir.sig")
                 if is_mutant and src.endswith("Ops.lean"):
-                    for suffix in (".olean", ".olean.server", ".olean.private"):
+                    for suffix in artifacts:
                         if not (lean_path / f"Trusted/MirAst{{suffix}}").is_file():
                             print(f"missing Trusted/MirAst{{suffix}}", file=sys.stderr)
                             sys.exit(1)
                     if (lean_path / "Trusted/MirSemantics/Ops.olean.server").exists():
                         print("stale Ops.olean.server copied", file=sys.stderr)
                         sys.exit(1)
-                for suffix in ("", ".server", ".private"):
-                    Path(f"{{out_path}}{{suffix}}").write_bytes(b"fake-olean")
+                    if (lean_path / "Trusted/MirSemantics/Ops.ir").exists():
+                        print("stale Ops.ir copied", file=sys.stderr)
+                        sys.exit(1)
+                for suffix in artifacts:
+                    Path(f"{{out_stem}}{{suffix}}").write_bytes(b"fake-olean")
                 if is_mutant and src.endswith("OpsRefutations.lean"):
                     print(f"{{src}}:{ops_span[0]}:2: error: Type mismatch (rfl)")
                     sys.exit(1)

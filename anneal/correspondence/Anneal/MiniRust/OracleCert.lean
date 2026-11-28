@@ -1155,7 +1155,7 @@ private theorem evalRvalue_mrWF (bodyLocals : List MirTy) (dstTy : MirTy)
               | _ => cases hbr
   | cast kind opnd castTy =>
     cases kind with
-    | ptrToPtr | intToPtr | unsize | unsupported => cases hadm
+    | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => cases hadm
     | intToInt =>
       dsimp only [rvalueAdmitted] at hadm
       cases hoa : operandAdmitted false bodyLocals opnd with

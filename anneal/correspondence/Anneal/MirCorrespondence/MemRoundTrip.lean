@@ -565,7 +565,7 @@ theorem copyReturn_uninit_ub (rp : RefProg) (c : Choice) (retTy : MirTy)
     subst h_fs
     exact copyReturn_pair_uninit_ub rp c w s mem1 st h_raw h_mem h_dr h_pmd
       h_res
-  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _ | range _
+  | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | vec _ | box _ | rangeTo _ | rangeFrom _ | range _
   | option _ | unsupported => cases h_supp
 
 end Anneal.MirCorrespondence

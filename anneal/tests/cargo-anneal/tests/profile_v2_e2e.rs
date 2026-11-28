@@ -17,7 +17,8 @@
 //!    `out.callerMem` under `CrateTheoremV2`.
 //! 3. Fail-closed negative cases: proofs rejected for unsound caller
 //!    preconditions (omitted `mid <= len`, missing alignment, null pointer,
-//!    read-only write), and capture refusing bodies that mix reference and
+//!    read-only write, missing `Vec::with_capacity` `isize::MAX` bound), and
+//!    capture refusing bodies that mix reference and
 //!    raw-pointer locals, which Profile v2 cannot check without an aliasing
 //!    model (verbatim `<&mut [u8] as SplitByteSlice>::split_at_unchecked`,
 //!    `from_raw_parts`, and a returned reference to a stack local), or cast
@@ -27,6 +28,8 @@
 //!    overflow `Assert` never fires, while one proof of the wrapping result of
 //!    an unguarded increment verifies without overflow checks and is rejected
 //!    with them.
+//! 5. Heap allocation contracts (`Vec<u8>` and `Box<[u8]>` / `Box<u64>`) under
+//!    `CrateTheoremV2` with `--panic abort`.
 
 use std::{
     fs,
@@ -65,6 +68,9 @@ const CORE_CONTRACTS_SPEC: &str =
     include_str!("fixtures/profile_v2_core_contracts/Spec.lean");
 const CORE_CONTRACTS_PROOF: &str =
     include_str!("fixtures/profile_v2_core_contracts/Proof.lean");
+const ALLOC_LIB: &str = include_str!("fixtures/profile_v2_alloc/lib.rs");
+const ALLOC_SPEC: &str = include_str!("fixtures/profile_v2_alloc/Spec.lean");
+const ALLOC_PROOF: &str = include_str!("fixtures/profile_v2_alloc/Proof.lean");
 
 const ZEROCOPY_SOURCE_FILES: &[&str] = &[
     "byte_slice.rs",
@@ -1597,6 +1603,7 @@ import Trusted.MirAst
 import Trusted.MirSemantics
 import Anneal.MirWp
 import Anneal.MirWp.V2Memory
+import Anneal.MirWp.V2StepShield
 import Captured
 import Spec
 import Expected
@@ -1823,7 +1830,8 @@ private theorem is_empty_mut_slice_exec (q : Query)
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
           Trusted.MirSemantics.getElem?]
         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
-          (by rfl) (by rfl) (by rfl), hExt]
+          (by rfl) (by rfl) (by rfl),
+          extractReturnMemoryV2_entryMemory, hExt]
         rfl)
       exact ⟨by rw [hEmpty], rfl⟩
     | true =>
@@ -1853,7 +1861,8 @@ private theorem is_empty_mut_slice_exec (q : Query)
         dsimp only [evalStepV2, entryProgForBody, Captured.program, Captured.body_0,
           Trusted.MirSemantics.getElem?]
         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
-          (by rfl) (by rfl) (by rfl), hExt]
+          (by rfl) (by rfl) (by rfl),
+          extractReturnMemoryV2_entryMemory, hExt]
         rfl)
       exact ⟨by rw [hEmpty], rfl⟩
 
@@ -1927,13 +1936,16 @@ end Proof
     run_request(dir.path(), "fake-ptr-meta-wrong-spec", &request).expect_proof_failed();
 
     // Negative 2 (capture): adding a real raw-pointer local alongside
-    // `&mut [u8]` must still fail closed with the mixed-locals refusal.
+    // `&mut [u8]` must still fail closed with the mixed-locals refusal. The
+    // local is `*mut`: a non-argument `*const P` local may still be promoted
+    // to `BoxAsRef`, so its mixing refusal runs only after call lowering,
+    // which rejects `core::ptr::null` first.
     fs::write(lean_dir.join("Spec.lean"), spec_src).unwrap();
     fs::write(
         rust_dir.join("lib.rs"),
         "#![no_std]\n\
          pub fn is_empty_mut_slice(s: &mut [u8]) -> bool {\n\
-             let _real_raw: *const u8 = core::ptr::null();\n\
+             let _real_raw: *mut u8 = core::ptr::null_mut();\n\
              matches!(s, [])\n\
          }\n",
     )
@@ -2464,6 +2476,45 @@ private theorem checkArgs_u8 {args : List Val}
         let ⟨bits, hEq, hWf, hNot⟩ := checkVal_u8_inv h0
         exact ⟨bits, by rw [hEq], hWf, hNot⟩
 
+private theorem rm2_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem rm2_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem rm2_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [rm2_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact rm2_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- Returning from an unmodified entry memory exposes no callee-created heap
+allocation, so the Profile v2 return memory is the extracted caller memory. -/
+private theorem rm2_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) := by
+  unfold extractReturnMemoryV2
+  rw [rm2_calleeLive_nil_of_sub (ids := allocIdsOf cm.allocations)
+      (l := (entryMemoryWithCaller cm).allocations)
+      (fun _ ha => rm2_mem_allocIdsOf (l := cm.allocations) ha),
+    List.append_nil]
+
 private def mkS (bb st : Nat) (locs : List LocalSlot)
     (cm : CallerMemory) (mem : MemoryState) : State :=
   ⟨[⟨0, bb, st, locs, none, none, none⟩], cm, mem⟩
@@ -2748,7 +2799,9 @@ private theorem body0_safeContract :
         rw [hSv]
         rfl
       refine execOutcomeStateV2_step hWrite0 ?_
-      exact execOutcomeStateV2_done rfl ⟨hLt16, rfl, extractCallerMemory_entry cm hMem⟩
+      exact execOutcomeStateV2_done rfl ⟨hLt16, rfl,
+        (rm2_extractReturnMemoryV2_entry cm _).trans
+          (extractCallerMemory_entry cm hMem)⟩
 
 theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, by decide, ?_, ?_⟩
@@ -3340,4 +3393,118 @@ end Proof
             && div16_lean_captured.contains("AssertKind.divByZero"),
         "expected verbatim preserved DivByZero Assert on Profile v1:\n{div16_lean_captured}"
     );
+}
+
+/// Verifies `Vec<u8>`, `Box<[u8]>`, and `Box<u64>` allocation contracts under
+/// `CrateTheoremV2` with `"panic": "abort"` (`["propext"]`, zero taint),
+/// including the heap buffers visible to `post` on return and
+/// `push_one(&mut Vec<u8>)` over every valid caller `Vec` that cannot
+/// overflow its capacity, and
+/// confirms fail-closed rejections for both weakening `Vec::with_capacity`'s
+/// `isize::MAX` bound and omitting `"panic": "abort"` (`--panic unwind`).
+#[test]
+fn verifies_profile_v2_vec_and_box_contracts_and_rejects_missing_cap_bound() {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("rust");
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+
+    fs::write(rust_dir.join("lib.rs"), ALLOC_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), ALLOC_SPEC).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), ALLOC_PROOF).unwrap();
+
+    let request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": rust_dir.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "alloc_demo",
+            "panic": "abort",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"]
+        },
+        "scope": {"kind": "crate"},
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+
+    let ok = run_request(dir.path(), "alloc-ok", &request);
+    ok.expect_ok("crate_verified");
+    let VerifyReceipt::Verified(verified) = &ok.receipt else {
+        panic!("alloc-ok: expected verified receipt, got {:?}", ok.receipt);
+    };
+    assert_eq!(verified.configuration["panic"], "abort", "{:?}", verified.configuration);
+    let capture_json: Value = serde_json::from_slice(
+        &fs::read(dir.path().join("artifacts-alloc-ok/capture/capture.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+    assert_eq!(capture_json["configuration"]["panic"], "abort", "{capture_json}");
+    let identities: Vec<&str> = capture_json["program"]["bodies"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|b| b["identity"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        identities,
+        vec![
+            "rust-path-v1::vec_and_box_slice",
+            "rust-path-v1::box_new_and_deref",
+            "rust-path-v1::vec_with_cap_arg",
+            "rust-path-v1::read_slice_and_box_len",
+            "rust-path-v1::push_one",
+        ],
+        "{capture_json}"
+    );
+    let captured_lean =
+        fs::read_to_string(dir.path().join("artifacts-alloc-ok/capture/Captured.lean")).unwrap();
+    assert!(captured_lean.contains("CastKind.boxAsRef"), "{captured_lean}");
+
+    // Negative 7: weaken `vecWithCapSafety` to omit `< isizeMaxBytes`.
+    let bad_spec = ALLOC_SPEC.replace("capSv.bits.toNat < isizeMaxBytes", "True");
+    assert_ne!(bad_spec, ALLOC_SPEC);
+    fs::write(lean_dir.join("Spec.lean"), bad_spec).unwrap();
+    run_request(dir.path(), "alloc-missing-cap-bound", &request).expect_proof_failed();
+
+    // Negative 8: restore valid `Spec.lean`, omit `"panic": "abort"`
+    // (`--panic unwind` default), and confirm fail-closed capture rejection.
+    fs::write(lean_dir.join("Spec.lean"), ALLOC_SPEC).unwrap();
+    let mut unwind_request = request.clone();
+    unwind_request["compilation"].as_object_mut().unwrap().remove("panic");
+    let unwind = run_request(dir.path(), "alloc-unwind-rejected", &unwind_request);
+    assert!(
+        !unwind.output.status.success(),
+        "alloc-unwind-rejected must fail closed:\n{:?}\nstderr:\n{}",
+        unwind.receipt,
+        String::from_utf8_lossy(&unwind.output.stderr)
+    );
+    let VerifyReceipt::Failed(failure) = &unwind.receipt else {
+        panic!("alloc-unwind-rejected must fail closed: {:?}", unwind.receipt);
+    };
+    assert_eq!(failure.schema_version, 3, "{failure:?}");
+    assert_ne!(failure.status, "crate_verified", "{failure:?}");
+    assert_eq!(failure.phase, "capture", "{failure:?}");
+
+    // Negative 9: a function mixing `&[u8]` / `&Box<u64>` with a genuine
+    // `*const u64` raw pointer still fails closed in capture.
+    fs::write(
+        rust_dir.join("lib.rs"),
+        "pub fn mixed(s: &[u8], b: &Box<u64>) -> (usize, *const u64) {\n\
+             (s.len(), &**b as *const u64)\n\
+         }\n",
+    )
+    .unwrap();
+    run_request(dir.path(), "alloc-mixed-raw-ptr-rejected", &request)
+        .expect_capture_refused(MIXED_REFS_AND_RAW_PTRS);
 }

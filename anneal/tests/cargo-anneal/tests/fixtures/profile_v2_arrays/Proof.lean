@@ -19,6 +19,149 @@ namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
+/-! ## Profile v2 Return Memory -/
+
+private theorem rm2_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem rm2_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem rm2_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [rm2_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact rm2_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- If the call created no allocation outside the caller's ids, the Profile v2
+return memory is exactly the updated caller memory. -/
+private theorem rm2_extractReturnMemoryV2_eq {cm : CallerMemory}
+    {mem : MemoryState} (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [rm2_calleeLive_nil_of_sub h, List.append_nil]
+
+private theorem rm2_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  rm2_extractReturnMemoryV2_eq locals (fun _ ha => rm2_mem_allocIdsOf ha)
+
+private theorem rm2_calleeLive_nil_of_dead {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids ∨ a.live = false) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    cases h a (.head _) with
+    | inl hIn =>
+      rw [rm2_natNotElem_false_of_mem hIn, Bool.and_false, Bool.false_and]
+      exact rm2_calleeLive_nil_of_dead (fun b hb => h b (.tail _ hb))
+    | inr hDead =>
+      simp only [hDead, Bool.false_and]
+      exact rm2_calleeLive_nil_of_dead (fun b hb => h b (.tail _ hb))
+
+/-- Return memory equals the updated caller memory when every allocation is
+either a caller allocation or dead. -/
+private theorem rm2_extractReturnMemoryV2_eq_dead {cm : CallerMemory}
+    {mem : MemoryState} (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations →
+      a.allocId ∈ allocIdsOf cm.allocations ∨ a.live = false) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [rm2_calleeLive_nil_of_dead h, List.append_nil]
+
+/-- A callee `.shared` (`.rodata`) allocation prepended to caller memory is not
+caller-visible on return. -/
+private theorem rm2_extractReturnMemoryV2_cons_shared {cm : CallerMemory}
+    {n : Nat} {a : Allocation} {locals : List LocalSlot}
+    (hA : a.mutability = .shared) :
+    extractReturnMemoryV2 cm ⟨n, a :: cm.allocations⟩ locals =
+      extractCallerMemory cm ⟨n, a :: cm.allocations⟩ := by
+  unfold extractReturnMemoryV2
+  have hTail : calleeLiveAllocations (allocIdsOf cm.allocations)
+      (frameLocalAllocIds locals) cm.allocations = [] :=
+    rm2_calleeLive_nil_of_sub (fun _ hb => rm2_mem_allocIdsOf hb)
+  have hHead : calleeLiveAllocations (allocIdsOf cm.allocations)
+      (frameLocalAllocIds locals) (a :: cm.allocations) = [] := by
+    unfold calleeLiveAllocations
+    rw [hA]
+    simp only [show Mutability.beq Mutability.shared Mutability.mut = false
+      from rfl, Bool.and_false, Bool.false_and]
+    exact hTail
+  change (⟨(extractCallerMemory cm ⟨n, a :: cm.allocations⟩).allocations ++
+    calleeLiveAllocations (allocIdsOf cm.allocations)
+      (frameLocalAllocIds locals) (a :: cm.allocations)⟩ : CallerMemory) = _
+  rw [hHead, List.append_nil]
+
+private theorem rm2_mem_replaceAllocation_ids {a' : Allocation}
+    {ids : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      ∀ a, a ∈ replaceAllocation a' l → a.allocId ∈ ids
+  | [], _, _, h => by cases h
+  | b :: _, hl, a, ha => by
+    unfold replaceAllocation at ha
+    cases hB : Nat.beq b.allocId a'.allocId with
+    | true =>
+      rw [hB, ite_eq_left rfl] at ha
+      cases ha with
+      | head _ =>
+        rw [← Nat.eq_of_beq_eq_true hB]
+        exact hl b (.head _)
+      | tail _ hr => exact hl a (.tail _ hr)
+    | false =>
+      rw [hB, ite_eq_right (fun h => Bool.noConfusion h)] at ha
+      cases ha with
+      | head _ => exact hl b (.head _)
+      | tail _ hr =>
+        exact rm2_mem_replaceAllocation_ids (fun c hc => hl c (.tail _ hc)) a hr
+
+private theorem rm2_writeBytes_ids {ids : List AllocId} {m m' : MemoryState}
+    {place : MemPlace} {al : Nat} {bs : List AllocByte}
+    (h : writeBytes m place al bs = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold writeBytes at h
+  split at h
+  · cases h
+  · split at h
+    · split at h
+      · cases h
+      · cases h; exact hm
+    · split at h
+      · cases h
+      · split at h
+        · cases h
+        · cases h; exact rm2_mem_replaceAllocation_ids hm
+
+private theorem rm2_storeIndirectV2_ids {ids : List AllocId}
+    {m m' : MemoryState} {ty : MirTy} {place : MemPlace} {v : Val}
+    (h : storeIndirectV2 m ty place v = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold storeIndirectV2 at h
+  split at h
+  · cases h
+  · split at h
+    · cases h
+    · exact rm2_writeBytes_ids h hm
+
 /-! ## Arithmetic, BitVec, and CallerMemory Helpers -/
 
 theorem lt_of_blt_true {a b : Nat} (h : Nat.blt a b = true) : a < b :=
@@ -453,7 +596,8 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock} {frame : Fram
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
     evalTerminatorV2 body bb frame mem callerMem ps hLocal =
-      .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
+      .done (.returned
+        ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
   dsimp only
@@ -504,8 +648,9 @@ private theorem checkValV2_scalar_inv {v : Val} {w : IntWidth} {s : Bool}
     | scalar sv => unfold checkValV2 at h; exact h
     | bool _ | unit | char _ | ordering _ | tuple _ | enumVal _ _
     | ptr _ | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | range _ _
-    | bytes _ => cases h
+    | bytes _ | vec _ _ _ => cases h
     | optionVal o => cases o <;> cases h
+    | boxPtr _ o => cases o <;> cases h
   exact let ⟨bits, hv, hTrunc⟩ := checkVal_int_iff.mp h1; ⟨bits, hv, beq_iff_eq.mpr hTrunc⟩
 
 private theorem scalarVal_wf_i16 {bits : BitVec 128}
@@ -548,8 +693,9 @@ private theorem checkValV2_ref_ptr_inv {reqMut : Mutability} {pt : MirTy}
           exact ⟨⟨aid, off, pw⟩, rfl, hEqW⟩
     | bool _ | scalar _ | unit | char _ | ordering _ | tuple _ | enumVal _ _
     | slicePtr _ _ | array _ | rangeTo _ | rangeFrom _ | range _ _
-    | bytes _ => cases h
+    | bytes _ | vec _ _ _ => cases h
     | optionVal o => cases o <;> cases h
+    | boxPtr _ o => cases o <;> cases h
 
 private theorem scalarWf_i8_ofNat_lt {n : Nat} (hLt : n < 256) :
     ScalarVal.wf ⟨.i8, false, BitVec.ofNat 128 n⟩ = true := by
@@ -711,7 +857,7 @@ private theorem pack_le_rev_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallWithMem, execCoreCallOp, leBytesOfNat]
+            dsimp only [evalArgOperandsV2, argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp, leBytesOfNat]
             rw [ite_bool_false]; rotate_left; (dsimp only [IntWidth.byteSize]; rw [hWf]; decide)
             dsimp only [IntWidth.byteSize, List.map]
             have hLe2 : List.map (fun b : UInt8 => Val.scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩)
@@ -828,6 +974,7 @@ private theorem pack_le_rev_correct (q : Query)
               List.append, Trusted.MirSemantics.getElem?]
             rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
               (by rfl) (by rfl) (by rfl) (by rfl)]
+            rw [rm2_extractReturnMemoryV2_entry]
             rw [extractCallerMemory_entry q.callerMem hCM]
             rfl)
           rfl
@@ -1149,7 +1296,7 @@ private theorem repeat_unsize_len_correct (q : Query)
             rw [ite_bool_false]; rotate_left; decide
             dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
             rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-            dsimp only [evalArgOperandsV2, argValues, execCoreCallWithMem, execCoreCallOp]
+            dsimp only [evalArgOperandsV2, argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp]
             rw [ite_bool_false]; rotate_left; decide
             rw [hRefStackSlice]
             dsimp only
@@ -1171,36 +1318,49 @@ private theorem repeat_unsize_len_correct (q : Query)
               List.append, Trusted.MirSemantics.getElem?]
             rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
               (by rfl) (by rfl) (by rfl) (by rfl)]
+            have hReplDead :
+                replaceAllocation { stackAlloc with live := false }
+                  (q.callerMem.allocations ++ [stackAlloc]) =
+                q.callerMem.allocations ++ [{ stackAlloc with live := false }] := by
+              have hAux : ∀ (xs : List Allocation), (∀ a, a ∈ xs → a.allocId ≠ stackAid) →
+                  replaceAllocation { stackAlloc with live := false } (xs ++ [stackAlloc]) =
+                  xs ++ [{ stackAlloc with live := false }] := by
+                intro xs hXs
+                induction xs with
+                | nil =>
+                  change (if Nat.beq stackAid stackAid then _ :: [] else _) = _
+                  rw [Nat.beq_refl]; rfl
+                | cons hd tl ih =>
+                  have hNe : hd.allocId ≠ stackAid := hXs hd (.head _)
+                  have hBeq : Nat.beq hd.allocId stackAid = false := by
+                    cases hEq : Nat.beq hd.allocId stackAid with
+                    | false => rfl
+                    | true => exact absurd (Nat.eq_of_beq_eq_true hEq) hNe
+                  change (if Nat.beq hd.allocId stackAid then _ else hd :: replaceAllocation _ _) = _
+                  rw [hBeq]
+                  exact congrArg (hd :: ·) (ih (fun a ha => hXs a (.tail _ ha)))
+              exact hAux q.callerMem.allocations hAidFresh
             have hCallerUnchanged :
                 extractCallerMemory q.callerMem {
                   nextAllocId := stackAid + 1
                   allocations := replaceAllocation { stackAlloc with live := false }
                     (q.callerMem.allocations ++ [stackAlloc])
                 } = q.callerMem := by
-              have hReplDead :
-                  replaceAllocation { stackAlloc with live := false }
-                    (q.callerMem.allocations ++ [stackAlloc]) =
-                  q.callerMem.allocations ++ [{ stackAlloc with live := false }] := by
-                have hAux : ∀ (xs : List Allocation), (∀ a, a ∈ xs → a.allocId ≠ stackAid) →
-                    replaceAllocation { stackAlloc with live := false } (xs ++ [stackAlloc]) =
-                    xs ++ [{ stackAlloc with live := false }] := by
-                  intro xs hXs
-                  induction xs with
-                  | nil =>
-                    change (if Nat.beq stackAid stackAid then _ :: [] else _) = _
-                    rw [Nat.beq_refl]; rfl
-                  | cons hd tl ih =>
-                    have hNe : hd.allocId ≠ stackAid := hXs hd (.head _)
-                    have hBeq : Nat.beq hd.allocId stackAid = false := by
-                      cases hEq : Nat.beq hd.allocId stackAid with
-                      | false => rfl
-                      | true => exact absurd (Nat.eq_of_beq_eq_true hEq) hNe
-                    change (if Nat.beq hd.allocId stackAid then _ else hd :: replaceAllocation _ _) = _
-                    rw [hBeq]
-                    exact congrArg (hd :: ·) (ih (fun a ha => hXs a (.tail _ ha)))
-                exact hAux q.callerMem.allocations hAidFresh
               rw [hReplDead]
               exact extractCallerMemory_append_single hCM
+            have hIdsM : ∀ a, a ∈ replaceAllocation { stackAlloc with live := false }
+                  (q.callerMem.allocations ++ [stackAlloc]) →
+                a.allocId ∈ allocIdsOf q.callerMem.allocations ∨ a.live = false := by
+              intro a ha
+              rw [hReplDead] at ha
+              rcases List.mem_append.mp ha with h | h
+              · exact .inl (rm2_mem_allocIdsOf h)
+              · cases h with
+                | head _ => exact .inr rfl
+                | tail _ h' => cases h'
+            rw [rm2_extractReturnMemoryV2_eq_dead (mem := ⟨stackAid + 1,
+              replaceAllocation { stackAlloc with live := false }
+                (q.callerMem.allocations ++ [stackAlloc])⟩) _ hIdsM]
             rw [hCallerUnchanged]
             rfl)
           rfl
@@ -1453,6 +1613,7 @@ private theorem tag_eq_tail_ba0
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
+      rw [rm2_extractReturnMemoryV2_entry]
       rw [extractCallerMemory_entry q.callerMem hCM]
       rfl)
     rfl
@@ -1516,6 +1677,7 @@ private theorem tag_eq_tail_ba0
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
+      rw [rm2_extractReturnMemoryV2_entry]
       rw [extractCallerMemory_entry q.callerMem hCM]
       rfl)
     rfl
@@ -1603,6 +1765,7 @@ private theorem tag_eq_tail_ba1
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
+      rw [rm2_extractReturnMemoryV2_entry]
       rw [extractCallerMemory_entry q.callerMem hCM]
       rfl)
     rfl
@@ -1666,6 +1829,7 @@ private theorem tag_eq_tail_ba1
         List.append, Trusted.MirSemantics.getElem?]
       rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
         (by rfl) (by rfl) (by rfl) (by rfl)]
+      rw [rm2_extractReturnMemoryV2_entry]
       rw [extractCallerMemory_entry q.callerMem hCM]
       rfl)
     rfl
@@ -2009,7 +2173,8 @@ private theorem refValidInMem_u8x4_inv {m : MemoryState} {p : PtrVal}
       Trusted.MirSemantics.getElem? a.bytes (p.offsetBytes.toNat + 3) = some (.init b3 p3) := by
   unfold refValidInMem at hRef
   dsimp only at hRef
-  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4))
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4) &&
+      !isHeapHandleTyV2 (.array (.int .i8 false) 4))
     (by decide), layoutOfTyV2_u8x4] at hRef
   dsimp only at hRef
   cases hAid : p.allocId with
@@ -2286,7 +2451,7 @@ private theorem matches_pattern_correct (q : Query)
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
               dsimp only [evalArgOperandsV2, evalOperandToSlotV2]
               rw [readPlaceV2_move_local (by rfl) (by rfl) (by decide) (by rfl)]
-              dsimp only [argValues, execCoreCallWithMem, execCoreCallOp]
+              dsimp only [argValues, execCoreCallOpWithMem, execAllocCoreCall, execCoreCallWithMem, execCoreCallOp]
               rw [ite_bool_false]; rotate_left; decide
               have hFindRo : findAllocation roAid (roAlloc :: q.callerMem.allocations) = some roAlloc := by
                 change (if Nat.beq roAid roAid then some roAlloc else _) = some roAlloc
@@ -2303,7 +2468,8 @@ private theorem matches_pattern_correct (q : Query)
                   .shared (.array (.int .i8 false) 4) (.ptr pa) = .ok () := by
                 unfold refValidInMem
                 dsimp only
-                rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4))
+                rw [ite_bool_false (b := !isSupportedV2PointeeTy (.array (.int .i8 false) 4) &&
+      !isHeapHandleTyV2 (.array (.int .i8 false) 4))
                   (by decide), layoutOfTyV2_u8x4]
                 dsimp only
                 rw [hPaId]; dsimp only
@@ -2387,6 +2553,7 @@ private theorem matches_pattern_correct (q : Query)
                 List.append, Trusted.MirSemantics.getElem?]
               rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)
                 (by rfl) (by rfl) (by rfl) (by rfl)]
+              rw [rm2_extractReturnMemoryV2_cons_shared]; rotate_left; rfl
               rw [extractCallerMemory_cons_fresh hRoGt]
               rw [extractCallerMemory_entry q.callerMem hCM]
               rfl)

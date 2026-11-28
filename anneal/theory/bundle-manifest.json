@@ -11,15 +11,15 @@
     },
     {
       "path": "theory/Anneal/AiPcc/MirBridge.lean",
-      "sha256": "89edc188741fe332d5b53fe2a8e8ad343148643676558067dbe01fb8087a7771"
+      "sha256": "ed54eeb4c0cd18c58b6c8a54b48651df19dbd0472490f1c96c9a940fded91991"
     },
     {
       "path": "theory/Anneal/AiPcc/MirPcc.lean",
-      "sha256": "52d77bf7b33a1f3ef9a1d89f921d4614e42a5f432c71377082097c633b5a0331"
+      "sha256": "98f925186221912923896a090462a9ec5e72a8df1a4da39f95e7fd9899166fa7"
     },
     {
       "path": "theory/Anneal/AiPcc/MirTransfer.lean",
-      "sha256": "6455c3fd87cece29f15d7c9651172b03750868e579c2640a118f2d02ebf82531"
+      "sha256": "2ad9c72d770ebb2a440662ba8f0a306769807143989e3725190d99a6037b1476"
     },
     {
       "path": "theory/Anneal/AiPcc/ReducedProduct.lean",
@@ -83,11 +83,11 @@
     },
     {
       "path": "theory/Anneal/MirSymExec.lean",
-      "sha256": "7097e2a0f7d2c8e9cba4bfeca1701d0391cefd842493dc0e10a140d499d8f688"
+      "sha256": "7347700842e3081630c2bef92021956a57936b0184d2b4cdeef3313d02281a15"
     },
     {
       "path": "theory/Anneal/MirSymExec/Bits.lean",
-      "sha256": "2145af4a87ceb6db23d4156f9c1324627cf9991b9a10c80e1d817e9767eacc4d"
+      "sha256": "def6834160764f204a162b3085985179edaadd0f7640701e0f08d8f13e07198b"
     },
     {
       "path": "theory/Anneal/MirSymExecCall.lean",
@@ -95,11 +95,11 @@
     },
     {
       "path": "theory/Anneal/MirTotal/Ops.lean",
-      "sha256": "6bf56ae3ab272ab0b3b7a3c8b14fef4d5323b77a4b8375df75d3a4a421b72b18"
+      "sha256": "3f3121814a7268cb76369481ba35a4b8d25ece75bf9770cf03c36f608a78e0f4"
     },
     {
       "path": "theory/Anneal/MirTotal/StepCore.lean",
-      "sha256": "584b53c96f7c999bf594526abedadc5a6d0ebc0176afb752f2c8b3961d69a6b8"
+      "sha256": "38356757c32a25b48ffd645ad40fd4c8f0da9eb3e754f84f57a35b6d2b97cb2a"
     },
     {
       "path": "theory/Anneal/MirWp.lean",
@@ -111,11 +111,11 @@
     },
     {
       "path": "theory/Anneal/MirWp/Execution.lean",
-      "sha256": "efb13e35e53c032c1e7253b1dc56d729526f048e035c90a6a84aa4aae06a16d5"
+      "sha256": "6aeadbf0a00efb3646610bad427ae58189a483bf1d4eed533416d426db5b1b19"
     },
     {
       "path": "theory/Anneal/MirWp/Reflection.lean",
-      "sha256": "10cf8bad0225fd67e7d453ffe9afe24c787e28a55c1e29c59ba0b7923e63160e"
+      "sha256": "26497c30419705861c870949eae9a1f4e80c714082e152c072ab7b256a4bb461"
     },
     {
       "path": "theory/Anneal/MirWp/Scalars.lean",
@@ -123,11 +123,11 @@
     },
     {
       "path": "theory/Anneal/MirWp/V2Memory.lean",
-      "sha256": "f43e17cf9882a7ff42364ec41408e4e872b771b088034ed513662607b7e57aab"
+      "sha256": "ab143dbcffcce2f324490b50668ac10b623f16e26556a1e55adbd2adf68abddd"
     },
     {
       "path": "theory/Anneal/MirWp/V2StepShield.lean",
-      "sha256": "8452af8133d0c822948de5a2fa4d2169037268598060094406e3a2595d55b0bb"
+      "sha256": "4a06a05cea780b692ae92175f2f0a7bd5c5d2e05d7dd35fd1442fe667e15f0a5"
     },
     {
       "path": "theory/Anneal/NatBitwise.lean",

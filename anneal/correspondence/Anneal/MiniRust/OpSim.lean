@@ -230,7 +230,8 @@ theorem val_ty_some_elim {v : Val} {ty : MirTy} (h : v.ty? = some ty) :
       | true =>
         rw [h1, h2] at h; injection h with ht
         exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨ety, idx, rfl, h1, nat_lt_of_blt_eq_true h2, ht.symm⟩)))))
-  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _ => cases h
+  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _
+  | vec _ _ _ | boxPtr _ _ => cases h
   | bytes _ => cases h
   | tuple fs =>
     cases fs with
@@ -3060,7 +3061,7 @@ theorem evalRvalue_sim (exact : Bool) (bodyLocals : List MirTy)
                         | intro ov1 hov1 => exact hrs.2.2.2.2.1 i ov1 hov1
   | cast kind opnd castTy =>
     cases kind with
-    | ptrToPtr | intToPtr | unsize | unsupported => cases hadm
+    | ptrToPtr | intToPtr | unsize | boxAsRef | unsupported => cases hadm
     | intToInt =>
       dsimp only [rvalueAdmitted] at hadm
       cases hoa : operandAdmitted exact bodyLocals opnd with

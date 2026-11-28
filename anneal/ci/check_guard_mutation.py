@@ -104,6 +104,7 @@ SEMANTICS_MODULES: tuple[str, ...] = (
     "Trusted/MirSemantics/Memory",
     "Trusted/MirSemantics/Bytes",
     "Trusted/MirSemantics/CoreContracts",
+    "Trusted/MirSemantics/AllocContracts",
     "Trusted/MirSemantics/State",
     "Trusted/MirSemantics/Step",
     "Trusted/MirSemantics/Boundary",
@@ -119,6 +120,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
         "Trusted/MirSemantics/Memory",
         "Trusted/MirSemantics/Bytes",
         "Trusted/MirSemantics/CoreContracts",
+        "Trusted/MirSemantics/AllocContracts",
         "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -129,6 +131,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
         "Trusted/MirSemantics/Memory",
         "Trusted/MirSemantics/Bytes",
         "Trusted/MirSemantics/CoreContracts",
+        "Trusted/MirSemantics/AllocContracts",
         "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -139,6 +142,7 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
     "Trusted/MirSemantics/Bytes": (
         "Trusted/MirSemantics/Bytes",
         "Trusted/MirSemantics/CoreContracts",
+        "Trusted/MirSemantics/AllocContracts",
         "Trusted/MirSemantics/State",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -150,6 +154,11 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
     ),
     "Trusted/MirSemantics/State": (
         "Trusted/MirSemantics/State",
+        "Trusted/MirSemantics/Step",
+        "Trusted/MirSemantics/Boundary",
+    ),
+    "Trusted/MirSemantics/AllocContracts": (
+        "Trusted/MirSemantics/AllocContracts",
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
     ),
@@ -1489,7 +1498,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (80 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (83 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -1913,11 +1922,11 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
             "tuples and overflow pairs"
         ),
         anchor=(
-            "  | .tuple _ | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported"
+            "  | .tuple _ | .array _ _ | .vec _ | .box _ | .ref _ _ | .rawPtr _ _ | .slice _\n"
         ),
         replacement=(
             "  | .tuple _ => true\n"
-            "  | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported"
+            "  | .array _ _ | .vec _ | .box _ | .ref _ _ | .rawPtr _ _ | .slice _\n"
         ),
         fixture_module="EnumRefutations",
         theorem_name="refute_enum_v2_overflow_pair_pointee",
@@ -2999,6 +3008,48 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_step_v2_core_panic_abort_dead_dst_unsupported",
     ),
     MirSemanticsGuard(
+        guard_id="enum_v2_overflow_pair_vec_elem",
+        target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
+        target_module="Trusted/MirSemantics/Enum",
+        description="isSupportedV2LocalTy rejects Vec of overflow pairs",
+        anchor=(
+            "    | .vec elem => !isOverflowPairTy elem && isSupportedScalarOrUnitTy elem"
+        ),
+        replacement=(
+            "    | .vec elem => true && isSupportedScalarOrUnitTy elem"
+        ),
+        fixture_module="EnumRefutations",
+        theorem_name="refute_enum_v2_overflow_pair_vec_elem",
+    ),
+    MirSemanticsGuard(
+        guard_id="enum_v2_overflow_pair_box_pointee",
+        target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
+        target_module="Trusted/MirSemantics/Enum",
+        description="isSupportedV2LocalTy rejects Box of an overflow pair",
+        anchor=(
+            "    | .box pt => !isOverflowPairTy pt && isSupportedScalarOrUnitTy pt"
+        ),
+        replacement=(
+            "    | .box pt => true && isSupportedScalarOrUnitTy pt"
+        ),
+        fixture_module="EnumRefutations",
+        theorem_name="refute_enum_v2_overflow_pair_box_pointee",
+    ),
+    MirSemanticsGuard(
+        guard_id="enum_v2_overflow_pair_slice_elem",
+        target_file="trusted/lean/Trusted/MirSemantics/Enum.lean",
+        target_module="Trusted/MirSemantics/Enum",
+        description="isSupportedV2LocalTy rejects slices of overflow pairs",
+        anchor=(
+            "    | .ref _ (.slice elem) | .rawPtr _ (.slice elem) => isSizedNoRefV2Ty elem"
+        ),
+        replacement=(
+            "    | .ref _ (.slice elem) | .rawPtr _ (.slice elem) => true"
+        ),
+        fixture_module="EnumRefutations",
+        theorem_name="refute_enum_v2_overflow_pair_slice_elem",
+    ),
+    MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",
         target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
         target_module="Trusted/MirSemantics/Boundary",
@@ -3353,16 +3404,14 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Bytes",
         description="refValidInMem rejects thin reference to uninitialized pointee as UB",
         anchor=(
-            "              match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
-            "              | .ok (some _) => .ok ()\n"
             "              | .ok none => .error .undefined\n"
-            "              | .error k => .error k"
+            "              | .error k => .error k\n"
+            "  | _, _ => .error .unsupported"
         ),
         replacement=(
-            "              match decodeValV2 profileV2TargetEndian pointee sliceBytes with\n"
-            "              | .ok (some _) => .ok ()\n"
             "              | .ok none => .ok ()\n"
-            "              | .error k => .error k"
+            "              | .error k => .error k\n"
+            "  | _, _ => .error .unsupported"
         ),
         fixture_module="ProfileV2Refutations",
         theorem_name="refute_bytes_v2_ref_valid_uninit_pointee",
@@ -3900,6 +3949,362 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_option_discriminant_dst_ty",
+        needs_wf_helper=False,
+    ),
+    # ------------------------------------------------------------------
+    # Profile v2 heap allocation (`Vec`/`Box`) guards (16 guards)
+    # ------------------------------------------------------------------
+    MirSemanticsGuard(
+        guard_id="alloc_vec_valid_unsupported_elem",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "vecValidInMem refuses an unsupported element type "
+            "(isSupportedPointeeTy) with .unsupported"
+        ),
+        anchor=(
+            "  if !isSupportedPointeeTy v.elem then\n"
+            "    .error .unsupported\n"
+            "  else\n"
+            "    ownedHeapBufValidInMem m isMut v.elem v.ptr v.cap v.len"
+        ),
+        replacement=(
+            "  if false then\n"
+            "    .error .unsupported\n"
+            "  else\n"
+            "    ownedHeapBufValidInMem m isMut v.elem v.ptr v.cap v.len"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_valid_unsupported_elem",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_box_valid_unsupported_slice_elem",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "boxValidInMem refuses Box<[T]> with an unsupported element type "
+            "(isSupportedPointeeTy) with .unsupported"
+        ),
+        anchor=(
+            "  | .slice elem =>\n"
+            "    if !isSupportedPointeeTy elem then\n"
+            "      .error .unsupported\n"
+            "    else\n"
+            "      boxPointeeValidInMem m isMut b.pointee b.ptr b.len"
+        ),
+        replacement=(
+            "  | .slice elem =>\n"
+            "    if false then\n"
+            "      .error .unsupported\n"
+            "    else\n"
+            "      boxPointeeValidInMem m isMut b.pointee b.ptr b.len"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_box_valid_unsupported_slice_elem",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_grow_cap_u64_bound",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "vecGrowCap fails (capacity-overflow panic) when minCap exceeds "
+            "usize::MAX, including for zero-sized elements"
+        ),
+        anchor=(
+            "  if !Nat.blt minCap u64Bound then\n"
+            "    none\n"
+            "  else if Nat.beq elemSize 0 then\n"
+            "    some minCap"
+        ),
+        replacement=(
+            "  if false then\n"
+            "    none\n"
+            "  else if Nat.beq elemSize 0 then\n"
+            "    some minCap"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_grow_cap_u64_bound",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_grow_cap_doubled_overflow",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "vecGrowCap fails when the amortized doubled capacity exceeds "
+            "isize::MAX bytes (isizeMaxBytes)"
+        ),
+        anchor=(
+            "    if Nat.blt (doubled * elemSize) isizeMaxBytes &&\n"
+            "        Nat.blt doubled u64Bound then\n"
+            "      some doubled"
+        ),
+        replacement=(
+            "    if true &&\n"
+            "        Nat.blt doubled u64Bound then\n"
+            "      some doubled"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_grow_cap_doubled_overflow",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_with_capacity_overflow",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecWithCapacity faults .unsupported (capacity-overflow "
+            "panic) when capacity * size exceeds isize::MAX"
+        ),
+        anchor=(
+            "      let totalBytes := cap.toNat * lay.size\n"
+            "      if !Nat.blt totalBytes isizeMaxBytes then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "      let totalBytes := cap.toNat * lay.size\n"
+            "      if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_with_capacity_overflow",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_vec_index_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "evalVecIndex faults .unsupported (bounds-check panic) when "
+            "idx >= len, even inside the capacity"
+        ),
+        anchor=(
+            "    if !Nat.blt idx.toNat v.len.toNat then\n"
+            "      .error .unsupported"
+        ),
+        replacement=(
+            "    if false then\n"
+            "      .error .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_vec_index_oob",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="alloc_retire_heap_buffer",
+        target_file="trusted/lean/Trusted/MirSemantics/AllocContracts.lean",
+        target_module="Trusted/MirSemantics/AllocContracts",
+        description=(
+            "retireHeapBuffer kills a reallocated buffer, so pointers into "
+            "it lose provenance (stale reads fault)"
+        ),
+        anchor=(
+            "  | some aid => deallocateStack m ⟨aid, p.offsetBytes.toNat⟩"
+        ),
+        replacement="  | some _ => .ok m",
+        fixture_module="AllocRefutations",
+        theorem_name="refute_alloc_retire_heap_buffer",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_zero_cap_ptr_null",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "zeroCapPtrValidInMem rejects a null provenance-free pointer for "
+            "an empty heap buffer"
+        ),
+        anchor=(
+            "    let align := Nat.pow 2 alignLog2\n"
+            "    if Nat.beq p.offsetBytes.toNat 0 ||\n"
+            "        !Nat.beq (Nat.mod p.offsetBytes.toNat align) 0 then"
+        ),
+        replacement=(
+            "    let align := Nat.pow 2 alignLog2\n"
+            "    if false ||\n"
+            "        !Nat.beq (Nat.mod p.offsetBytes.toNat align) 0 then"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_zero_cap_ptr_null",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_heap_buf_len_gt_cap",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="heapBufValidInMem rejects len > cap as UB",
+        anchor=(
+            "      if !Nat.ble len.toNat cap.toNat then\n"
+            "        .error .undefined\n"
+            "      else\n"
+            "        let capBytes := cap.toNat * lay.size"
+        ),
+        replacement=(
+            "      if false then\n"
+            "        .error .undefined\n"
+            "      else\n"
+            "        let capBytes := cap.toNat * lay.size"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_heap_buf_len_gt_cap",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_heap_buf_dead_alloc",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "heapBufValidInMem rejects a buffer in a dead (live = false) "
+            "allocation as UB"
+        ),
+        anchor=(
+            "              if !a.live || "
+            "!isInBounds a p.offsetBytes.toNat capBytes ||\n"
+        ),
+        replacement=(
+            "              if false || "
+            "!isInBounds a p.offsetBytes.toNat capBytes ||\n"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_heap_buf_dead_alloc",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_heap_buf_cap_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "heapBufValidInMem rejects cap * size bytes past the end of the "
+            "allocation as UB"
+        ),
+        anchor=(
+            "              if !a.live || "
+            "!isInBounds a p.offsetBytes.toNat capBytes ||\n"
+        ),
+        replacement="              if !a.live || false ||\n",
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_heap_buf_cap_oob",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_heap_buf_uninit",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "heapBufValidInMem rejects uninitialized bytes in the len "
+            "prefix as UB"
+        ),
+        anchor=(
+            "                if !isSliceAllInit initSlice then\n"
+            "                  .error .undefined\n"
+            "                else if isIntMirTy elem then"
+        ),
+        replacement=(
+            "                if false then\n"
+            "                  .error .undefined\n"
+            "                else if isIntMirTy elem then"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_heap_buf_uninit",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_owned_heap_buf_size",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "ownedHeapBufValidInMem requires the allocation size to be "
+            "exactly cap * size bytes"
+        ),
+        anchor=(
+            "                !Nat.beq a.bytes.length "
+            "(cap.toNat * lay.size) ||\n"
+        ),
+        replacement="                false ||\n",
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_owned_heap_buf_size",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_box_pointee_slice_owned",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description=(
+            "boxPointeeValidInMem requires a Box<[T]> to own its whole "
+            "allocation (ownedHeapBufValidInMem)"
+        ),
+        anchor=(
+            "  | .slice elem, some len => "
+            "ownedHeapBufValidInMem m isMut elem p len len"
+        ),
+        replacement=(
+            "  | .slice elem, some len => "
+            "heapBufValidInMem m isMut elem p len len"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_bytes_box_pointee_slice_owned",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_box_as_ref_validity",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCastKindV2 .boxAsRef checks refValidInMem of the "
+            "dereferenced Box pointer"
+        ),
+        anchor=(
+            "          match refValidInMem mem .shared pt ptrVal with\n"
+            "          | .error k => .error k\n"
+            "          | .ok () => .ok ptrVal"
+        ),
+        replacement=(
+            "          match refValidInMem mem .shared pt ptrVal with\n"
+            "          | .error _ => .ok ptrVal\n"
+            "          | .ok () => .ok ptrVal"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_step_box_as_ref_validity",
+        sanity_module="AllocSanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_box_as_ref_pointee_mismatch",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalCastKindV2 .boxAsRef refuses a cast to a reference with a "
+            "different pointee type"
+        ),
+        anchor=(
+            "    | .box pt, .boxPtr p optLen, .ref .shared castPt =>\n"
+            "      if !MirTy.beq pt castPt then\n"
+            "        .error .unsupported"
+        ),
+        replacement=(
+            "    | .box pt, .boxPtr p optLen, .ref .shared castPt =>\n"
+            "      if false then\n"
+            "        .error .unsupported"
+        ),
+        fixture_module="AllocRefutations",
+        theorem_name="refute_step_box_as_ref_pointee_mismatch",
+        sanity_module="AllocSanity",
         needs_wf_helper=False,
     ),
 )
@@ -5053,11 +5458,11 @@ def _check_one_mir_guard(
         mut_target_path.write_text(mutated_text, encoding="utf-8")
 
         # Seed `mut_olean_dir` with hardlinks (falling back to copies across
-        # filesystems) to every unmodified `.olean*` artifact (`.olean`,
-        # `.olean.server`, `.olean.private`) in `base_olean_dir`. Lean 4
-        # resolves a root namespace (`Trusted.*`) from the first `LEAN_PATH`
-        # entry containing that root directory, so giving each mutant one
-        # complete `.olean*` directory avoids partial-namespace lookup failures.
+        # filesystems) to every unmodified module artifact (`.olean*` and
+        # `.ir*`) in `base_olean_dir`. Lean 4 resolves a root namespace
+        # (`Trusted.*`) from the first `LEAN_PATH` entry containing that root
+        # directory, and non-`module` fixtures importing `module` dependencies
+        # also load `.ir` files alongside `.olean*`.
         downstream = SEMANTICS_DOWNSTREAM[guard.target_module]
         rebuilt_mods = set(downstream) | {
             guard.sanity_module,
@@ -5069,11 +5474,19 @@ def _check_one_mir_guard(
                 if guard.needs_wf_helper
                 else FIXTURE_HELPERS_BOUNDARY
             )
-        for src_art in base_olean_dir.rglob("*.olean*"):
+        for src_art in base_olean_dir.rglob("*"):
+            if not src_art.is_file():
+                continue
             rel = src_art.relative_to(base_olean_dir)
             rel_str = rel.as_posix()
             rel_mod = None
-            for ext in (".olean", ".olean.server", ".olean.private"):
+            for ext in (
+                ".olean",
+                ".olean.server",
+                ".olean.private",
+                ".ir",
+                ".ir.sig",
+            ):
                 if rel_str.endswith(ext):
                     rel_mod = rel_str[: -len(ext)]
                     break

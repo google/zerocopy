@@ -244,6 +244,39 @@ Notes on Profile v2 coverage and traps:
   `isize` and pointers, and no added aggregate alignment). Capture admits only
   targets whose data layout matches.
 
+Profile v2 also models `alloc::vec::Vec<T>` and `alloc::boxed::Box<P>` with the
+`Global` allocator, for scalar or `()` elements and pointees
+(`Trusted.MirSemantics.AllocContracts`):
+`Vec::{new, with_capacity, len, push, reserve, resize, extend_from_slice}`,
+`Vec` indexing by `usize` and dereferencing, `Box::new`,
+`Box::<[T]>::from(Vec<T>)`, `Box::clone`, and `Box` dereferences. A capacity
+overflow or an out-of-bounds index is a panic, which Profile v2 does not model,
+so a proof must rule it out. The model assumes that allocation never fails: it
+does not model the out-of-memory path (`handle_alloc_error`), and receipts
+record this assumption. References to `Vec` and `Box` handles are admitted, but
+raw pointers to them are refused, because Rust leaves the layout of `Vec`
+unspecified. A `Box` counts as a reference for the rule against mixing
+references and raw pointers, because the aliasing models retag it like a unique
+reference: `Box` dereferences yield `&P`, and a body that derives a raw pointer
+from a `Box` is refused. Entry arguments that own a heap buffer must point at
+the start of an allocation with exactly the buffer's layout. An owned `Vec` or
+`Box` buffer counts as a mutable span in the entry and return disjointness
+checks. The buffer behind a reference to a `Vec` or `Box` handle is not checked
+against other spans; receipts state its disjointness from that handle and from
+every other argument as an assumption, so results say nothing about calls in
+which such a buffer aliases its handle or another argument (for example, a
+`&[u8]` into the buffer of a `&mut Vec<u8>` argument). Under `--panic abort`,
+the caller memory that post-abort conditions see omits heap buffers that the
+call allocated. Returning a reference into the buffer of a `&mut Vec<T>`
+argument that reallocated during the call faults with `.undefined`, because
+returned references must point into the caller's entry allocations; this is
+conservative. On return, the caller memory that `post` sees also contains the
+heap buffers the call allocated and did not free, such as the buffer of a
+returned `Box` or of a `Vec` that grew through a `&mut Vec<T>` argument. Slices
+`&[T]` and `*const [T]` of every scalar or `()` element type are admitted local
+types, although `<[T]>::len` and the other slice functions above still require
+integer elements.
+
 `tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
 `zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
 under `UnitTheoremV2`, raw-pointer load and store fixtures under

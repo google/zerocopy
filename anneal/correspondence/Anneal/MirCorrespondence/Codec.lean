@@ -153,6 +153,12 @@ mutual
       change (Nat.beq n n && MirTy.beq e e) = true
       rw [Nat.beq_refl, MirTy.beq_refl e]
       rfl
+    | vec e =>
+      change MirTy.beq e e = true
+      exact MirTy.beq_refl e
+    | box p =>
+      change MirTy.beq p p = true
+      exact MirTy.beq_refl p
     | rangeTo e =>
       change MirTy.beq e e = true
       exact MirTy.beq_refl e
@@ -259,6 +265,18 @@ mutual
       cases b with
       | option e₂ =>
         change MirTy.beq e₁ e₂ = true at h
+        rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | vec e₁ =>
+      cases b with
+      | vec e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | box p₁ =>
+      cases b with
+      | box p₂ =>
+        change MirTy.beq p₁ p₂ = true at h
         rw [MirTy.eq_of_beq h]
       | _ => cases h
     | unsupported => cases b <;> first | rfl | cases h
@@ -678,6 +696,18 @@ mutual
       let ⟨h_sub_e, _⟩ := collectTy_spec acc e
       exact ⟨SubTable.trans h_sub_e
           (subTable_insertTy (.option e) (collectTy acc e)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | vec e =>
+      dsimp only [collectTy]
+      let ⟨h_sub_e, _⟩ := collectTy_spec acc e
+      exact ⟨SubTable.trans h_sub_e
+          (subTable_insertTy (.vec e) (collectTy acc e)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | box p =>
+      dsimp only [collectTy]
+      let ⟨h_sub_p, _⟩ := collectTy_spec acc p
+      exact ⟨SubTable.trans h_sub_p
+          (subTable_insertTy (.box p) (collectTy acc p)),
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
     | tuple fs =>
       dsimp only [collectTy]
@@ -1198,6 +1228,14 @@ mutual
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.option e) (collectTy acc e)
         (collectTy_canonical acc e h)
+    | vec e =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.vec e) (collectTy acc e)
+        (collectTy_canonical acc e h)
+    | box p =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.box p) (collectTy acc p)
+        (collectTy_canonical acc p h)
     | tuple fs =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.tuple fs) (collectTyList acc fs)

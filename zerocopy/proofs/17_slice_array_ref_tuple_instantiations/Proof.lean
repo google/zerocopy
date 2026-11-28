@@ -64,6 +64,47 @@ private theorem extractCallerMemory_forArgs (cm : CallerMemory)
           (fun _ hz => by cases hz) (fun _ hz => by cases hz) hValid)
     rw [hEq]
 
+private theorem natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+/-- No allocation whose id the caller already owns is a callee allocation. -/
+private theorem calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- A return from the unchanged entry memory creates no callee heap buffer, so
+`extractReturnMemoryV2` hands the caller its memory back unchanged. -/
+private theorem extractReturnMemoryV2_forArgs (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val) (locals : List LocalSlot)
+    (hValid : validCallerMemory cm = true) :
+    extractReturnMemoryV2 cm (entryMemoryForArgsV2 cm paramTys args) locals =
+      cm := by
+  unfold extractReturnMemoryV2
+  rw [calleeLive_nil_of_sub (fun a ha => by
+      rw [entryMemoryForArgsV2_allocations_eq] at ha
+      exact mem_allocIdsOf ha),
+    List.append_nil, extractCallerMemory_forArgs cm paramTys args hValid]
+
 /-! ## Unit-Returning Bodies (`_0 = const (); return`) -/
 
 /-- A one-parameter body whose return local starts as `()` and which steps by
@@ -86,7 +127,8 @@ private theorem unit_body_exec {defId : DefId} {body : Body} {t : MirTy}
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1
           [.immediate (some .unit), .immediate (some v)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩))
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit), .immediate (some v)]⟩))
     (q : Query) (hValid : ValidEntryArgsV2 body q) :
     execProgV2 (entryProgForBody Captured.program defId) 2 q
       (fun o => o = .returned ⟨.unit, q.callerMem⟩) := by
@@ -106,7 +148,7 @@ private theorem unit_body_exec {defId : DefId} {body : Body} {t : MirTy}
   rw [hInitState]
   apply execOutcomeStateV2_step (hStep1 v _ _)
   exact execOutcomeStateV2_done (hStep2 v _ _)
-    (by rw [extractCallerMemory_forArgs q.callerMem _ _ hCM])
+    (by rw [extractReturnMemoryV2_forArgs q.callerMem _ _ _ hCM])
 
 /-- `unit_body_exec` packaged as `BodyVerifiedV2` plus `unitBodyPost`. -/
 private theorem unit_body_verified {defId : DefId} {body : Body} {t : MirTy}
@@ -129,7 +171,8 @@ private theorem unit_body_verified {defId : DefId} {body : Body} {t : MirTy}
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1
           [.immediate (some .unit), .immediate (some v)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩)) :
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit), .immediate (some v)]⟩)) :
     BodyVerifiedV2 Captured.program defId body
       (Spec.specs.safety body.identity) ∧
     Spec.unitBodyPost Captured.program defId identity := by
@@ -173,7 +216,8 @@ private theorem zero_body_exec {defId : DefId} {body : Body}
     (hStep2 : ∀ (cm : CallerMemory) (m : MemoryState),
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1 [.immediate (some .unit)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩))
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit)]⟩))
     (q : Query) (hValid : ValidEntryArgsV2 body q) :
     execProgV2 (entryProgForBody Captured.program defId) 2 q
       (fun o => o = .returned ⟨.unit, q.callerMem⟩) := by
@@ -192,7 +236,7 @@ private theorem zero_body_exec {defId : DefId} {body : Body}
   rw [hInitState]
   apply execOutcomeStateV2_step (hStep1 _ _)
   exact execOutcomeStateV2_done (hStep2 _ _)
-    (by rw [extractCallerMemory_forArgs q.callerMem _ _ hCM])
+    (by rw [extractReturnMemoryV2_forArgs q.callerMem _ _ _ hCM])
 
 /-- `zero_body_exec` packaged as `BodyVerifiedV2` plus `unitBodyPost`. -/
 private theorem zero_body_verified {defId : DefId} {body : Body}
@@ -212,7 +256,8 @@ private theorem zero_body_verified {defId : DefId} {body : Body}
     (hStep2 : ∀ (cm : CallerMemory) (m : MemoryState),
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1 [.immediate (some .unit)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩)) :
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit)]⟩)) :
     BodyVerifiedV2 Captured.program defId body
       (Spec.specs.safety body.identity) ∧
     Spec.unitBodyPost Captured.program defId identity := by

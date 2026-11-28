@@ -1107,7 +1107,8 @@ private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
                 | (cases lh <;> cases ps <;> cases unwind <;> cases h)
                 | cases h)
       | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
-      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ | optionVal _ | range _ _ =>
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ | optionVal _ | range _ _
+      | boxPtr _ _ | vec _ _ _ =>
         cases h
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h
@@ -1147,7 +1148,8 @@ private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
         · cases h
         · exact h_jump _ h
       | unit | enumVal _ _ | tuple _ | array _ | ptr _ | bytes _ | ordering _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _ =>
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+      | boxPtr _ _ | vec _ _ _ =>
         dsimp only at h
         cases h_br : targets.branches with
         | cons _ _ => rw [h_br] at h; cases h

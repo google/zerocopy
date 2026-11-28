@@ -202,6 +202,19 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
         ],
     },
     LeanDagSpec {
+        module: "Trusted.MirSemantics.AllocContracts",
+        rel_tree: "trusted/lean",
+        deps: &[
+            "Trusted.MirAst",
+            "Trusted.MirModel",
+            "Trusted.MirSemantics.Ops",
+            "Trusted.MirSemantics.Enum",
+            "Trusted.MirSemantics.Layout",
+            "Trusted.MirSemantics.Memory",
+            "Trusted.MirSemantics.Bytes",
+        ],
+    },
+    LeanDagSpec {
         module: "Trusted.MirSemantics.State",
         rel_tree: "trusted/lean",
         deps: &[
@@ -237,6 +250,7 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
             "Trusted.MirSemantics.Memory",
             "Trusted.MirSemantics.Bytes",
             "Trusted.MirSemantics.CoreContracts",
+            "Trusted.MirSemantics.AllocContracts",
             "Trusted.MirSemantics.State",
         ],
     },
@@ -281,6 +295,7 @@ const MIR_TOTAL_DAG: &[LeanDagSpec] = &[
             "Trusted.MirSemantics.Memory",
             "Trusted.MirSemantics.Bytes",
             "Trusted.MirSemantics.CoreContracts",
+            "Trusted.MirSemantics.AllocContracts",
             "Trusted.MirSemantics.State",
             "Trusted.MirSemantics.Step",
             "Trusted.MirSemantics.Boundary",
@@ -1718,6 +1733,10 @@ partial def encodeBoundaryValBytes : Val → List (Option Nat)
     ((encodeLeBytes 8 startVal.toNat) ++ (encodeLeBytes 8 endVal.toNat)).map some
   | .optionVal none => [some 0]
   | .optionVal (some inner) => some 1 :: encodeBoundaryValBytes inner
+  -- Fail closed: `Vec`/`Box` boundary bytes are heap addresses that the model
+  -- does not pin, and `[]` never matches a real (non-zero-sized) `Vec`/`Box`
+  -- boundary slot.
+  | .vec _ _ _ | .boxPtr _ _ => []
   | .bytes bs =>
     bs.map (fun ab => match ab with | .init b _ => some b.toNat | .uninit => none)
 
@@ -1766,6 +1785,7 @@ partial def valRepr : Val → String
     "range(" ++ toString startVal.toNat ++ ".." ++ toString endVal.toNat ++ ")"
   | .optionVal none => "None"
   | .optionVal (some inner) => "Some(" ++ valRepr inner ++ ")"
+  | .vec _ _ _ | .boxPtr _ _ => "<other>"
   | _ => "<other>"
 
 partial def valToJson : Val → String
@@ -1791,7 +1811,7 @@ partial def valToJson : Val → String
       ++ ",\"tag_bytes\":" ++ toString tb ++ "}"
   | .tuple fs =>
     "{\"kind\":\"tuple\",\"fields\":[" ++ String.intercalate "," (fs.map valToJson) ++ "]}"
-  | .array _ | .range _ _ | .optionVal _ => "{\"kind\":\"other\"}"
+  | .array _ | .range _ _ | .optionVal _ | .vec _ _ _ | .boxPtr _ _ => "{\"kind\":\"other\"}"
   | _ => "{\"kind\":\"other\"}"
 
 def resolveTuplePath : MirTy → List Nat → Option MirTy
@@ -1877,6 +1897,12 @@ partial def valEq : Val → Val → Bool
   | .range s1 e1, .range s2 e2 => (s1 == s2) && (e1 == e2)
   | .optionVal none, .optionVal none => true
   | .optionVal (some a), .optionVal (some b) => valEq a b
+  | .vec a ca la, .vec b cb lb =>
+    optNatEq a.allocId b.allocId && (a.offsetBytes == b.offsetBytes)
+      && intWidthEq a.width b.width && (ca == cb) && (la == lb)
+  | .boxPtr a la, .boxPtr b lb =>
+    optNatEq a.allocId b.allocId && (a.offsetBytes == b.offsetBytes)
+      && intWidthEq a.width b.width && (la == lb)
   | .bool a, .bool b => a == b
   | .char a, .char b => Nat.beq a.toNat b.toNat
   | .ordering a, .ordering b => ordEq a b
@@ -2206,7 +2232,10 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .sliceGetUncheckedRangeTo | .sliceGetUncheckedRangeFrom
               | .sliceIndexRange _ _ | .sliceIndexRangeFrom _ _
               | .sliceIsEmpty _ | .sliceSplitAt _ _ | .memReplace _
-              | .optionTake _ | .ptrAdd _ _ | .sliceLen | .arrayEq _ _ =>
+              | .optionTake _ | .ptrAdd _ _ | .sliceLen | .arrayEq _ _
+              | .vecWithCapacity _ | .vecLen | .vecPush | .vecResize | .vecExtendFromSlice
+              | .vecIndex | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve
+              | .boxFromVec | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
                 "pointer or memory access undefined: Trusted.MirSemantics.FaultKind.undefined"
               | .numIsMultipleOf _ _ | .numCheckedAdd _ _ | .numCheckedMul _ _
               | .numCheckedSub _ _ | .numSaturatingAdd _ _ | .numWrappingShl _ _
@@ -2214,7 +2243,7 @@ def describeUndefinedStepFault (prog : Program) (frame : FrameState) (mem : Memo
               | .numOverflowingAdd _ _ | .numOverflowingSub _ _
               | .cmpMin _ _ | .cmpMax _ _ | .optionIsSome _
               | .optionIsNone _ | .optionUnwrap _ | .intToLeBytes _ _
-              | .panicAbort =>
+              | .panicAbort | .vecNew _ =>
                 "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
             | .error _ =>
               "uninitialized or invalid value undefined: Trusted.MirSemantics.FaultKind.undefined"
