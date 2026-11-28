@@ -180,6 +180,8 @@ pub enum ExprKind {
     Ident(String),
     Unary(UnOp, Box<Expr>),
     Binary(BinOp, Box<Expr>, Box<Expr>),
+    /// `e as T`, a cast to the fixed-width integer type `T`.
+    Cast(Box<Expr>, IntTy),
     /// `name(args)`: a `#[anneal::pure]` helper or a built-in intrinsic.
     Call(String, Vec<Expr>),
     /// `math(e)` or `math { e }`.

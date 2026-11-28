@@ -211,6 +211,23 @@ example : pure_shifts_let 1000 = 2000 := by unfold pure_shifts_let; decide
 example : pure_shifts_let (-1000) = -2000 := by unfold pure_shifts_let; decide
 example : pure_shifts_let 0x7FF8 = -16 := by unfold pure_shifts_let; decide
 
+-- `as` keeps a value that fits and otherwise reduces it modulo `2^bits`.
+example : pure_cast_u8 300 = 44 := by unfold pure_cast_u8; decide
+example : pure_cast_u8 (-1) = 255 := by unfold pure_cast_u8; decide
+example : pure_cast_u8 255 = 255 := by unfold pure_cast_u8; decide
+example : pure_cast_i8 200 = -56 := by unfold pure_cast_i8; decide
+example : pure_cast_i8 128 = -128 := by unfold pure_cast_i8; decide
+example : pure_cast_i8 127 = 127 := by unfold pure_cast_i8; decide
+example : pure_cast_i8 65535 = -1 := by unfold pure_cast_i8; decide
+example : pure_cast_u32 (-1) = 4294967295 := by unfold pure_cast_u32; decide
+example : pure_cast_u32 127 = 127 := by unfold pure_cast_u32; decide
+example : pure_cast_chain (-1) = 255 := by unfold pure_cast_chain; decide
+example : pure_cast_chain 256 = 0 := by unfold pure_cast_chain; decide
+example : pure_cast_widen (-128) = -128 := by unfold pure_cast_widen; decide
+example : pure_cast_lt 1 2 = 1 := by unfold pure_cast_lt; decide
+example : pure_cast_lt 2 1 = 0 := by unfold pure_cast_lt; decide
+example : pure_cast_math 200 100 = 44 := by unfold pure_cast_math; decide
+
 -- The masked shifts take the amount modulo the width.
 example : pure_wshl_is 1 17 2 := by unfold pure_wshl_is; decide
 example : pure_wshl_is 0x8001 1 2 := by unfold pure_wshl_is; decide
@@ -218,9 +235,10 @@ example : pure_wshr_is (-32768) 31 (-1) := by unfold pure_wshr_is; decide
 example : ¬ pure_wshr_is (-32768) 31 1 := by unfold pure_wshr_is; decide
 
 -- `usat` (sorted eighth as `fn7`) binds `let k: u32 = 31;` in `max_steps =`
--- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`.
-example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 18 := rfl
+-- `abs_diff(a, b) + saturating_add(n, 1u32) + (n & 15u32) + (n >> 30) + (n >> k)`
+-- `+ n as u8 as u32`.
+example : fn7_max_steps { args := [u8Val 9, u8Val 2, u32Val 5] } = 23 := rfl
 example : fn7_max_steps { args := [u8Val 3, u8Val 250, u32Val 4294967295] } =
-    4294967561 := rfl
+    4294967816 := rfl
 
 end Spec.Check
