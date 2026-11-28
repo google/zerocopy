@@ -279,7 +279,7 @@ fn max_steps_rejects_invalid_and_negative_forms_fail_closed() {
         &wrap("max_steps = a < b < c", "fn f(a: u8, b: u8, c: u8)"),
         "E_ANNEAL_CHAINED_COMPARISON",
     );
-    expect_error(&wrap("max_steps = a & 1u8", "fn f(a: u8)"), "E_ANNEAL_UNSUPPORTED_BITWISE");
+    expect_error(&wrap("max_steps = a & 1i8", "fn f(a: i8)"), "E_ANNEAL_SPEC_TYPE_MISMATCH");
 
     // Division guards, `safety_requires` non-leakage, `old(...)`,
     // unknown/return binders, and literal range.

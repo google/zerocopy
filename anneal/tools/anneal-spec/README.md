@@ -107,8 +107,9 @@ writes `Spec.lean` (namespace `Spec`) and `spec_span_map.json`.
 Expressions: `true`/`false`, integer literals (with optional suffix), the
 integer constants `T::MIN`, `T::MAX`, and `T::BITS` for a fixed-width integer
 type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
-(right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
-`math(e)`/`math { e }`, `wrapping_{add,sub,mul,neg}`,
+(right-associative), `<==>`, comparisons, `+ - * / %`, `& | ^ << >>` and `!`
+on integers, helper calls, `math(e)`/`math { e }`,
+`wrapping_{add,sub,mul,neg,shl,shr}`,
 `no_overflow_{add,sub,mul,neg}`, `saturating_{add,sub,mul,neg}`,
 `abs_diff`, `if c { a } else { b }` (with `else if` chains),
 `match s { pat => e, .. }`, and blocks `{ let x = e; .. value }`.
@@ -126,7 +127,24 @@ fixed-width integer type, even inside `math`, where their result is
 mathematical. A saturating result lowers to
 `(let «saturating» : Int := e; if «saturating» < lo then lo else ..)`, which
 binds the exact result `e` once, and `abs_diff` to
-`(Int.ofNat (Int.natAbs (a - b)))`. Division and remainder lower to
+`(Int.ofNat (Int.natAbs (a - b)))`.
+
+Bitwise operators have Rust's meaning and precedence. `&`, `|`, `^`, and `!`
+act on the two's-complement bits of their operands, which must have one
+fixed-width integer type; like the intrinsics, they take machine-typed
+operands even inside `math`, except that `!` on an integer inside `math` is
+rejected, since there it would apply to a mathematical integer. Unsigned
+operands lower through `Int.toNat` to `Nat`'s `&&&`, `|||`, and `^^^`, signed
+ones through their remainder modulo `2^bits`, and `!a` to `MAX - a` or
+`-a - 1`. `a << k` and `a >> k` shift by a constant `k` of any integer type
+below the bit width of `a`, through `Trusted.MirSemantics.intShiftLeft`
+(reduced into the type's range) and `intShiftRight` (arithmetic on signed
+types). Rust panics on, or masks, a larger or non-constant amount, so those
+are rejected; `wrapping_shl(a, n)` and `wrapping_shr(a, n)` take a `u32` `n`
+modulo the bit width, as in Rust. In `max_steps`, these operators may supply
+unsigned step counts.
+
+Division and remainder lower to
 `Trusted.MirSemantics.intTdiv`/`intTmod` (Rust's truncating semantics, as in
 `Int.tdiv`/`Int.tmod`) and require the divisor to be a nonzero literal or
 guarded by `d != 0` (or `d > 0`) earlier in a `&&` or `==>` chain, by the
@@ -228,7 +246,7 @@ UTF-8 source and columns count Unicode scalar values.
 
 | Code | Rejects |
 | :--- | :--- |
-| `E_ANNEAL_AMBIGUOUS_SPEC_ARITH` | `+ - * / %` or unary `-` on a machine integer outside `math` |
+| `E_ANNEAL_AMBIGUOUS_SPEC_ARITH` | `+ - * / %` or unary `-` on a machine integer outside `math`, or a shift by an amount that is not a constant |
 | `E_ANNEAL_UNGUARDED_SPEC_DIV` | `/` or `%` whose divisor may be zero |
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
@@ -245,7 +263,7 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_SPEC_SHADOWING` | an `ensures` binder that shadows a parameter, and a `let` or pattern binding that shadows a parameter, the `ensures` binder, an enclosing binding, or a helper |
 | `E_ANNEAL_PURE_RECURSION` | recursive helpers |
 | `E_ANNEAL_UNSUPPORTED_CLAUSE` / `E_ANNEAL_UNKNOWN_CLAUSE` / `E_ANNEAL_UNKNOWN_ATTRIBUTE` | clauses outside profile v1 |
-| `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` / `E_ANNEAL_UNSUPPORTED_BITWISE` | types, expressions, and `match` patterns outside profile v1 |
+| `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` | types, expressions, and `match` patterns outside profile v1 |
 | `E_ANNEAL_DUPLICATE_TARGET` / `E_ANNEAL_DUPLICATE_CLAUSE` / `E_ANNEAL_DUPLICATE_HELPER` / `E_ANNEAL_CONFLICTING_EFFECTS` / `E_ANNEAL_UNSATISFIABLE_NEVER_EFFECTS` | duplicates, conflicting effect qualifiers, and bare `-> !` total-normal specs |
 | `E_ANNEAL_IGNORED_ATTRIBUTE` | an `anneal::` item in a position the lowering does not read |
 | `E_ANNEAL_BARE_OR_COMPOUND_CFG` | any use of the `anneal` cfg other than `cfg_attr(anneal, ..)` enabling `anneal::` specification attributes, and the identifier `anneal` anywhere but there or in an `anneal::` path |
