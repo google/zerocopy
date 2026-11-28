@@ -2623,6 +2623,10 @@ fn protected_olean_cache_dir_from_env(args: &VerifyArgs) -> Option<PathBuf> {
     )
 }
 
+/// The [`checkout_input_dirs`] label of the working directory, which
+/// [`reject_checkout_overlap`] treats specially for the shared cache root.
+const WORKING_DIRECTORY: &str = "working directory";
+
 /// Directories whose contents the verified checkout supplies: the working
 /// directory, the manifest directory, `--proof-dir`, the request file's
 /// directory and its declared source roots, and the `rustc`-mode crate,
@@ -2682,7 +2686,7 @@ fn checkout_input_dirs(args: &VerifyArgs) -> Vec<(&'static str, PathBuf)> {
         push_file_dir(&mut checkout_dirs, "request directory", req);
     }
     if let Ok(cwd) = std::env::current_dir() {
-        checkout_dirs.push(("working directory", cwd));
+        checkout_dirs.push((WORKING_DIRECTORY, cwd));
     }
     if let Some(pd) = &args.proof_dir {
         checkout_dirs.push(("--proof-dir", pd.clone()));
@@ -2705,11 +2709,22 @@ fn checkout_input_dirs(args: &VerifyArgs) -> Vec<(&'static str, PathBuf)> {
 /// available), and `why` explains the refusal. Both the lexical and the
 /// symlink-resolved spellings of every checkout directory are compared, so a
 /// symlink in either direction cannot hide the overlap.
+///
+/// The working directory only stands in for a checkout root that no input
+/// names, so a root inside it is still allowed when it also lies inside one
+/// of `user_cache_bases` (spellings of the per-user cache base that holds
+/// the default cache root) and the working directory strictly contains that
+/// base. A working directory such as `HOME` already contains the default
+/// cache, which is used without this check, so a root beside the default is
+/// no more exposed to checkout content than the default itself. A root that
+/// contains the working directory, or that overlaps any other input
+/// directory, is still refused.
 fn reject_checkout_overlap(
     args: &VerifyArgs,
     label: &str,
     lexical_root: &Path,
     roots: &[PathBuf],
+    user_cache_bases: &[PathBuf],
     why: &str,
 ) -> std::result::Result<(), String> {
     for (what, dir) in checkout_input_dirs(args) {
@@ -2722,7 +2737,12 @@ fn reject_checkout_overlap(
                 .collect();
         for root in roots {
             for candidate in &candidates {
-                if root.starts_with(candidate) || candidate.starts_with(root) {
+                let beside_default_cache = what == WORKING_DIRECTORY
+                    && user_cache_bases.iter().any(|base| {
+                        root.starts_with(base) && base != candidate && base.starts_with(candidate)
+                    });
+                let inside = root.starts_with(candidate) && !beside_default_cache;
+                if inside || candidate.starts_with(root) {
                     return Err(format!(
                         "{label} {} must not be inside or contain the {what} {}: {why}",
                         lexical_root.display(),
@@ -2740,10 +2760,13 @@ fn reject_checkout_overlap(
 /// [`checkout_input_dirs`]). Cache hits are trusted on the strength of the
 /// entry's own `metadata.json`, so a root that checkout content can populate
 /// could substitute compiled `.olean` artifacts, including the auditor's
-/// `TrustedBoundary.olean`.
+/// `TrustedBoundary.olean`. `home` and `xdg_cache_home` locate the per-user
+/// cache base for [`reject_checkout_overlap`].
 fn validate_olean_cache_root(
     args: &VerifyArgs,
     env: Option<&OsStr>,
+    home: Option<&OsStr>,
+    xdg_cache_home: Option<&OsStr>,
 ) -> std::result::Result<(), String> {
     if args.no_cache {
         return Ok(());
@@ -2768,9 +2791,32 @@ fn validate_olean_cache_root(
         "shared .olean cache root",
         &lexical_root,
         &roots,
+        &user_cache_bases(home, xdg_cache_home),
         "cache entries are trusted as stored, so the cache root must lie outside any \
          checkout and be writable only by equally trusted runs",
     )
+}
+
+/// Spellings of the per-user cache base that holds the default `.olean`
+/// cache root, for [`reject_checkout_overlap`]: as spelled (lexically
+/// normalized) and fully resolved, like the working directory it is
+/// compared with. A relative base or one with a `..` component, both of
+/// which the default cache refuses as well, yields none, and a spelling
+/// that is the filesystem root is dropped.
+fn user_cache_bases(home: Option<&OsStr>, xdg_cache_home: Option<&OsStr>) -> Vec<PathBuf> {
+    let Some(base) = crate::olean_cache::cache_base_from_env_vars(home, xdg_cache_home)
+        .filter(|base| base.is_absolute() && !base.components().any(|c| c == Component::ParentDir))
+    else {
+        return Vec::new();
+    };
+    let mut spellings: Vec<PathBuf> =
+        [normalize_lexical_absolute(&base).ok(), resolve_path_preserving_symlinks(&base).ok()]
+            .into_iter()
+            .flatten()
+            .filter(|spelling| spelling.parent().is_some())
+            .collect();
+    spellings.dedup();
+    spellings
 }
 
 /// Validate an explicit `--prebuilt-dir` before anything is staged. Like
@@ -2798,6 +2844,7 @@ fn validate_prebuilt_dir_root(args: &VerifyArgs) -> std::result::Result<(), Stri
         "prebuilt .olean directory",
         &lexical_root,
         &roots,
+        &[],
         "prebuilt artifacts are trusted as stored, so the bundle must lie outside any checkout",
     )?;
     match fs::symlink_metadata(&resolved_root) {
@@ -5163,9 +5210,12 @@ pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) ->
             );
         }
     };
-    if let Err(detail) =
-        validate_olean_cache_root(&args, std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").as_deref())
-    {
+    if let Err(detail) = validate_olean_cache_root(
+        &args,
+        std::env::var_os("ANNEAL_OLEAN_CACHE_DIR").as_deref(),
+        std::env::var_os("HOME").as_deref(),
+        std::env::var_os("XDG_CACHE_HOME").as_deref(),
+    ) {
         return emit_failure(
             &mut session,
             resolved_format,
@@ -8720,7 +8770,7 @@ mod tests {
                 OsStr::new("--manifest-path"),
                 manifest.as_os_str(),
             ]);
-            validate_olean_cache_root(&args, None)
+            validate_olean_cache_root(&args, None, None, None)
         };
         let (manifest, proof) = (d("crate/Cargo.toml"), d("proof"));
         for bad in [
@@ -8749,10 +8799,160 @@ mod tests {
             manifest.as_os_str(),
         ];
         let no_cache = parse_verify_args(&[&[OsStr::new("--no-cache")][..], &base].concat());
-        validate_olean_cache_root(&no_cache, Some(proof.as_os_str())).unwrap();
+        validate_olean_cache_root(&no_cache, Some(proof.as_os_str()), None, None).unwrap();
         let default = parse_verify_args(&base);
-        validate_olean_cache_root(&default, None).unwrap();
-        assert!(validate_olean_cache_root(&default, Some(proof.as_os_str())).is_err());
+        validate_olean_cache_root(&default, None, None, None).unwrap();
+        assert!(validate_olean_cache_root(&default, Some(proof.as_os_str()), None, None).is_err());
+    }
+
+    /// When the working directory contains the per-user cache base (as
+    /// `HOME` contains `~/.cache`), a root under that base is accepted like
+    /// the default cache it sits beside. Every other overlap with the working
+    /// directory, and any overlap with a real input directory, is refused.
+    #[cfg(unix)]
+    #[test]
+    fn validate_olean_cache_root_accepts_roots_beside_the_default_cache() {
+        let inputs = tempfile::tempdir().unwrap();
+        fs::create_dir_all(inputs.path().join("crate")).unwrap();
+        fs::write(inputs.path().join("crate/Cargo.toml"), b"").unwrap();
+        let (manifest, proof) =
+            (inputs.path().join("crate/Cargo.toml"), inputs.path().join("proof"));
+        // Paths under the working directory are only compared, never created.
+        let cwd = std::env::current_dir().unwrap();
+        let w = |rel: &str| cwd.join(rel);
+        let check = |root: &Path, proof: &Path, home: Option<&Path>, xdg: Option<&Path>| {
+            let args = parse_verify_args(&[
+                OsStr::new("--olean-cache-dir"),
+                root.as_os_str(),
+                OsStr::new("--proof-dir"),
+                proof.as_os_str(),
+                OsStr::new("--manifest-path"),
+                manifest.as_os_str(),
+            ]);
+            validate_olean_cache_root(
+                &args,
+                None,
+                home.map(Path::as_os_str),
+                xdg.map(Path::as_os_str),
+            )
+        };
+        let refused = |root: &Path, proof: &Path, home: Option<&Path>, xdg: Option<&Path>| {
+            let err = check(root, proof, home, xdg).unwrap_err();
+            assert!(err.contains("must not be inside or contain"), "{}: {err}", root.display());
+            err
+        };
+        let cache = if cfg!(target_os = "macos") { "Library/Caches" } else { ".cache" };
+        let home = Some(cwd.as_path());
+        check(&w(&format!("{cache}/shared-olean")), &proof, home, None).unwrap();
+        check(&w(&format!("{cache}/anneal/olean-cache")), &proof, home, None).unwrap();
+        refused(&w(&format!("{cache}/shared-olean")), &proof, None, None);
+        refused(&w("olean-cache"), &proof, home, None);
+        refused(&cwd, &proof, home, None);
+        // A real input directory under, or strictly containing, the base is
+        // still protected: the cache-base exception applies only to the
+        // working-directory stand-in, never to manifest, proof, request, or
+        // `rustc` source directories, and must hold for every resolved spelling
+        // of the root rather than its lexical spelling alone.
+        let err =
+            refused(&w(&format!("{cache}/shared")), &w(&format!("{cache}/shared/p")), home, None);
+        assert!(err.contains("--proof-dir"), "{err}");
+        let err = refused(&w(&format!("{cache}/shared-olean")), &cwd, home, None);
+        assert!(err.contains("--proof-dir"), "{err}");
+        for (input_args, expected_label) in [
+            (
+                vec![
+                    OsStr::new("--manifest-path"),
+                    w("Cargo.toml").as_os_str(),
+                    OsStr::new("--proof-dir"),
+                    proof.as_os_str(),
+                ],
+                "manifest directory",
+            ),
+            (vec![OsStr::new("--request"), w("request.json").as_os_str()], "request directory"),
+            (
+                vec![
+                    OsStr::new("rustc"),
+                    w("lib.rs").as_os_str(),
+                    OsStr::new("--crate-name"),
+                    OsStr::new("demo"),
+                    OsStr::new("--spec-file"),
+                    OsStr::new("Spec=Spec.lean"),
+                    OsStr::new("--proof-file"),
+                    OsStr::new("Proof=Proof.lean"),
+                ],
+                "crate directory",
+            ),
+        ] {
+            let root = w(&format!("{cache}/shared-olean"));
+            let mut full_args = vec![OsStr::new("--olean-cache-dir"), root.as_os_str()];
+            full_args.extend(input_args);
+            let parsed = parse_verify_args(&full_args);
+            let err =
+                validate_olean_cache_root(&parsed, None, Some(cwd.as_os_str()), None).unwrap_err();
+            assert!(err.contains(expected_label), "{expected_label}: {err}");
+        }
+        let symlink_escape_lexical = w(&format!("{cache}/escape/c"));
+        let symlink_escape_args = parse_verify_args(&[
+            OsStr::new("--olean-cache-dir"),
+            symlink_escape_lexical.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof.as_os_str(),
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+        ]);
+        let escape_err = reject_checkout_overlap(
+            &symlink_escape_args,
+            "shared .olean cache root",
+            &symlink_escape_lexical,
+            &[symlink_escape_lexical.clone(), w("checkout-sub/c")],
+            &user_cache_bases(Some(cwd.as_os_str()), None),
+            "escaped cache base via symlink",
+        )
+        .unwrap_err();
+        assert!(escape_err.contains(WORKING_DIRECTORY), "{escape_err}");
+
+        // `HOME` spelled with `..` exempts nothing, as the default cache
+        // refuses it.
+        refused(&w(&format!("{cache}/shared-olean")), &proof, Some(&cwd.join("x/..")), None);
+        if cfg!(target_os = "macos") {
+            return;
+        }
+        // macOS ignores `XDG_CACHE_HOME`. A base that is the working
+        // directory itself, or lies above it, exempts nothing.
+        let xdg = w("xdg-cache");
+        check(&xdg.join("shared-olean"), &proof, home, Some(&xdg)).unwrap();
+        check(&w(".cache/c"), &proof, home, Some(Path::new("rel"))).unwrap();
+        refused(&w(".cache/shared-olean"), &proof, home, Some(&xdg));
+        refused(&w("olean-cache"), &proof, home, Some(&cwd));
+        refused(&w("olean-cache"), &proof, home, Some(cwd.parent().unwrap()));
+        refused(&w("olean-cache"), &proof, home, Some(Path::new("/")));
+    }
+
+    /// The cache base is compared as spelled and as resolved; a relative or
+    /// `..` base yields no spelling, and neither does one that is, or
+    /// resolves to, the filesystem root.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn user_cache_bases_drops_unusable_spellings() {
+        use std::os::unix::fs::symlink;
+        let dir = tempfile::tempdir().unwrap();
+        let real = fs::canonicalize(dir.path()).unwrap();
+        fs::create_dir(real.join("real")).unwrap();
+        symlink(real.join("real"), real.join("link")).unwrap();
+        symlink("/", real.join("root")).unwrap();
+        let bases = |home: &str, xdg: Option<&Path>| {
+            user_cache_bases(Some(OsStr::new(home)), xdg.map(Path::as_os_str))
+        };
+        assert_eq!(bases("/h", None), vec![PathBuf::from("/h/.cache")]);
+        assert_eq!(
+            bases("/h", Some(&real.join("link"))),
+            vec![real.join("link"), real.join("real")]
+        );
+        assert_eq!(bases("/h", Some(&real.join("root"))), vec![real.join("root")]);
+        assert_eq!(bases("rel", None), Vec::<PathBuf>::new());
+        assert_eq!(bases("/h/x/..", None), Vec::<PathBuf>::new());
+        assert_eq!(bases("/h", Some(&real.join("real/.."))), Vec::<PathBuf>::new());
+        assert_eq!(bases("/h", Some(Path::new("/"))), Vec::<PathBuf>::new());
     }
 
     /// Request mode compares the request's directory and declared source
@@ -8792,7 +8992,7 @@ mod tests {
                 OsStr::new("--request"),
                 request.as_os_str(),
             ]);
-            let err = validate_olean_cache_root(&args, None).unwrap_err();
+            let err = validate_olean_cache_root(&args, None, None, None).unwrap_err();
             assert!(err.contains("must not be inside or contain"), "{sub}: {err}");
         }
 
@@ -8829,7 +9029,7 @@ mod tests {
                 OsStr::new("--proof-file"),
                 OsStr::new(&proof),
             ]);
-            let err = validate_olean_cache_root(&args, None).unwrap_err();
+            let err = validate_olean_cache_root(&args, None, None, None).unwrap_err();
             assert!(err.contains(&format!("must not be inside or contain the {what} ")), "{err}");
         }
     }

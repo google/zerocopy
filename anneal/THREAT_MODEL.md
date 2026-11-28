@@ -177,18 +177,21 @@ part of that environment. A cache hit is trusted on the strength of digests the
 entry itself records, so anything that can write the cache root can substitute
 compiled artifacts, including the auditor's. `cargo anneal verify` refuses an
 explicit root inside or containing the working directory or any input
-directory (manifest, proof, request, or `rustc` source directories); keeping the
-root write-isolated from less trusted
-runs (for example, runs on untrusted Rust inputs or with unsandboxed
-elaboration) is the operator's responsibility.
+directory (manifest, proof, request, or `rustc` source directories), except
+that a root under the per-user cache base that holds the default cache may lie
+inside a working directory, such as `HOME`, that strictly contains that base;
+keeping the root write-isolated from less trusted runs (for example, runs on
+untrusted Rust inputs or with unsandboxed elaboration) is the operator's
+responsibility.
 
 The read-only prebuilt `.olean` bundle (the installed bundle's or the Lean
 prefix's `share/anneal/prebuilt`, or a directory named by `--prebuilt-dir`) is
 part of that environment for the same reason: its manifest records the digests
 that its artifacts are checked against. `cargo anneal verify` applies the same
-checkout-overlap refusal to an explicit `--prebuilt-dir`, and fails closed when
-that directory or its manifest is missing, uses another cache format, or lists
-a module built from different inputs.
+checkout-overlap refusal (without the per-user cache-base exception) to an
+explicit `--prebuilt-dir`, and fails closed when that directory or its manifest
+is missing, uses another cache format, or lists a module built from different
+inputs.
 
 This assumption naturally aligns with the standard split between **local
 development environments** and **Continuous Integration (CI)**:

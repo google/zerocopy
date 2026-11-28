@@ -420,6 +420,129 @@ fn receipt_out_persists_valid_v3_json_and_rejects_symlinks_dirs_and_input_aliase
             "{default_rec}"
         );
         assert!(!default_receipt.exists());
+
+        // Run from `HOME`, which contains the per-user cache base, the
+        // default cache passes the checkout-overlap check, and so does an
+        // explicit root (flag or environment) anywhere under that base. A
+        // root elsewhere under `HOME` or containing the working directory is
+        // still refused, as is a root inside the working directory when the
+        // working directory is, or lies inside, the cache base rather than
+        // strictly above it.
+        let from_home = |root: Option<&Path>, env: Option<&Path>, xdg: Option<&Path>| {
+            let mut cmd = command(Route::Direct, home.path());
+            cmd.args(["verify", "--format", "json", "--capture"])
+                .arg(&fake_cap)
+                .arg("--sysroot")
+                .arg(&fake_sysroot)
+                .arg("--lean")
+                .arg(&fake_lean)
+                .arg("--request")
+                .arg(&valid_req)
+                .env("HOME", home.path())
+                .env_remove("ANNEAL_OLEAN_CACHE_DIR")
+                .env_remove("XDG_CACHE_HOME");
+            if let Some(root) = root {
+                cmd.arg("--olean-cache-dir").arg(root);
+            }
+            if let Some(env) = env {
+                cmd.env("ANNEAL_OLEAN_CACHE_DIR", env);
+            }
+            if let Some(xdg) = xdg {
+                cmd.env("XDG_CACHE_HOME", xdg);
+            }
+            let out = cmd.output().unwrap();
+            serde_json::from_slice::<serde_json::Value>(&out.stdout).unwrap()
+        };
+        let h = |rel: &str| home.path().join(rel);
+        let xdg = h("xdg-cache");
+        let above_home = home.path().parent().unwrap();
+        fs::create_dir(h("xdg-real")).unwrap();
+        std::os::unix::fs::symlink(h("xdg-real"), h("xdg-link")).unwrap();
+        let xdg_link = h("xdg-link");
+        for (case, root, env, xdg) in [
+            ("default", None, None, None),
+            ("flag naming the default", Some(default_cache.clone()), None, None),
+            ("flag beside the default", Some(h(".cache/shared-olean")), None, None),
+            ("env beside the default", None, Some(h(".cache/shared-olean")), None),
+            ("flag under XDG base", Some(xdg.join("shared-olean")), None, Some(xdg.as_path())),
+            ("flag under symlinked base", Some(xdg_link.join("c")), None, Some(xdg_link.as_path())),
+        ] {
+            let rec = from_home(root.as_deref(), env.as_deref(), xdg);
+            assert_ne!(rec["phase"], "olean-cache", "{case}: {rec}");
+        }
+        fs::create_dir_all(h(".cache")).unwrap();
+        fs::create_dir_all(h("checkout-sub")).unwrap();
+        std::os::unix::fs::symlink(h("checkout-sub"), h(".cache/escape")).unwrap();
+        for (case, root, xdg) in [
+            ("elsewhere under HOME", h("olean-cache"), None),
+            ("HOME itself", home.path().to_path_buf(), None),
+            ("symlink under cache base escaping into HOME", h(".cache/escape/c"), None),
+            ("outside XDG_CACHE_HOME", h(".cache/shared-olean"), Some(xdg.as_path())),
+            ("working directory inside the base", h("olean-cache"), Some(above_home)),
+            ("base at the working directory", h("olean-cache"), Some(home.path())),
+        ] {
+            let rec = from_home(Some(&root), None, xdg);
+            assert_eq!(rec["phase"], "olean-cache", "{case}: {rec}");
+            assert!(
+                rec["detail"].as_str().unwrap_or("").contains("must not be inside or contain"),
+                "{case}: {rec}"
+            );
+        }
+        // A real input directory (`--proof-dir`) at `HOME` strictly contains
+        // `.cache`, yet still refuses an `.olean` cache root under `.cache`;
+        // likewise `--prebuilt-dir` under `.cache` receives no cache-base
+        // exception when run from `HOME`.
+        let mut proof_at_home = command(Route::Direct, home.path());
+        proof_at_home
+            .args(["verify", "--format", "json", "--capture"])
+            .arg(&fake_cap)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .arg("--manifest-path")
+            .arg(project.path().join("Cargo.toml"))
+            .arg("--proof-dir")
+            .arg(home.path())
+            .arg("--olean-cache-dir")
+            .arg(h(".cache/shared-olean"))
+            .env("HOME", home.path())
+            .env_remove("ANNEAL_OLEAN_CACHE_DIR")
+            .env_remove("XDG_CACHE_HOME");
+        let proof_rec: serde_json::Value =
+            serde_json::from_slice(&proof_at_home.output().unwrap().stdout).unwrap();
+        assert_eq!(proof_rec["phase"], "olean-cache", "{proof_rec}");
+        assert!(
+            proof_rec["detail"].as_str().unwrap_or("").contains("--proof-dir"),
+            "{proof_rec}"
+        );
+        fs::create_dir_all(h(".cache/prebuilt")).unwrap();
+        fs::write(h(".cache/prebuilt/manifest.json"), br#"{"schema_version":2,"entries":[]}"#)
+            .unwrap();
+        let mut prebuilt_in_home_cache = command(Route::Direct, home.path());
+        prebuilt_in_home_cache
+            .args(["verify", "--format", "json", "--capture"])
+            .arg(&fake_cap)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .arg("--request")
+            .arg(&valid_req)
+            .arg("--prebuilt-dir")
+            .arg(h(".cache/prebuilt"))
+            .env("HOME", home.path())
+            .env_remove("ANNEAL_OLEAN_CACHE_DIR")
+            .env_remove("XDG_CACHE_HOME");
+        let prebuilt_rec: serde_json::Value =
+            serde_json::from_slice(&prebuilt_in_home_cache.output().unwrap().stdout).unwrap();
+        assert_eq!(prebuilt_rec["phase"], "olean-cache", "{prebuilt_rec}");
+        let prebuilt_detail = prebuilt_rec["detail"].as_str().unwrap_or("");
+        assert!(
+            prebuilt_detail.contains("prebuilt .olean directory")
+                && prebuilt_detail.contains("working directory"),
+            "{prebuilt_rec}"
+        );
     }
 
     // 4e. An explicit `--prebuilt-dir` conflicts with `--no-cache`, must lie

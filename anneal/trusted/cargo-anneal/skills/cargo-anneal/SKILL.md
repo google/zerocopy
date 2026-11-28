@@ -53,9 +53,11 @@ own recorded digests, which detect corruption but not a malicious writer, so
 everything that can write `<DIR>` must be trusted as much as the runs that read
 it: keep it outside any checkout (`verify` refuses a root inside or containing
 the working directory or any input directory: manifest, proof, request, or
-`rustc` source directories), and give runs on
-untrusted Rust inputs or with `--allow-unsandboxed-elaboration` their own
-directory. `--olean-cache-dir` cannot be combined with `--no-cache`, and
+`rustc` source directories, but accepts a root under the per-user cache base
+(`XDG_CACHE_HOME`, `~/.cache`, or `~/Library/Caches`), as for the default,
+when run from a directory such as `HOME` that strictly contains it), and give
+runs on untrusted Rust inputs or with `--allow-unsandboxed-elaboration` their
+own directory. `--olean-cache-dir` cannot be combined with `--no-cache`, and
 `--receipt-out` must not point inside the cache directory in use.
 
 When the prebuilt `.olean` bundle is not beside the Lean toolchain (for
