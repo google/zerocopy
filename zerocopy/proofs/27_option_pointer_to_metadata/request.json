@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../src",
+    "crate_root": "lib.rs",
+    "crate_name": "zerocopy",
+    "edition": "2021",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "env": {
+      "CARGO_PKG_VERSION": "0.8.64"
+    },
+    "source_files": [
+      "byte_slice.rs",
+      "byteorder.rs",
+      "deprecated.rs",
+      "error.rs",
+      "impls.rs",
+      "layout.rs",
+      "lib.rs",
+      "macros.rs",
+      "pointer/inner.rs",
+      "pointer/invariant.rs",
+      "pointer/mod.rs",
+      "pointer/ptr.rs",
+      "pointer/transmute.rs",
+      "ref.rs",
+      "split_at.rs",
+      "util/macro_util.rs",
+      "util/macros.rs",
+      "util/mod.rs",
+      "wrappers.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [],
+    "instantiations": [
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "()"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "bool"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "i128"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "i16"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "i32"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "i64"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "i8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "isize"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "u128"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "u16"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "u32"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "u64"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "u8"
+        ]
+      },
+      {
+        "path": "_::<impl KnownLayout for core::option::Option<T>>::pointer_to_metadata",
+        "args": [
+          "usize"
+        ]
+      }
+    ]
+  },
+  "proof": {
+    "source_root": ".",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}
