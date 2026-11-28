@@ -54,6 +54,7 @@ pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
     "trusted/lean/Trusted/Framework.lean",
     "trusted/lean/Trusted/Framework/Bridge.lean",
     "trusted/lean/Trusted/Framework/Instances.lean",
+    "trusted/lean/Trusted/Framework/Link.lean",
     "trusted/lean/Trusted/MirAst.lean",
     "trusted/lean/Trusted/MirAst/Body.lean",
     "trusted/lean/Trusted/MirAst/Places.lean",

@@ -551,7 +551,7 @@ anneal/
 │   │       ├── MirModel.lean       # Shared pure boundary value/query types
 │   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem (+ MirSemantics/)
 │   │       ├── Framework.lean      # Language-agnostic verification envelope
-│   │       ├── Framework/          # MIR ExecutionModel instances & bridges
+│   │       ├── Framework/          # Cross-language linking & MIR bridges
 │   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
 │   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
 │   │   └── Trusted/
@@ -589,6 +589,7 @@ anneal/
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF, rewrite & goal-directed ite firewall combinators
     │   ├── Framework.lean          # Envelope laws & legacy bridges (+ Framework/)
+    │   ├── Framework/Link.lean     # Cross-language linking & refutations
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
@@ -643,10 +644,21 @@ MIR-specific semantics:
   (`MirProfileV1`, `MirProfileV2`, `OracleCertificate`, and legacy
   `CrateEnvelopeTheorem` / `UnitEnvelopeTheorem` compatibility bridges) without
   contaminating `Trusted/Framework.lean` with MIR AST or semantics imports.
+- **`Trusted/Framework/Link.lean`** (`candidate:refinement`) defines the
+  language-agnostic cross-language stub discharge judgment (`SimConv`,
+  `SimConv.disclosedGaps`, `StubDischargedByVerifiedCallee`, and
+  `CrossLangLinkedTheorem`) over `Trusted/Framework.lean` alone, so a caller's
+  `.assumedExternalCallee` gap can be erased by a verified callee from another
+  execution model—while preserving callee and unbridged-convention gap
+  disclosures and blocking existential refutation erasure—without importing
+  either language's semantics.
 - **`theory/Anneal/Framework.lean`** and
   **`theory/Anneal/Framework/StepWp.lean`** supply untrusted (`0`-TCB) envelope
   laws, compatibility equivalences, and generic step/loop weakest-precondition
-  combinators.
+  combinators; **`theory/Anneal/Framework/Link.lean`** proves gap erasure,
+  convention gap disclosure, safety/postcondition transfer, stub realizability,
+  negative refutations, and a constructive positive canary for
+  `Trusted/Framework/Link.lean`.
 
 ## Compiler integration and extraction lifecycle
 
