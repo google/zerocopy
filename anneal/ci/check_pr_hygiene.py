@@ -47,6 +47,11 @@ tree at `--head`:
   the squash commit subject of a multi-commit PR, does not match a regex
   that the merge queue would reject anyway.
 - `skip-pr-hygiene`: waiver trailers are well formed and used.
+- `review-size` (advisory): a warning, never a finding, when more than
+  `REVIEW_SIZE_BUDGET` changed lines remain after excluding generated, lock,
+  vendored, binary, and machine-checked fixture proof files; such changes
+  should be split into a linear stack of PRs. `--json` reports the counts
+  as `review_size`.
 
 The PR's tip commit may waive every finding of some checks with one or more
 single-line trailers in its final trailer block:
@@ -211,6 +216,39 @@ HRS_CONFIG_NAMES = {
     ".gitmodules",
 }
 TRUST_TIER_RE = re.compile(r"--\s*anneal-trust-tier:")
+
+# Advisory review-size budget, in changed (added plus deleted) lines. Review
+# rounds grow with PR size, and a finding anywhere in a PR blocks all of it,
+# so large changes should land as a linear stack of smaller PRs.
+REVIEW_SIZE_BUDGET = 800
+# Changed lines that reviewers do not read line by line and that the budget
+# therefore excludes. These mirror Gate 2's classification: regenerated
+# artifacts, lock files, pinned upstream content, and proof modules under
+# machine-checked fixture roots. Fixture files are excluded by location
+# alone; whether Gate 2 actually reviews one as fixture-light also depends
+# on its content.
+SIZE_GENERATED_PATHS = frozenset({
+    "anneal/trusted/cargo-anneal/src/bundled_resources.rs",
+    "anneal/trusted/root-manifest.sha256",
+})
+SIZE_GENERATED_NAMES = frozenset({"bundled_theory.json"})
+SIZE_LOCK_NAMES = frozenset({
+    "Cargo.lock", "flake.lock", "lake-manifest.json", "foundation-lock.json",
+})
+FIXTURE_ROOTS = (
+    "anneal/tests/cargo-anneal/tests/fixtures/",
+    "anneal/tests/corpora/scalar_specs/",
+    "zerocopy/proofs/",
+)
+FIXTURE_NAME_RE = re.compile(r"^[A-Za-z0-9_]*(?:Proof|Lemmas)\.lean$")
+FIXTURE_NEVER_SEGMENT_RE = re.compile(
+    r"(?:^|/)(?:[^/]*Spec[^/]*|[^/]*Expected[^/]*|ci|\.github|\.gemini"
+    r"|skills|trusted)(?:/|$)"
+)
+FIXTURE_CORPORA_RE = re.compile(
+    r"^anneal/tests/corpora/scalar_specs/[^/]+/Proof\.lean$")
+FIXTURE_ZEROCOPY_RE = re.compile(r"^zerocopy/proofs/[^/]+/[^/]+\.lean$")
+SIZE_CATEGORIES = ("generated", "lock", "vendor", "fixture", "binary")
 
 
 class GitError(Exception):
@@ -1392,6 +1430,126 @@ def changed_files(git: Git, base: str, head: str) -> dict[str, ChangedFile]:
     return files
 
 
+def size_exclusion(path: str) -> str | None:
+    """Return the review-size category that excludes `path`, if any."""
+    name = Path(path).name
+    if path in SIZE_GENERATED_PATHS or name in SIZE_GENERATED_NAMES:
+        return "generated"
+    if name in SIZE_LOCK_NAMES:
+        return "lock"
+    if path.startswith(EXCLUDED_PREFIXES):
+        return "vendor"
+    if (path.startswith(FIXTURE_ROOTS)
+            and ".." not in Path(path).parts and "\\" not in path
+            and not FIXTURE_NEVER_SEGMENT_RE.search(path)
+            and FIXTURE_NAME_RE.fullmatch(name)
+            and (not path.startswith("anneal/tests/corpora/")
+                 or FIXTURE_CORPORA_RE.fullmatch(path))
+            and (not path.startswith("zerocopy/proofs/")
+                 or FIXTURE_ZEROCOPY_RE.fullmatch(path))):
+        return "fixture"
+    return None
+
+
+@dataclass(frozen=True)
+class ReviewSize:
+    """Changed lines in a diff, split into reviewable and excluded lines."""
+
+    reviewable_lines: int
+    reviewable_files: int
+    # Category -> (lines, files); binary files count files only.
+    excluded: dict[str, tuple[int, int]]
+    budget: int = REVIEW_SIZE_BUDGET
+
+    @property
+    def over_budget(self) -> bool:
+        return self.reviewable_lines > self.budget
+
+    def to_json(self) -> dict[str, object]:
+        return {
+            "budget": self.budget,
+            "reviewable_lines": self.reviewable_lines,
+            "reviewable_files": self.reviewable_files,
+            "excluded": {k: {"lines": v[0], "files": v[1]}
+                         for k, v in self.excluded.items()},
+            "over_budget": self.over_budget,
+        }
+
+
+def review_size(numstat: list[tuple[str, int | None]],
+                budget: int = REVIEW_SIZE_BUDGET) -> ReviewSize:
+    """Classify `(path, changed lines or None if binary)` pairs."""
+    lines = files = 0
+    excluded = {k: (0, 0) for k in SIZE_CATEGORIES}
+    for path, changed in numstat:
+        category = "binary" if changed is None else size_exclusion(path)
+        if category is None:
+            lines += changed or 0
+            files += 1
+        else:
+            n, m = excluded[category]
+            excluded[category] = (n + (changed or 0), m + 1)
+    return ReviewSize(lines, files, excluded, budget)
+
+
+def diff_numstat(git: Git, base: str, head: str
+                 ) -> list[tuple[str, int | None]]:
+    """Return `(path, added + deleted lines)` per changed file.
+
+    Binary files report `None`. Renames are detected as in `changed_files`
+    and are listed under their new path.
+    """
+    raw = git.run("diff", "--no-ext-diff", "--no-textconv", "-M",
+                  "--numstat", "-z", base, head, "--")
+    if not raw:
+        return []
+    # Every record ends in a NUL, so anything else is truncated output.
+    if not raw.endswith(b"\0"):
+        raise GitError("truncated numstat output")
+    parts = raw[:-1].decode("utf-8", "surrogateescape").split("\0")
+    out: list[tuple[str, int | None]] = []
+    i = 0
+    while i < len(parts):
+        fields = parts[i].split("\t", 2)
+        if len(fields) != 3:
+            raise GitError(f"malformed numstat entry {parts[i][:80]!r}")
+        added, deleted, path = fields
+        if path:
+            i += 1
+        else:
+            # A rename or copy: the old and new paths follow.
+            if (i + 2 >= len(parts) or not parts[i + 1]
+                    or not parts[i + 2]):
+                raise GitError("truncated numstat rename entry")
+            path = parts[i + 2]
+            i += 3
+        if added == "-" and deleted == "-":
+            out.append((path, None))
+        elif all(n.isascii() and n.isdecimal() for n in (added, deleted)):
+            out.append((path, int(added) + int(deleted)))
+        else:
+            raise GitError(f"malformed numstat counts for {path!r}")
+    return out
+
+
+def review_size_warning(size: ReviewSize) -> Finding | None:
+    """An advisory warning when reviewable lines exceed the budget."""
+    if not size.over_budget:
+        return None
+    parts = [f"{m} binary file(s)" if k == "binary"
+             else f"{n} {k} line(s) in {m} file(s)"
+             for k, (n, m) in size.excluded.items() if m]
+    excluded = ", ".join(parts) if parts else "none"
+    return Finding(
+        "review-size",
+        f"{size.reviewable_lines} reviewable changed lines in "
+        f"{size.reviewable_files} file(s) exceed the {size.budget}-line "
+        f"review budget (excluded: {excluded}); consider splitting this "
+        "change into a linear stack of PRs (`gh stack link --base main "
+        "<pr>...`). This is advisory and does not fail the check.",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Per-check logic over the diff and tree.
 
@@ -1989,6 +2147,11 @@ def check(
            and is_hrs_path(p.old_path, p.trust_tier_changed)}
     )
     meta["human_review_surface"] = hrs
+    size = review_size(diff_numstat(git, merge_base, head))
+    meta["review_size"] = size.to_json()
+    size_warning = review_size_warning(size)
+    if size_warning is not None:
+        report.warnings.append(size_warning)
     if receipt is not None:
         report.findings += receipt_findings(
             receipt, target_base, merge_base, head, tree, hrs, changed)
@@ -2147,6 +2310,13 @@ def main(argv: list[str]) -> int:
     annotations = sys.stderr if args.json else sys.stdout
     for w in report.waived:
         print(waiver_annotation(w), file=annotations)
+    # Surface the advisory size budget on the PR without failing the job.
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        for w in report.warnings:
+            if w.check == "review-size":
+                title = _escape_command_property("PR review-size budget")
+                print(f"::warning title={title}::"
+                      f"{_escape_command_data(w.message)}", file=annotations)
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_path and report.waived:
         try:

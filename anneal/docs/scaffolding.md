@@ -340,6 +340,14 @@ tree, and `ci-core` rejects the marker in landed commit messages. The script
 reads Git objects without checking out or running candidate code, so reviewers
 can run a trusted base copy against a candidate head.
 
+The script also reports an advisory `review-size` warning, never a finding,
+when a PR changes more than 800 lines after excluding generated files, lock
+files, `vendor/`, binary files, and proof modules under machine-checked fixture
+roots. Review rounds grow with PR size, and a finding anywhere in a PR blocks
+all of it, so split such a change into a linear stack of PRs (for example with
+`gh stack link --base main <pr>...`). `--json` reports the counts as
+`review_size`.
+
 `PR hygiene` is soft-blocking. A trailer in the final trailer block of the
 PR's `HEAD` commit waives every finding of the named checks:
 
