@@ -215,11 +215,42 @@ pub(crate) fn reject_cargo_toolchain_overrides(checkout: &Path) -> Result<(), Fa
     Ok(())
 }
 
-/// Verify `trusted/root-manifest.sha256` (when present): every non-comment line
-/// must name a unique clean relative path whose on-disk SHA-256 matches, and
-/// the four root build files (`Cargo.toml`, `Cargo.lock`, `flake.nix`,
-/// `flake.lock`) must be covered.
-fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
+/// Parse one checksum entry of `trusted/root-manifest.sha256`, returning its
+/// expected digest and covered path.
+///
+/// The accepted grammar is the one `ci/update_root_manifest.py` accepts and
+/// `sha256sum --check` reads: 64 lowercase hex digits, a space, a GNU mode
+/// marker (a second space for text mode or `*` for binary mode), and a
+/// canonical relative path. A canonical path has no empty, `.`, or `..`
+/// component, which matches the updater's `PurePosixPath` round-trip check.
+/// The line must not be padded with whitespace or end with a carriage return
+/// that `str::lines` left behind. A whitespace-only line is not empty, so it
+/// is rejected as an entry, as `sha256sum --check --strict` rejects it.
+fn parse_root_manifest_entry(line: &str) -> Option<(&str, &str)> {
+    let expected_hex = line.get(..64)?;
+    let rest = line.get(64..)?.strip_prefix(' ')?;
+    let rel_path = rest.strip_prefix(' ').or_else(|| rest.strip_prefix('*'))?;
+    let canonical = rel_path.split('/').all(|component| !matches!(component, "" | "." | ".."));
+    (expected_hex.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+        && !rel_path.contains(['\r', '\n'])
+        && canonical
+        && is_clean_relative_path(rel_path))
+    .then_some((expected_hex, rel_path))
+}
+
+/// Verify `trusted/root-manifest.sha256` when present: every line other than
+/// empty lines and `#` comments must be an entry that
+/// [`parse_root_manifest_entry`] accepts, name a unique path, and match that
+/// path's on-disk SHA-256, and the four root build files (`Cargo.toml`,
+/// `Cargo.lock`, `flake.nix`, `flake.lock`) must be covered.
+///
+/// Returns whether the manifest is present. An absent manifest is accepted
+/// here so that synthetic Cargo workspaces can exercise
+/// [`check_cargo_boundary`]; [`check_checkout_cargo_hygiene`] turns absence
+/// into [`missing_root_manifest_failure`] for repository audits. Reporting
+/// presence from the same `symlink_metadata` call that gates verification
+/// leaves no window between the two.
+fn verify_root_manifest_sha256(checkout: &Path) -> Result<bool, Failure> {
     let phase = "cargo-boundary";
     let manifest_path = checkout.join("trusted/root-manifest.sha256");
     match fs::symlink_metadata(&manifest_path) {
@@ -232,7 +263,7 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
                 ));
             }
         }
-        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(false),
         Err(e) => {
             return Err(Failure::new(
                 2,
@@ -244,20 +275,25 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
     let manifest_text = SafeFs::read_regular_string_capped(&manifest_path, 4 * 1024 * 1024, phase)
         .map_err(|e| Failure::new(1, phase, e.message))?;
     let mut seen_paths = BTreeSet::new();
-    for line in
-        manifest_text.lines().map(str::trim).filter(|l| !l.is_empty() && !l.starts_with('#'))
-    {
-        let Some((expected_hex, rel_path)) = line.split_once("  ") else {
+    for line in manifest_text.lines().filter(|l| !l.is_empty()) {
+        if line.contains('\r') {
+            return Err(Failure::new(
+                1,
+                phase,
+                format!("malformed line in root-manifest.sha256: {line}"),
+            ));
+        }
+        if line.starts_with('#') {
+            continue;
+        }
+        let Some((expected_hex, rel_path)) = parse_root_manifest_entry(line) else {
             return Err(Failure::new(
                 1,
                 phase,
                 format!("malformed line in root-manifest.sha256: {line}"),
             ));
         };
-        if !is_sha256_hex(expected_hex)
-            || !is_clean_relative_path(rel_path)
-            || !seen_paths.insert(rel_path.to_string())
-        {
+        if !seen_paths.insert(rel_path.to_string()) {
             return Err(Failure::new(
                 1,
                 phase,
@@ -266,7 +302,7 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
         }
         let actual_hex = sha256_file(&checkout.join(rel_path), phase)
             .map_err(|e| Failure::new(1, phase, e.message))?;
-        if !actual_hex.eq_ignore_ascii_case(expected_hex) {
+        if actual_hex != expected_hex {
             return Err(Failure::new(
                 1,
                 phase,
@@ -285,7 +321,17 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
             ));
         }
     }
-    Ok(())
+    Ok(true)
+}
+
+/// Report missing `trusted/root-manifest.sha256` (`code == 1`) instead of
+/// skipping the root build-file check.
+fn missing_root_manifest_failure() -> Failure {
+    Failure::new(
+        1,
+        "cargo-boundary",
+        "repository audit requires trusted/root-manifest.sha256, which is missing",
+    )
 }
 
 fn map_bundle_error(err: BundleError) -> Failure {
@@ -1000,7 +1046,8 @@ fn scan_tools_tree(
 
 /// Verify Cargo workspace DAG containment, root Cargo/toolchain hygiene,
 /// `Cargo.lock` dependency provenance, and `trusted/root-manifest.sha256` (when
-/// present): root workspace members must reside under `trusted/` (production
+/// present; [`check_checkout_cargo_hygiene`] also requires it): root workspace
+/// members must reside under `trusted/` (production
 /// TCB, zone 0) or `tests/` (non-trusted test/harness crates with
 /// `publish = false`, zone 1). Crates under `tools/` (untrusted tools with
 /// `publish = false`, zone 2, where `proc-macro` targets are permitted) must
@@ -1020,13 +1067,20 @@ fn scan_tools_tree(
 /// manifest pins. Lean bundle parity belongs to [`verify_bundled_resources`],
 /// which [`check_checkout_cargo_hygiene`] runs separately.
 pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
+    let _manifest_present = check_cargo_boundary_with_manifest_presence(checkout)?;
+    Ok(())
+}
+
+/// [`check_cargo_boundary`], also returning whether
+/// `trusted/root-manifest.sha256` is present.
+fn check_cargo_boundary_with_manifest_presence(checkout: &Path) -> Result<bool, Failure> {
     let phase = "cargo-boundary";
     reject_cargo_toolchain_overrides(checkout)?;
     let root_toml_path = checkout.join("Cargo.toml");
     let capture_toml_path = checkout.join("trusted/rustc-capture/Cargo.toml");
     regular(&root_toml_path, phase)?;
     regular(&capture_toml_path, phase)?;
-    verify_root_manifest_sha256(checkout)?;
+    let manifest_present = verify_root_manifest_sha256(checkout)?;
 
     let root_text = fs::read_to_string(&root_toml_path)
         .map_err(|e| Failure::new(1, phase, format!("malformed Cargo manifest: {e}")))?;
@@ -1136,13 +1190,15 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     let root_pkg_names =
         local_package_closure(root_manifest.workspace.members.iter().map(String::as_str), &crates)?;
     verify_cargo_lock(checkout, &root_pkg_names)?;
-    Ok(())
+    Ok(manifest_present)
 }
 
 /// Reject `.cargo*` and `rust-toolchain*` overrides at `checkout`, and run
-/// [`check_cargo_boundary`], [`verify_upstream_pin`], and (when
-/// `require_mir_wp` is enabled) [`verify_bundled_resources`] whenever any
-/// Cargo, root-manifest, or vendored Miri TCB path is present.
+/// [`check_cargo_boundary`], root-manifest presence enforcement,
+/// [`verify_upstream_pin`], and (when `require_mir_wp` is enabled)
+/// [`verify_bundled_resources`] whenever any Cargo, root-manifest, or vendored
+/// Miri TCB path is present. A checkout with such a path is audited as a
+/// repository, so it must carry `trusted/root-manifest.sha256`.
 ///
 /// Bundle parity follows `require_mir_wp` because the checked bundles hold
 /// `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp` sources plus
@@ -1167,7 +1223,9 @@ pub(crate) fn check_checkout_cargo_hygiene(
     .iter()
     .any(|rel| fs::symlink_metadata(checkout.join(rel)).is_ok())
     {
-        check_cargo_boundary(checkout)?;
+        if !check_cargo_boundary_with_manifest_presence(checkout)? {
+            return Err(missing_root_manifest_failure());
+        }
         verify_upstream_pin(&checkout.join("vendor/lean-miri"))?;
         if require_mir_wp {
             verify_bundled_resources(checkout)?;
@@ -1179,6 +1237,65 @@ pub(crate) fn check_checkout_cargo_hygiene(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The auditor accepts exactly the entries `ci/update_root_manifest.py`
+    /// accepts: lowercase digests, either GNU mode marker, and canonical
+    /// relative paths, with no padding or stray carriage return.
+    #[test]
+    fn root_manifest_entries_follow_the_updater_grammar() {
+        let hex = "0123456789abcdef".repeat(4);
+        for (line, rel) in [
+            (format!("{hex}  Cargo.toml"), "Cargo.toml"),
+            (format!("{hex} *Cargo.toml"), "Cargo.toml"),
+            (format!("{hex}  trusted/audit/Cargo.toml"), "trusted/audit/Cargo.toml"),
+        ] {
+            assert_eq!(parse_root_manifest_entry(&line), Some((hex.as_str(), rel)), "{line:?}");
+        }
+        let upper = hex.to_ascii_uppercase();
+        for line in [
+            format!("{upper}  Cargo.toml"),
+            format!("{}  Cargo.toml", &hex[..63]),
+            format!("{hex} Cargo.toml"),
+            format!("{hex}\tCargo.toml"),
+            format!("{hex} \tCargo.toml"),
+            format!("{hex}  "),
+            format!(" {hex}  Cargo.toml"),
+            format!("{hex}  Cargo.toml\r"),
+            format!("{hex}  ./Cargo.toml"),
+            format!("{hex}  trusted//audit/Cargo.toml"),
+            format!("{hex}  trusted/./audit/Cargo.toml"),
+            format!("{hex}  trusted/audit/"),
+            format!("{hex}  ../Cargo.toml"),
+            format!("{hex}  /Cargo.toml"),
+        ] {
+            assert_eq!(parse_root_manifest_entry(&line), None, "{line:?}");
+        }
+    }
+
+    /// `verify_root_manifest_sha256` reports `Ok(false)` for an absent
+    /// manifest, which repository audits turn into a policy failure
+    /// (`code == 1`), and `Ok(true)` for a present, valid one.
+    #[test]
+    fn root_manifest_verification_reports_presence() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(!verify_root_manifest_sha256(dir.path()).unwrap());
+        let err = missing_root_manifest_failure();
+        assert_eq!(err.code, 1, "unexpected missing-manifest error: {err}");
+        assert!(
+            err.message.contains("requires trusted/root-manifest.sha256"),
+            "unexpected missing-manifest message: {err}"
+        );
+        let mut manifest = String::from("# root build files\n");
+        for rel in ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"] {
+            let path = dir.path().join(rel);
+            fs::write(&path, rel.as_bytes()).unwrap();
+            let digest = sha256_file(&path, "test").unwrap();
+            manifest.push_str(&format!("{digest}  {rel}\n"));
+        }
+        fs::create_dir_all(dir.path().join("trusted")).unwrap();
+        fs::write(dir.path().join("trusted/root-manifest.sha256"), manifest).unwrap();
+        assert!(verify_root_manifest_sha256(dir.path()).unwrap());
+    }
 
     #[test]
     fn non_notfound_metadata_errors_on_manifest_and_lock_are_operational() {

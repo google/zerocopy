@@ -278,6 +278,73 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     );
 }
 
+/// Verifies that the root-manifest check reads binary-mode (` *`) entries,
+/// which `ci/update_root_manifest.py` and `sha256sum --check` also accept,
+/// rejects uppercase digests, non-canonical paths, and whitespace-only lines
+/// that the updater also rejects, and that a repository audit fails closed
+/// (`code == 1`) when `trusted/root-manifest.sha256` is absent instead of
+/// skipping the root build-file check.
+#[test]
+fn root_manifest_follows_updater_grammar_and_is_required_for_repository_audits() {
+    let mut fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    let manifest_path = fix.root.join("trusted/root-manifest.sha256");
+    let text_mode = fs::read_to_string(&manifest_path).unwrap();
+    let entries = |rewrite: &dyn Fn(&str) -> String| -> String {
+        text_mode
+            .lines()
+            .map(|l| if l.is_empty() || l.starts_with('#') { format!("{l}\n") } else { rewrite(l) })
+            .collect()
+    };
+
+    // 1. Binary-mode entries verify like text-mode entries.
+    fs::write(&manifest_path, entries(&|l| format!("{} *{}\n", &l[..64], &l[66..]))).unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+
+    // 2. Uppercase digests are malformed, as in the updater.
+    fs::write(
+        &manifest_path,
+        entries(&|l| format!("{}{}\n", l[..64].to_ascii_uppercase(), &l[64..])),
+    )
+    .unwrap();
+    let err_upper = check_cargo_boundary(&fix.root).unwrap_err();
+    assert_eq!(err_upper.code, 1, "expected policy error: {err_upper}");
+    assert!(
+        err_upper.message.contains("malformed line in root-manifest.sha256"),
+        "unexpected error: {err_upper}"
+    );
+
+    // 3. A non-canonical path is malformed even when its digest matches, as
+    // is a whitespace-only line, which `sha256sum --check --strict` rejects.
+    let capture_toml = "trusted/rustc-capture/Cargo.toml";
+    let capture_digest = sha256_file(&fix.root.join(capture_toml), "test").unwrap();
+    for extra in [
+        format!("{capture_digest}  trusted//rustc-capture/Cargo.toml\n"),
+        "   \n".into(),
+        format!("# note\r{capture_digest}  {capture_toml}\n"),
+    ] {
+        fs::write(&manifest_path, format!("{text_mode}{extra}")).unwrap();
+        let err = check_cargo_boundary(&fix.root).unwrap_err();
+        assert_eq!(err.code, 1, "expected policy error for {extra:?}: {err}");
+        assert!(
+            err.message.contains("malformed line in root-manifest.sha256"),
+            "unexpected error for {extra:?}: {err}"
+        );
+    }
+    fs::write(&manifest_path, format!("{text_mode}{capture_digest}  {capture_toml}\n")).unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+
+    // 4. Without the manifest, the library check still passes for synthetic
+    // workspaces, but the repository audit fails closed.
+    fs::remove_file(&manifest_path).unwrap();
+    check_cargo_boundary(&fix.root).unwrap();
+    let err_missing = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_missing.message.contains("requires trusted/root-manifest.sha256"),
+        "unexpected error: {err_missing}"
+    );
+}
+
 /// Exhaustively exercises all 12 positive and negative cases of the two-zone
 /// monotonic Cargo workspace lattice (`WorkspaceZone::Trusted = 0 <
 /// WorkspaceZone::Tests = 1`) inside a `anneal-testkit` `WorkspaceBuilder`.

@@ -30,14 +30,23 @@ class ManifestError(Exception):
 # The existing file list is the reviewed TCB coverage. Hash refreshes must
 # preserve that decision rather than discover a different set of inputs.
 def refreshed_manifest(root, manifest):
-    lines = manifest.read_bytes().splitlines(keepends=True)
+    # Split strictly on `\n` so a bare `\r` cannot turn a `#` comment tail into
+    # an entry line (matching Rust `str::lines()` and `sha256sum --check`).
+    lines = re.findall(rb"[^\n]*\n|[^\n]+", manifest.read_bytes())
     output = []
     covered = set()
     for number, line in enumerate(lines, 1):
-        if line.startswith(b"#") or not line.strip():
+        if line in (b"\n", b"\r\n"):
             output.append(line)
             continue
-        match = re.fullmatch(rb"[0-9a-f]{64}( [ *])([^\r\n]+)(\r?\n)?", line)
+        if re.fullmatch(rb"#[^\r\n]*(?:\r?\n)?", line):
+            try:
+                line.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise ManifestError(f"line {number}: non-UTF-8 comment: {error}") from error
+            output.append(line)
+            continue
+        match = re.fullmatch(rb"[0-9a-f]{64}( [ *])([^\r\n]+)(?:\r?\n)?", line)
         if match is None:
             raise ManifestError(f"line {number}: malformed checksum entry")
         name = match[2].decode("utf-8")
