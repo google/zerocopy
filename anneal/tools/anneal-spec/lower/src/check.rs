@@ -247,11 +247,11 @@ impl MatchPlan<'_, '_> {
 
 /// Unqualified names that lowered clause text references besides
 /// [`GLOBALS`]. A `let` binder named after one would capture it.
-const CLAUSE_NAMES: &[&str] = &["Nat", "q", "out", "specArg", "specBool", "specInt", "specNat"];
+const CLAUSE_NAMES: &[&str] = &["q", "out", "specArg", "specBool", "specInt", "specNat"];
 
 // Every global the lowering references is qualified from one of a few root
-// names (`Int`, `True`, `False`, `Trusted`, `Min`, `Max`, and the output
-// namespace's root, `Spec` or `Specs`). Helper parameters become
+// names (`Int`, `Nat`, `True`, `False`, `Trusted`, `Min`, `Max`, and the
+// output namespace's root, `Spec` or `Specs`). Helper parameters become
 // Lean binders, and a binder captures any unqualified reference with the same
 // name (`pure_g`) and any qualified reference whose first component it names
 // (a binder `Trusted` turns `Trusted.MirSemantics.intTdiv` into a field
@@ -267,6 +267,8 @@ const CLAUSE_NAMES: &[&str] = &["Nat", "q", "out", "specArg", "specBool", "specI
 
 /// The Lean type of every lowered integer.
 pub const INT: &str = "Int";
+/// The Lean type of bit patterns and step counts.
+const NAT: &str = "Nat";
 const INT_NEG: &str = "Int.neg";
 const TRUE: &str = "True";
 const FALSE: &str = "False";
@@ -295,6 +297,7 @@ pub const SPECS_ROOT: &str = "Specs";
 /// Every global name that lowered helper text references.
 const GLOBALS: &[&str] = &[
     INT,
+    NAT,
     INT_NEG,
     TRUE,
     FALSE,
@@ -393,6 +396,13 @@ const I32: IntTy = IntTy { bits: 32, signed: true, pointer_sized: false };
 fn fits(s: IntTy, t: IntTy) -> bool {
     let ((s_lo, s_hi), (t_lo, t_hi)) = (s.range(), t.range());
     t_lo <= s_lo && s_hi <= t_hi
+}
+
+/// `body`, a function of `params` of Lean type `ty`, applied to `args`. The
+/// arguments lie outside the `fun`, so each is evaluated once and none is in
+/// the scope of a parameter, which `body` alone mentions.
+fn apply_fun(params: &[&str], ty: &str, body: &str, args: &[String]) -> String {
+    format!("((fun ({} : {ty}) => {body}) {})", params.join(" "), args.join(" "))
 }
 
 /// Whether `a <= b`.
@@ -1827,7 +1837,13 @@ impl<'a> Env<'a> {
     /// mathematical, and lower to Lean's `min` and `max`, which evaluate
     /// each operand once. Rust panics when the bounds of `clamp` are out of
     /// order, so they must be constants in order. `is_power_of_two` takes an
-    /// unsigned `recv`, as in Rust, and is a decidable `bool`.
+    /// unsigned `recv`, as in Rust, and is a decidable `bool`, as is
+    /// `is_multiple_of`. `div_ceil` takes unsigned operands and a divisor
+    /// guarded as for `/`. `rotate_left` and `rotate_right` rotate the bits
+    /// of `recv` by a `u32` amount modulo the bit width. An operation that
+    /// needs an operand more than once applies a Lean `fun` to the operands,
+    /// which evaluates each once and keeps every specification name out of
+    /// the scope of its binders.
     fn method(
         &self,
         name: &str,
@@ -1849,6 +1865,18 @@ impl<'a> Env<'a> {
             }
         };
         let ty = |t: IntTy| if math { Ty::Math } else { Ty::Int(t) };
+        // Rust defines some methods only on unsigned integer types.
+        let unsigned = |t: IntTy| {
+            if t.signed {
+                Err(type_error(
+                    span,
+                    format!("`{name}` needs an unsigned integer, found `{}`", t.rust_name()),
+                )
+                .help(format!("Rust defines `{name}` only on unsigned integer types")))
+            } else {
+                Ok(())
+            }
+        };
         if name != "math" && INTRINSICS.contains(&name) {
             arity(if name.ends_with("_neg") { 0 } else { 1 })?;
             let operands: Vec<Expr> = std::iter::once(recv).chain(args).cloned().collect();
@@ -1904,20 +1932,78 @@ impl<'a> Env<'a> {
             "is_power_of_two" => {
                 arity(0)?;
                 let (a, t) = self.int_operand(name, recv, facts)?;
-                if t.signed {
-                    return Err(type_error(
-                        span,
-                        format!(
-                            "`is_power_of_two` needs an unsigned integer, found `{}`",
-                            t.rust_name()
-                        ),
-                    )
-                    .help("Rust defines `is_power_of_two` only on unsigned integer types"));
-                }
+                unsigned(t)?;
                 let p = POWER_OF_TWO_BINDER;
                 Ok(Low::Prop(Prop::pure(format!(
                     "(let {p} := {INT}.toNat {a}; 0 < {p} ∧ {p} &&& ({p} - 1) = 0)"
                 ))))
+            }
+            // As in Rust, `a.is_multiple_of(0)` holds exactly when `a` is
+            // `0`, which is `intTmod a 0 = 0`, since `intTmod a 0` is `a`.
+            "is_multiple_of" => {
+                arity(1)?;
+                let (a, b, t) =
+                    self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
+                unsigned(t)?;
+                Ok(Low::Prop(Prop::pure(format!("({INT_TMOD} {a} {b} = 0)"))))
+            }
+            "div_ceil" => {
+                arity(1)?;
+                let (a, b, t) =
+                    self.int_pair(name, &[recv.clone(), args[0].clone()], span, facts)?;
+                unsigned(t)?;
+                let nonzero_lit = self.const_value(&args[0]).is_some_and(|v| v.mag != 0);
+                if !nonzero_lit && !facts.contains(&b) {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_UNGUARDED_SPEC_DIV",
+                        args[0].span,
+                        "the divisor of `div_ceil` may be zero",
+                    )
+                    .help("guard it, e.g. `d != 0 ==> a.div_ceil(d) == ...`"));
+                }
+                // The quotient of non-negative `n` by positive `d`, rounded
+                // up, which fits in `t`.
+                let term = apply_fun(
+                    &["«n»", "«d»"],
+                    INT,
+                    &format!("{INT_TDIV} («n» + «d» - 1) «d»"),
+                    &[a, b],
+                );
+                Ok(Low::Int(term, ty(t)))
+            }
+            "rotate_left" | "rotate_right" => {
+                arity(1)?;
+                let (a, t) = self.int_operand(name, recv, facts)?;
+                // As in Rust, the amount is a `u32`, taken modulo the width.
+                let n = match self.lower(&args[0], false, facts)? {
+                    Low::Int(n, Ty::Int(u)) if u == U32 => n,
+                    low @ Low::Lit(..) => {
+                        let Low::Int(n, _) = settle(low, Ty::Int(U32))? else { unreachable!() };
+                        n
+                    }
+                    low => {
+                        return Err(type_error(
+                            args[0].span,
+                            format!("`{name}` rotates by a `u32`, found {}", describe(&low)),
+                        ));
+                    }
+                };
+                // Rotate the `Nat` value of `a`'s bits: the bits shifted out
+                // of one end come back in at the other.
+                let (m, bits) = (modulus(t), t.bits);
+                let (head, tail) =
+                    if name == "rotate_left" { ("<<<", ">>>") } else { (">>>", "<<<") };
+                let rotated = apply_fun(
+                    &["«x»", "«k»"],
+                    NAT,
+                    &format!("(«x» {head} «k» ||| «x» {tail} ({bits} - «k»)) % {m}"),
+                    &[
+                        format!("({INT}.toNat ({INT_EMOD} {a} {m}))"),
+                        format!("({INT}.toNat ({INT_EMOD} {n} {bits}))"),
+                    ],
+                );
+                let value = format!("({INT}.ofNat {rotated})");
+                Ok(Low::Int(if t.signed { wrap_into(&value, t) } else { value }, ty(t)))
             }
             _ => Err(Diagnostic::new(
                 "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
@@ -1925,8 +2011,9 @@ impl<'a> Env<'a> {
                 format!("`.{name}()` is not a supported integer method"),
             )
             .help(
-                "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, `abs_diff`, \
-                 and the `wrapping_*`, `saturating_*`, and `no_overflow_*` intrinsics",
+                "the integer methods are `min`, `max`, `clamp`, `is_power_of_two`, \
+                 `is_multiple_of`, `div_ceil`, `rotate_left`, `rotate_right`, `abs_diff`, and \
+                 the `wrapping_*`, `saturating_*`, and `no_overflow_*` intrinsics",
             )),
         }
     }
