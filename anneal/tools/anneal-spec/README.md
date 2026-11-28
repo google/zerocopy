@@ -110,8 +110,8 @@ type `T`, parameters, the `ensures` binder, `!`, unary `-`, `&&`, `||`, `==>`
 (right-associative), `<==>`, comparisons, `+ - * / %`, helper calls,
 `math(e)`/`math { e }`, `wrapping_{add,sub,mul}`,
 `no_overflow_{add,sub,mul}`, `if c { a } else { b }` (with `else if`
-chains), and blocks `{ let x = e; .. value }`. Types: `bool`, `()`, and
-fixed-width integers.
+chains), `match s { pat => e, .. }`, and blocks `{ let x = e; .. value }`.
+Types: `bool`, `()`, and fixed-width integers.
 
 Every integer lowers to its mathematical `Int` value via `scalarAsInt`.
 Arithmetic on machine integers must say what it means: `math(a) + math(b)` is
@@ -169,6 +169,35 @@ block, and a name bound to `0` counts as zero in a guard such as `d != z`. A
 block's own binding, such as `{ let e = d; e != 0 }`, does not leave the
 block.
 
+A `match` examines a `bool` or integer scrutinee and takes the first arm whose
+pattern matches. A pattern is `_`, a name, `true` or `false`, an integer
+literal (optionally negative or suffixed), or an integer constant such as
+`u8::MAX`, and literals may be joined with `|`. A name binds the scrutinee and
+follows the `let` rules. Guards, ranges, and tuple, struct, enum, slice,
+`ref`, and `mut` patterns are rejected. A `match` must be exhaustive: a `bool`
+match covers `true` and `false`, and an integer match ends with a `_` or name
+arm. An arm whose patterns earlier arms already cover is rejected, as is an
+empty `match`. As with an `if`, the scrutinee ends at the first `{`, the arms
+must have one type, and no binary operator may follow a `match` directly. As
+in Rust, an arm body in braces ends at its `}` and needs no comma after it;
+other arm bodies, including `if` and `match` expressions, need one.
+
+An integer pattern must be in range for the scrutinee's machine type, and a
+suffixed pattern must have that type and be in range for its suffix. A
+`math` scrutinee has no machine type, so its suffixed patterns need only be in
+range. In `max_steps`, patterns are non-negative and unsigned, and a scrutinee
+has the machine type it has in a `max_steps` `if` condition: `match n` on a
+`u32` parameter rejects `3u8` and `4294967296`, while a sum, product, or
+`let` binding of step counts has no machine type.
+
+The lowering binds the scrutinee once, as `«match»` (a Rust keyword, so no
+specification name can capture it), and treats the arms as nested `if`s over
+`«match» = v`: arms between `bool`s join as implications, and arms that choose
+a value use Lean's `if`, which needs a decidable scrutinee when it is a
+`bool`. Each arm may divide by what its pattern and the earlier arms prove
+nonzero, so `match d { 0 => r == 0, _ => math(r) == math(n / d) }` passes, as
+does a name arm after a `0` arm.
+
 An integer constant lowers to its value on the profile v1 target, where
 `usize` and `isize` are 64 bits wide: `usize::MAX` lowers to
 `(18446744073709551615 : Int)`. As in Rust, `T::MIN` and `T::MAX` have type
@@ -194,17 +223,19 @@ UTF-8 source and columns count Unicode scalar values.
 | `E_ANNEAL_EAGER_CLAUSE_JOIN` | `&` or `\|` between `bool`s |
 | `E_ANNEAL_AMBIGUOUS_NEGATION` | `!a == b` and `!a != b` |
 | `E_ANNEAL_CHAINED_COMPARISON` | `a < b < c` |
-| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks that bind no name, `match`/loops, `let mut`, `let` patterns and `let ... else`, `unsafe` helpers |
-| `E_ANNEAL_UNUSED_LET` | a `let` binding that the rest of its block never uses |
+| `E_ANNEAL_IMPURE_SPEC_EXPR` | assignments, blocks that bind no name, loops, `let mut`, `let` patterns and `let ... else`, `unsafe` helpers |
+| `E_ANNEAL_UNUSED_LET` | a `let` binding that the rest of its block never uses, or a pattern binding that its arm never uses |
+| `E_ANNEAL_NON_EXHAUSTIVE_MATCH` | an empty `match`, a `bool` `match` without both `true` and `false`, or an integer `match` without a final `_` or name arm |
+| `E_ANNEAL_UNREACHABLE_MATCH_ARM` | a `match` pattern or arm that earlier patterns already cover |
 | `E_ANNEAL_UNDECIDABLE_SPEC_IF` | an `if` choosing an integer or `()` whose condition calls a `bool` helper, names a `bool` helper parameter, or compares `()` values |
 | `E_ANNEAL_OLD_IN_PRECONDITION` / `E_ANNEAL_UNSUPPORTED_OLD` | `old(...)` |
 | `E_ANNEAL_SAFETY_REQUIRES_ON_SAFE_FN` | `safety_requires` on a safe function |
 | `E_ANNEAL_SPEC_UNKNOWN_IDENT` / `E_ANNEAL_SPEC_UNKNOWN_FN` | unbound names (with a did-you-mean hint) |
 | `E_ANNEAL_SPEC_TYPE_MISMATCH` / `E_ANNEAL_SPEC_LITERAL_RANGE` / `E_ANNEAL_SPEC_TYPE_ANNOTATION_NEEDED` | ill-typed expressions |
-| `E_ANNEAL_SPEC_SHADOWING` | an `ensures` binder that shadows a parameter, and a `let` binding that shadows a parameter, the `ensures` binder, an enclosing binding, or a helper |
+| `E_ANNEAL_SPEC_SHADOWING` | an `ensures` binder that shadows a parameter, and a `let` or pattern binding that shadows a parameter, the `ensures` binder, an enclosing binding, or a helper |
 | `E_ANNEAL_PURE_RECURSION` | recursive helpers |
 | `E_ANNEAL_UNSUPPORTED_CLAUSE` / `E_ANNEAL_UNKNOWN_CLAUSE` / `E_ANNEAL_UNKNOWN_ATTRIBUTE` | clauses outside profile v1 |
-| `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` / `E_ANNEAL_UNSUPPORTED_BITWISE` | types and expressions outside profile v1 |
+| `E_ANNEAL_UNSUPPORTED_TYPE` / `E_ANNEAL_SPEC_UNSUPPORTED_EXPR` / `E_ANNEAL_UNSUPPORTED_BITWISE` | types, expressions, and `match` patterns outside profile v1 |
 | `E_ANNEAL_DUPLICATE_TARGET` / `E_ANNEAL_DUPLICATE_CLAUSE` / `E_ANNEAL_DUPLICATE_HELPER` / `E_ANNEAL_CONFLICTING_EFFECTS` / `E_ANNEAL_UNSATISFIABLE_NEVER_EFFECTS` | duplicates, conflicting effect qualifiers, and bare `-> !` total-normal specs |
 | `E_ANNEAL_IGNORED_ATTRIBUTE` | an `anneal::` item in a position the lowering does not read |
 | `E_ANNEAL_BARE_OR_COMPOUND_CFG` | any use of the `anneal` cfg other than `cfg_attr(anneal, ..)` enabling `anneal::` specification attributes, and the identifier `anneal` anywhere but there or in an `anneal::` path |

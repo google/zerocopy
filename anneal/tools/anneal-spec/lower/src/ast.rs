@@ -195,6 +195,40 @@ pub enum ExprKind {
     /// `let name [: ty] = init;` followed by `body`, the rest of its block.
     /// A block `{ let a = x; let b = y; e }` nests as `Let(a, Let(b, e))`.
     Let(Box<LetBinding>, Box<Expr>),
+    /// `match scrutinee { arms }`.
+    Match(Box<Expr>, Vec<Arm>),
+}
+
+/// One `match` arm: `pats => body`, where `pats` are the alternatives of an
+/// or-pattern.
+#[derive(Clone, Debug)]
+pub struct Arm {
+    pub pats: Vec<Pat>,
+    pub body: Expr,
+    pub span: Span,
+}
+
+#[derive(Clone, Debug)]
+pub struct Pat {
+    pub kind: PatKind,
+    pub span: Span,
+}
+
+#[derive(Clone, Debug)]
+pub enum PatKind {
+    /// `_`.
+    Wild,
+    /// A name that binds the scrutinee.
+    Bind(String),
+    Bool(bool),
+    /// An integer literal: its sign, magnitude, and optional suffix.
+    Int {
+        neg: bool,
+        mag: u128,
+        suffix: Option<IntTy>,
+    },
+    /// `T::MIN`, `T::MAX`, or `T::BITS`.
+    IntConst(IntTy, IntConst),
 }
 
 /// The binding of one `let` statement.

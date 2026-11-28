@@ -138,6 +138,30 @@ anneal::external_spec! {
     )]
     fn stepped(n: u32, b: u8) -> u32;
 
+    // A `match` choosing a value lowers to Lean's `if` over equalities with
+    // the bound scrutinee, and one choosing a `bool` to implications.
+    #[anneal::pure]
+    fn match_bucket(x: u8) -> u8 {
+        match x { 0 => 0, 1 | 2 => 1, u8::MAX => 3, _ => 2 }
+    }
+
+    #[anneal::pure]
+    fn match_flag_is(b: bool, r: u8) -> bool {
+        match b { true => r == 1u8, false => r == 0u8 }
+    }
+
+    #[anneal::pure]
+    fn match_div_is(n: u32, d: u32, r: u32) -> bool {
+        match d { 0 => r == 0u32, k => { let s = math(n / k); math(r) == s } }
+    }
+
+    #[anneal::spec(
+        requires(match_bucket(n8) == 1u8 && match_flag_is(true, 1u8) && match_div_is(7u32, 2u32, 3u32)),
+        max_steps = match n { 0 => 1, m => m * 2 },
+        ensures(|r| match n { 0 => r == 0u32, _ => math(r) >= 0 }),
+    )]
+    fn tiered(n: u32, n8: u8) -> u32;
+
     #[anneal::spec(
         requires(math(n) + 1 <= math(usize::MAX)),
         max_steps = u8::MAX + u32::BITS * 2 + n / u16::MAX,
