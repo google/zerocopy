@@ -718,3 +718,188 @@ def main : IO Unit := do
         "{err}"
     );
 }
+
+/// Verifies that `Trusted.Framework.Link` (`candidate:refinement`) compiles,
+/// passes `"preflight"` and Pass-1 kernel replay onto `foundation-lock.json`
+/// together with its untrusted `Anneal.Framework.Link` proofs, emits no
+/// `partial` / `._unsafe_rec` constants, keeps every declaration mechanically
+/// reachable from the planned linking root
+/// `Trusted.Framework.CrossLangLinkedTheorem`, and remains isolated from
+/// `vetted` modules.
+#[test]
+fn trusted_framework_link_pass1_replay_reachability_and_vetted_isolation() {
+    let checkout = repo_root();
+    let mut fix = TempFixture::new(Some(HEADER));
+    fs::create_dir_all(fix.root.join("trusted/lean/Trusted/Framework")).unwrap();
+    fs::create_dir_all(fix.root.join("theory/Anneal/Framework")).unwrap();
+    for rel in [
+        "trusted/lean/Trusted/Framework.lean",
+        "trusted/lean/Trusted/Framework/Link.lean",
+        "theory/Anneal/Framework/Link.lean",
+    ] {
+        fs::copy(checkout.join(rel), fix.root.join(rel)).unwrap();
+    }
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    let report = checker.run().unwrap();
+    assert_eq!(report["replay"], json!(true), "{report}");
+    for ax in report["axioms"].as_array().unwrap() {
+        let ax = ax.as_str().unwrap();
+        assert!(
+            ax != "sorryAx" && !ax.starts_with("Trusted.") && !ax.starts_with("Anneal."),
+            "unexpected axiom {ax} in Trusted.Framework.Link closure: {report}"
+        );
+    }
+
+    let decls = report["declarations"].as_array().unwrap();
+    let link_decls: BTreeSet<&str> = decls
+        .iter()
+        .filter(|d| d["module"] == json!("Trusted.Framework.Link"))
+        .map(|d| {
+            assert_eq!(d["trustStatus"], json!("candidate:refinement"), "{d}");
+            d["name"].as_str().unwrap()
+        })
+        .collect();
+    for expected in [
+        "Trusted.Framework.EffectMask.le",
+        "Trusted.Framework.SimConv",
+        "Trusted.Framework.StubDischargedByVerifiedCallee",
+        "Trusted.Framework.eraseDischargedStubGap",
+        "Trusted.Framework.CrossLangLinkedTheorem",
+    ] {
+        assert!(link_decls.contains(expected), "missing {expected} in {link_decls:?}");
+    }
+
+    // Zero dead code: every `Trusted.Framework.Link` declaration must be
+    // reachable over `anneal-audit` inventory `dependencies` from the planned
+    // linking root. A Lean-generated auxiliary (a constructor, or a name whose
+    // last component is a generated suffix such as `rec`, `injEq`, or
+    // `_sunfold`) counts as reachable when the declaration it was generated
+    // for is reachable.
+    let deps: BTreeMap<&str, Vec<&str>> = decls
+        .iter()
+        .map(|d| {
+            let ds = d["dependencies"].as_array().unwrap();
+            (d["name"].as_str().unwrap(), ds.iter().map(|x| x.as_str().unwrap()).collect())
+        })
+        .collect();
+    let kinds: BTreeMap<&str, &str> = decls
+        .iter()
+        .map(|d| (d["name"].as_str().unwrap(), d["kind"].as_str().unwrap()))
+        .collect();
+    let mut reachable = BTreeSet::new();
+    let mut queue = VecDeque::from(["Trusted.Framework.CrossLangLinkedTheorem"]);
+    while let Some(n) = queue.pop_front() {
+        if reachable.insert(n) {
+            queue.extend(deps.get(n).into_iter().flatten().copied());
+        }
+    }
+    let is_generated_suffix = |last: &str| {
+        last.starts_with('_')
+            || last.starts_with("match_")
+            || last.starts_with("proof_")
+            || last.starts_with("eq_")
+            || [
+                "rec",
+                "recOn",
+                "casesOn",
+                "below",
+                "brecOn",
+                "binductionOn",
+                "ibelow",
+                "noConfusion",
+                "noConfusionType",
+                "ctorIdx",
+                "inj",
+                "injEq",
+                "sizeOf_spec",
+            ]
+            .contains(&last)
+    };
+    let unreachable: Vec<&&str> = link_decls
+        .iter()
+        .filter(|n| {
+            let mut cur: &str = n;
+            loop {
+                if reachable.contains(cur) {
+                    return false;
+                }
+                let Some((parent, last)) = cur.rsplit_once('.') else { return true };
+                if !(is_generated_suffix(last) || kinds.get(cur) == Some(&"constructor")) {
+                    return true;
+                }
+                cur = parent;
+            }
+        })
+        .collect();
+    assert!(
+        unreachable.is_empty(),
+        "Trusted.Framework.Link declarations unreachable from \
+         Trusted.Framework.CrossLangLinkedTheorem: {unreachable:?}"
+    );
+
+    // Non-vacuously inspect the compiled `.olean` files: the trusted module
+    // emits no `partial` / `._unsafe_rec` constants (including for
+    // `eraseDischargedStubGap`), and the theory module contains the linking
+    // soundness theorems and negative ABI, effect-mismatch, and
+    // demonic-relation refutations.
+    let stage = checker.stage().to_path_buf();
+    let link_olean = stage.join("lib/Trusted/Framework/Link.olean");
+    let theory_olean = stage.join("theory-lib/Anneal/Framework/Link.olean");
+    let check_script = stage.join("CheckLinkOleans.lean");
+    run_lean_script(
+        &mut checker,
+        "check-link-oleans",
+        &check_script,
+        &format!(
+            r#"import Lean
+open Lean in
+def main : IO Unit := do
+  for (path, required) in [
+      ({:?}, [`Trusted.Framework.eraseDischargedStubGap,
+              `Trusted.Framework.CrossLangLinkedTheorem]),
+      ({:?}, [`Anneal.Framework.Link.link_erases_assumedExternalCallee,
+              `Anneal.Framework.Link.link_transfers_postcondition,
+              `Anneal.Framework.Link.stub_realizable_of_verified_callee,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_abiCompat_false,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_noUnwind_mismatch,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_terminates_mismatch,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_noAbort_mismatch,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_related_unsafe_query,
+              `Anneal.Framework.Link.stubDischarge_blocked_of_related_return_violation])] do
+    let (data, _) ← readModuleData (System.FilePath.mk path)
+    for n in required do
+      unless data.constants.any (fun ci => ci.name == n) do
+        throw (IO.userError s!"missing {{n}} in {{path}}")
+    for ci in data.constants do
+      if ci.isPartial || ci.name.toString.endsWith "._unsafe_rec" then
+        throw (IO.userError s!"unexpected partial/_unsafe_rec constant: {{ci.name}}")
+    for n in data.extraConstNames do
+      if n.toString.endsWith "._unsafe_rec" then
+        throw (IO.userError s!"unexpected extra _unsafe_rec constant: {{n}}")
+"#,
+            link_olean.to_string_lossy(),
+            theory_olean.to_string_lossy()
+        ),
+    );
+
+    // Negative: a `vetted` module attempting to import
+    // `Trusted.Framework.Link` (`candidate:refinement`) fails closed in
+    // `"preflight"`.
+    fs::write(
+        fix.root.join("trusted/lean/Trusted/VettedImportsLink.lean"),
+        "-- anneal-trust-tier: vetted\n\
+         module\n\
+         prelude\n\
+         public import Init.NotationExtra\n\
+         public import Trusted.Framework.Link\n",
+    )
+    .unwrap();
+    let err = fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    assert!(
+        err.message.contains(
+            "vetted module Trusted.VettedImportsLink cannot import candidate:refinement module Trusted.Framework.Link"
+        ),
+        "{err}"
+    );
+}

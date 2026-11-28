@@ -551,7 +551,7 @@ anneal/
 │   │       ├── MirModel.lean       # Shared pure boundary value/query types
 │   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem (+ MirSemantics/)
 │   │       ├── Framework.lean      # Language-agnostic verification envelope
-│   │       ├── Framework/          # MIR ExecutionModel instances & bridges
+│   │       ├── Framework/          # Cross-language linking & MIR bridges
 │   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
 │   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
 │   │   └── Trusted/
@@ -643,10 +643,18 @@ MIR-specific semantics:
   (`MirProfileV1`, `MirProfileV2`, `OracleCertificate`, and legacy
   `CrateEnvelopeTheorem` / `UnitEnvelopeTheorem` compatibility bridges) without
   contaminating `Trusted/Framework.lean` with MIR AST or semantics imports.
+- **`Trusted/Framework/Link.lean`** (`candidate:refinement`) defines the
+  language-agnostic cross-language stub discharge judgment (`SimConv`,
+  `StubDischargedByVerifiedCallee`, and `CrossLangLinkedTheorem`) over
+  `Trusted/Framework.lean` alone, so a caller's `.assumedExternalCallee` gap
+  can be erased by a verified callee from another execution model without
+  importing either language's semantics.
 - **`theory/Anneal/Framework.lean`** and
   **`theory/Anneal/Framework/StepWp.lean`** supply untrusted (`0`-TCB) envelope
   laws, compatibility equivalences, and generic step/loop weakest-precondition
-  combinators.
+  combinators; **`theory/Anneal/Framework/Link.lean`** proves gap erasure,
+  postcondition transfer, stub realizability, and ABI/effect-mismatch
+  refutations for `Trusted/Framework/Link.lean`.
 
 ## Compiler integration and extraction lifecycle
 
