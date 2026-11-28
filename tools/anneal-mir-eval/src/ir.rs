@@ -265,14 +265,39 @@ pub enum Ty {
     Int(IntTy),
     Enum(EnumTy),
     OverflowPair(IntTy),
-    Tuple { fields: Vec<Ty> },
-    Ref { mutability: Mutability, pointee: Box<Ty> },
-    RawPtr { mutability: Mutability, pointee: Box<Ty> },
-    Slice { elem: Box<Ty> },
+    Tuple {
+        fields: Vec<Ty>,
+    },
+    Ref {
+        mutability: Mutability,
+        pointee: Box<Ty>,
+    },
+    RawPtr {
+        mutability: Mutability,
+        pointee: Box<Ty>,
+    },
+    Slice {
+        elem: Box<Ty>,
+    },
     Str,
-    RangeTo { elem: Box<Ty> },
-    RangeFrom { elem: Box<Ty> },
-    Array { elem: Box<Ty>, len: u64 },
+    RangeTo {
+        elem: Box<Ty>,
+    },
+    RangeFrom {
+        elem: Box<Ty>,
+    },
+    /// `core::ops::Range<T>`; captured, but not yet evaluated.
+    Range {
+        elem: Box<Ty>,
+    },
+    /// `core::option::Option<T>` (`Trusted.MirAst.MirTy.option`).
+    Option {
+        elem: Box<Ty>,
+    },
+    Array {
+        elem: Box<Ty>,
+        len: u64,
+    },
     Unsupported,
 }
 
@@ -325,9 +350,9 @@ impl Ty {
             ) => m_a == m_b && p_a.structural_eq(p_b),
             (Self::Slice { elem: e_a }, Self::Slice { elem: e_b })
             | (Self::RangeTo { elem: e_a }, Self::RangeTo { elem: e_b })
-            | (Self::RangeFrom { elem: e_a }, Self::RangeFrom { elem: e_b }) => {
-                e_a.structural_eq(e_b)
-            }
+            | (Self::RangeFrom { elem: e_a }, Self::RangeFrom { elem: e_b })
+            | (Self::Range { elem: e_a }, Self::Range { elem: e_b })
+            | (Self::Option { elem: e_a }, Self::Option { elem: e_b }) => e_a.structural_eq(e_b),
             (Self::Array { elem: e_a, len: l_a }, Self::Array { elem: e_b, len: l_b }) => {
                 l_a == l_b && e_a.structural_eq(e_b)
             }
@@ -350,9 +375,11 @@ impl Ty {
             | Self::Slice { .. }
             | Self::Str
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. } => true,
             Self::Ref { .. } | Self::Unsupported => false,
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
+            Self::Option { elem } => elem.is_retag_noop(),
             Self::Array { elem, .. } => elem.is_retag_noop(),
         }
     }
@@ -374,7 +401,9 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::Range { .. }
+            | Self::Option { .. } => true,
         }
     }
 
@@ -383,7 +412,7 @@ impl Ty {
     pub fn has_ref_v2(&self) -> bool {
         match self {
             Self::Ref { .. } => true,
-            Self::Array { elem, .. } => elem.has_ref_v2(),
+            Self::Array { elem, .. } | Self::Option { elem } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
             Self::Bool
             | Self::Char
@@ -398,6 +427,7 @@ impl Ty {
             | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
+            | Self::Range { .. }
             | Self::Unsupported => false,
         }
     }
@@ -407,7 +437,7 @@ impl Ty {
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
             Self::RawPtr { .. } => true,
-            Self::Array { elem, .. } => elem.has_raw_ptr_v2(),
+            Self::Array { elem, .. } | Self::Option { elem } => elem.has_raw_ptr_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
             Self::Bool
             | Self::Char
@@ -422,6 +452,7 @@ impl Ty {
             | Self::Str
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
+            | Self::Range { .. }
             | Self::Unsupported => false,
         }
     }
@@ -448,6 +479,11 @@ pub enum ProjectionElem {
         offset: u64,
         min_length: u64,
         from_end: bool,
+    },
+    /// `ProjectionElem::Downcast`; Profile v2 evaluates only the `Option`
+    /// payload path `.downcast 1` followed by `.field 0`.
+    Downcast {
+        variant_idx: u64,
     },
     Unsupported,
 }
@@ -675,6 +711,21 @@ pub enum Rvalue {
         elem_ty: Ty,
         start: Operand,
     },
+    /// `AggregateKind::Adt` for `core::ops::Range`; captured, but not yet
+    /// evaluated.
+    AggregateRange {
+        elem_ty: Ty,
+        start: Operand,
+        end: Operand,
+    },
+    /// `AggregateKind::Adt` for `core::option::Option` (`None` is variant 0
+    /// without a payload, `Some` is variant 1 with one).
+    AggregateOption {
+        variant_idx: u64,
+        inner_ty: Ty,
+        #[serde(default)]
+        payload: Option<Box<Operand>>,
+    },
     Aggregate {
         aggregate_kind: AggregateKind,
         fields: Vec<Operand>,
@@ -879,6 +930,68 @@ pub enum CoreCallOp {
     SliceLen,
     SliceGetUncheckedRangeTo,
     SliceGetUncheckedRangeFrom,
+    /// `<[T]>::index(Range)`; captured, but not yet evaluated.
+    SliceIndexRange {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    /// `<[T]>::index(RangeFrom)`; captured, but not yet evaluated.
+    SliceIndexRangeFrom {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    /// `<[T]>::is_empty`; captured, but not yet evaluated.
+    SliceIsEmpty {
+        elem: Ty,
+    },
+    /// `<[T]>::split_at{,_mut}`; captured, but not yet evaluated.
+    SliceSplitAt {
+        mutability: Mutability,
+        elem: Ty,
+    },
+    /// `{integer}::is_multiple_of`; captured, but not yet evaluated.
+    NumIsMultipleOf(IntTy),
+    NumCheckedAdd(IntTy),
+    NumCheckedMul(IntTy),
+    NumCheckedSub(IntTy),
+    /// `{integer}::saturating_add`; captured, but not yet evaluated.
+    NumSaturatingAdd(IntTy),
+    /// `{integer}::wrapping_shl`; captured, but not yet evaluated.
+    NumWrappingShl(IntTy),
+    /// `{integer}::wrapping_shr`; captured, but not yet evaluated.
+    NumWrappingShr(IntTy),
+    /// `{integer}::leading_zeros`; captured, but not yet evaluated.
+    NumLeadingZeros(IntTy),
+    /// `{integer}::overflowing_add`; captured, but not yet evaluated.
+    NumOverflowingAdd(IntTy),
+    /// `{integer}::overflowing_sub`; captured, but not yet evaluated.
+    NumOverflowingSub(IntTy),
+    /// `core::cmp::min`; captured, but not yet evaluated.
+    CmpMin(IntTy),
+    /// `core::cmp::max`; captured, but not yet evaluated.
+    CmpMax(IntTy),
+    /// `core::mem::replace`; captured, but not yet evaluated.
+    MemReplace {
+        ty: Ty,
+    },
+    /// `Option::is_some` through `&Option<T>`; captured, but not yet
+    /// evaluated (`Option` values are immediate-only in this evaluator).
+    OptionIsSome {
+        inner: Ty,
+    },
+    /// `Option::is_none` through `&Option<T>`; captured, but not yet
+    /// evaluated.
+    OptionIsNone {
+        inner: Ty,
+    },
+    /// `Option::take` through `&mut Option<T>`; captured, but not yet
+    /// evaluated.
+    OptionTake {
+        inner: Ty,
+    },
+    OptionUnwrap {
+        inner: Ty,
+    },
     PtrAdd {
         mutability: Mutability,
         pointee: Ty,

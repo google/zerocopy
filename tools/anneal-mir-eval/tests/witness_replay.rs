@@ -398,6 +398,8 @@ fn anti_bypass_gate_never_promotes_model_only_or_unclassified_witnesses() {
         UbClass::CheckPtrAssertOnly,
         UbClass::ZstStackRefEscape,
         UbClass::SymbolicAllocAlignment,
+        UbClass::ConservativeOverlappingAssignCopy,
+        UbClass::ZstOptionNonePayloadRead,
         UbClass::DivergingCallReturned,
         UbClass::EntryInvalidRefArg,
         UbClass::SyntheticInvalidConstOrSwitch,

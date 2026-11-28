@@ -9,7 +9,7 @@
 //! Concrete runtime values, fault classifications, and MIR type predicates
 //! matching `Trusted.MirModel` and `Trusted.MirSemantics.Enum`.
 
-use alloc::{collections::BTreeSet, string::String, vec, vec::Vec};
+use alloc::{boxed::Box, collections::BTreeSet, string::String, vec, vec::Vec};
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
@@ -106,8 +106,12 @@ pub enum UbClass {
     InvalidReferenceProduced,
     /// Returned references violate pairwise `&mut` span disjointness.
     OverlappingMutRefsReturned,
-    /// Non-ZST reference to callee stack storage escaped across return.
+    /// Non-zero-sized reference to callee stack storage escaped across return.
     StackRefEscaped,
+    /// Projection of `Option::Some` payload (`(.downcast 1).0`) on `None` for a
+    /// non-`()` payload (reads uninitialized bytes or an invalid niche bit
+    /// pattern in Rust/Miri).
+    InactiveOptionPayloadRead,
     /// Conservative model-only: zero-byte offset on a dead or OOB provenance
     /// pointer (accepted by `rustc`/`Miri` `check_and_deref_ptr`).
     ZeroOffsetDeadOrOobPtr,
@@ -145,6 +149,10 @@ pub enum UbClass {
     /// fast path, or an unmodeled type conservatively classified as
     /// `MemoryCopy`.
     ConservativeOverlappingAssignCopy,
+    /// Conservative model-only: projection of the zero-sized `()` payload of
+    /// `Option::Some` on `None` (reads zero bytes with no `()` validity
+    /// invariant, so Miri accepts it).
+    ZstOptionNonePayloadRead,
     /// Entry boundary violation: caller passed an invalid or aliasing reference
     /// outside `ValidEntryArgsV2` before entering the body.
     EntryInvalidRefArg,
@@ -176,7 +184,8 @@ impl UbClass {
             | Self::OverlappingMemoryCopy
             | Self::InvalidReferenceProduced
             | Self::OverlappingMutRefsReturned
-            | Self::StackRefEscaped => WitnessClass::ReplayableMiriUb,
+            | Self::StackRefEscaped
+            | Self::InactiveOptionPayloadRead => WitnessClass::ReplayableMiriUb,
 
             Self::ZeroOffsetDeadOrOobPtr
             | Self::ZstNullRawPtrDeref
@@ -188,6 +197,7 @@ impl UbClass {
             | Self::ZstStackRefEscape
             | Self::SymbolicAllocAlignment
             | Self::ConservativeOverlappingAssignCopy
+            | Self::ZstOptionNonePayloadRead
             | Self::DivergingCallReturned
             | Self::EntryInvalidRefArg
             | Self::SyntheticInvalidConstOrSwitch => WitnessClass::ModelOnlyUnreplayed,
@@ -239,6 +249,10 @@ impl UbClass {
                 "conservative Trusted.MirSemantics check: overlapping Assign copy on an \
                  immediate (non-address-taken) padded ScalarPair local (or an unmodeled \
                  type) does not take Miri's copy_nonoverlapping memory-copy path",
+            ),
+            Self::ZstOptionNonePayloadRead => Some(
+                "conservative Trusted.MirSemantics check: reading the zero-sized () payload of \
+                 Option::Some on None touches zero bytes with no validity invariant in Miri",
             ),
             Self::DivergingCallReturned => Some(
                 "synthetic MIR artifact: a diverging call terminator (target = None) returning \
@@ -413,15 +427,23 @@ impl OrderingVal {
 pub enum Val {
     Scalar(ScalarVal),
     Ptr(PtrVal),
-    SlicePtr { ptr: PtrVal, len: u64 },
+    SlicePtr {
+        ptr: PtrVal,
+        len: u64,
+    },
     Bool(bool),
     Char(char),
     Ordering(OrderingVal),
     Unit,
-    EnumVal { ty: EnumTy, variant: usize },
+    EnumVal {
+        ty: EnumTy,
+        variant: usize,
+    },
     Tuple(Vec<Val>),
     RangeTo(u64),
     RangeFrom(u64),
+    /// `Option<T>` value (`Trusted.MirSemantics.Val.optionVal`).
+    OptionVal(Option<Box<Val>>),
     Bytes(Vec<AllocByte>),
 }
 
@@ -608,6 +630,8 @@ pub fn check_val(val: &Val, ty: &Ty, enable_profile_v2: bool) -> bool {
         (Val::Tuple(vals), Ty::OverflowPair(ity)) if vals.len() == 2 => {
             check_val(&vals[0], &Ty::Int(*ity), true) && check_val(&vals[1], &Ty::Bool, true)
         }
+        (Val::OptionVal(None), Ty::Option { .. }) => true,
+        (Val::OptionVal(Some(inner)), Ty::Option { elem }) => check_val(inner, elem, true),
         _ => false,
     }
 }
@@ -644,8 +668,19 @@ pub fn is_supported_v2_local_ty(ty: &Ty) -> bool {
             other => other.as_overflow_pair().is_none() && is_supported_v1_local_ty(other),
         },
         Ty::RangeTo { elem } | Ty::RangeFrom { elem } => elem.is_usize(),
+        Ty::Option { elem } => {
+            is_supported_v2_local_ty(elem) && is_option_payload_supported_v2(elem)
+        }
         _ => false,
     }
+}
+
+/// Whether `inner` has a verified `rustc` layout inside `Option<inner>`,
+/// matching `Trusted.MirSemantics.isOptionPayloadSupportedV2` (the `()`,
+/// `bool`, and reference niche cases, plus niche-free integer and raw pointer
+/// payloads). Nested options fail closed.
+pub fn is_option_payload_supported_v2(inner: &Ty) -> bool {
+    matches!(inner, Ty::Unit | Ty::Bool | Ty::Ref { .. } | Ty::Int(_) | Ty::RawPtr { .. })
 }
 
 /// Whether `ty` is executable in locals under the selected profile.
