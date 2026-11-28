@@ -121,6 +121,7 @@ anneal/
 │   ├── perf_tracking.py               # Telemetry collector, validator, & Tier A/B regression gate
 │   ├── perf_budgets.json              # Tier A time, RSS, 3-part .olean*, binary, & unit budgets
 │   ├── render_perf_dashboard.py       # Zero-CDN static HTML/JSON dashboard generator
+│   ├── render_perf_dashboard.html     # Dashboard page template (inline JSON slot)
 │   └── verify_{zerocopy,starnix_e2e}.py
 ├── trusted/                           # Zone::Trusted ( rank = 0 ) — Human-Audited TCB
 │   ├── root-manifest.sha256           # Pins Cargo.toml, Cargo.lock, flake.nix, flake.lock
