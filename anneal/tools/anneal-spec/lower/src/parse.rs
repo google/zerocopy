@@ -932,6 +932,7 @@ pub fn spec_fn(
 fn reserved_helper_name(name: &str) -> bool {
     name == "math"
         || name == "old"
+        || name.contains("__anneal")
         || name.starts_with("wrapping_")
         || name.starts_with("no_overflow_")
         || !name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')

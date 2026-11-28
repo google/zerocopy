@@ -4762,6 +4762,84 @@ impl NeverTrait for ! {
                     with self.assertRaises(RuntimeError):
                         verify_zerocopy.discover_units(proofs_dir, src_dir)
 
+    def test_mir_envelope_spec_profile_spec_closure_and_receipt_validation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            proofs_dir, src_dir, unit = make_proof_tree(root)
+            sc_text = '{"root_spec_module": {"module": "Spec"}}\n'
+            (unit / "spec-closure.golden").write_text(sc_text, encoding="utf-8")
+            sc_sha = verify_zerocopy.anneal_ci_lib.sha256_raw_file(
+                unit / "spec-closure.golden"
+            ).hex()
+            (unit / "Spec.lean").write_text(
+                "prelude\n"
+                "noncomputable def specs : MirEnvelopeSpec := {\n"
+                "  claimShapes := [.forallSafety]\n"
+                "  gaps := .selectedUnitScope :: defaultMirDownstreamGaps\n"
+                "  laws := []\n"
+                "}\n",
+                encoding="utf-8",
+            )
+            req = make_unit_request()
+            req["proof"]["spec_closure"] = "spec-closure.golden"
+            (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
+
+            discovered = verify_zerocopy.discover_units(proofs_dir, src_dir)
+            self.assertEqual(len(discovered), 1)
+            expected = discovered[0][1]["_unit_expected"]
+            self.assertEqual(expected["profile"], 1)
+            self.assertTrue(expected["envelope"])
+            self.assertEqual(expected["spec_closure_sha256"], sc_sha)
+
+            env_v1_receipt = make_receipt(
+                spec_closure_sha256=sc_sha,
+                audit={"canonicalRoot": "Trusted.Framework.UnitMirEnvelopeTheoremV1"},
+            )
+            parsed = verify_zerocopy.validate_unit_receipt(
+                unit, 0, env_v1_receipt, discovered[0][1]
+            )
+            self.assertEqual(
+                parsed["audit"]["canonicalRoot"],
+                "Trusted.Framework.UnitMirEnvelopeTheoremV1",
+            )
+
+            # Wrong `spec_closure_sha256` or legacy root on a `spec_closure`
+            # unit fails.
+            bad_sha_rec = dict(env_v1_receipt, spec_closure_sha256="0" * 64)
+            with self.assertRaisesRegex(RuntimeError, "spec_closure_sha256"):
+                verify_zerocopy.validate_unit_receipt(
+                    unit, 0, bad_sha_rec, discovered[0][1]
+                )
+            with self.assertRaisesRegex(RuntimeError, "expected envelope canonicalRoot"):
+                verify_zerocopy.validate_unit_receipt(
+                    unit, 0, make_receipt(), discovered[0][1]
+                )
+
+            # `spec_closure_sha256` on a legacy root fails closed.
+            legacy_with_sc = make_receipt(spec_closure_sha256=sc_sha)
+            with self.assertRaisesRegex(
+                RuntimeError, "unexpected spec_closure_sha256"
+            ):
+                verify_zerocopy.validate_receipt(
+                    "01_unit", 0, json.dumps(legacy_with_sc), "",
+                    ["util::macros::__unsafe"], expected_profile=1,
+                )
+
+            # Profile v2 `MirEnvelopeSpec` (`.unbridgedSemantics`) maps to
+            # profile 2.
+            (unit / "Spec.lean").write_text(
+                "prelude\n"
+                "noncomputable def specs : Trusted.Framework.MirEnvelopeSpec := {\n"
+                "  claimShapes := [.forallSafety]\n"
+                "  gaps := .unbridgedSemantics \"mir_profile_v2\" :: defaultMirDownstreamGaps\n"
+                "  laws := []\n"
+                "}\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                verify_zerocopy.expected_unit_profile(unit, req), 2
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

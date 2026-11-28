@@ -198,10 +198,13 @@ pub fn helper_lean_name(namespace: &str, name: &str) -> String {
     format!("{namespace}.pure_{name}")
 }
 
-/// Whether `name` cannot be a helper binder: it would capture a reference in
-/// `GLOBALS`, or it is `_root_`, which the `Spec.lean` policy rejects.
-fn reserved_param_name(name: &str) -> bool {
-    name == "_root_" || GLOBALS.iter().any(|g| g.split('.').next() == Some(name))
+/// Whether `name` cannot be a user binder: it would capture a reference in
+/// `GLOBALS`, collide with internal `*__anneal` binders, or equal `_root_`,
+/// which the `Spec.lean` policy rejects.
+pub fn reserved_param_name(name: &str) -> bool {
+    name == "_root_"
+        || name.contains("__anneal")
+        || GLOBALS.iter().any(|g| g.split('.').next() == Some(name))
 }
 
 const INTRINSICS: &[&str] = &[
@@ -293,11 +296,11 @@ impl Env<'_> {
             Binding::Arg(i, ty) => {
                 self.uses.q.set(true);
                 self.uses.arg.set(true);
-                (format!("(specArg q {i})"), *ty)
+                (format!("(specArg _q__anneal {i})"), *ty)
             }
             Binding::Ret(ty) => {
                 self.uses.out.set(true);
-                ("out.ret".to_string(), *ty)
+                ("_ret__anneal".to_string(), *ty)
             }
             Binding::HelperParam(lean, ty) => {
                 return Ok(match ty {
@@ -394,7 +397,7 @@ impl Env<'_> {
                         self.uses.q.set(true);
                         self.uses.arg.set(true);
                         self.uses.val_nat.set(true);
-                        Ok(format!("(specNat (specArg q {i}))"))
+                        Ok(format!("(specNat (specArg _q__anneal {i}))"))
                     }
                     Binding::Arg(_, ty @ Ty::Int(_)) => Err(type_error(
                         e.span,
@@ -1035,6 +1038,22 @@ pub fn lower_fn(
     runtime: &Uses,
 ) -> Result<LoweredFn, Vec<Diagnostic>> {
     let mut errors = Vec::new();
+    for p in &f.params {
+        if p.name.contains("__anneal") {
+            errors.push(
+                Diagnostic::new(
+                    "E_ANNEAL_RESERVED_PARAM_NAME",
+                    p.span,
+                    format!(
+                        "`{}` cannot name a specified parameter: identifiers containing \
+                         `__anneal` are reserved by Anneal specification lowering",
+                        p.name
+                    ),
+                )
+                .help("rename the parameter"),
+            );
+        }
+    }
     let mut requires = Vec::new();
     let mut safety_only = Vec::new();
     let mut ensures = Vec::new();
@@ -1210,6 +1229,20 @@ pub fn lower_fn(
     let mut post_parts = Vec::new();
     for (binder, body, span) in &ensures {
         if let Some(b) = binder {
+            if b.contains("__anneal") {
+                errors.push(
+                    Diagnostic::new(
+                        "E_ANNEAL_RESERVED_PARAM_NAME",
+                        *span,
+                        format!(
+                            "`{b}` cannot name an `ensures` return binder: identifiers containing \
+                             `__anneal` are reserved by Anneal specification lowering"
+                        ),
+                    )
+                    .help("rename the return binder"),
+                );
+                continue;
+            }
             if f.ret == Ty::Never {
                 errors.push(Diagnostic::new(
                     "E_ANNEAL_UNSUPPORTED_TYPE",

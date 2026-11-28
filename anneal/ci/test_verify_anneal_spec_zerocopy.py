@@ -974,6 +974,99 @@ class VerifyAnnealSpecZerocopyTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "invalid anneal-spec proofs"):
                 verify_anneal_spec_zerocopy.discover_spec_units(proofs_dir, src_dir)
 
+            # When `spec-closure.golden` is present, `discover_crate_units`
+            # requires `proof.spec_closure == "spec-closure.golden"`,
+            # `mismatched_signature` refreshes `root_spec_module`, and
+            # `tampered_spec_closure` leaves `Spec.lean` untouched while
+            # mutating `spec-closure.golden` directly.
+            orig_spec_text = (
+                unit / "Specs/zerocopy/zc02.lean"
+            ).read_text(encoding="utf-8")
+            sc_doc = {
+                "root_spec_module": {
+                    "module": "Specs.zerocopy.zc02",
+                    "sha256": "0" * 64,
+                    "trailing_newline": True,
+                    "lines": [],
+                },
+                "envelope_summary": {
+                    "entries": [{"identity": "u::f", "terminates": True}],
+                },
+            }
+            (unit / "spec-closure.golden").write_text(
+                json.dumps(sc_doc), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(RuntimeError, "proof.spec_closure"):
+                verify_anneal_spec_zerocopy.discover_crate_units(
+                    root / "zerocopy/proofs", src_dir
+                )
+            req_sc = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+            req_sc["proof"]["spec_closure"] = "spec-closure.golden"
+            (unit / "request.json").write_text(json.dumps(req_sc), encoding="utf-8")
+            self.assertEqual(
+                len(verify_anneal_spec_zerocopy.discover_crate_units(
+                    root / "zerocopy/proofs", src_dir
+                )),
+                1,
+            )
+
+            def fake_run_sc(cmd, **kwargs):
+                cwd = Path(kwargs.get("cwd", "."))
+                if cmd[0] == str(args.cli) and cwd.name == "neg-tampered_spec_closure":
+                    return subprocess.CompletedProcess(
+                        cmd,
+                        1,
+                        stdout=json.dumps({
+                            "status": "proof_failed",
+                            "failure": {"message": "spec-closure envelope_summary mismatch"},
+                        }),
+                        stderr="",
+                    )
+                return fake_run(cmd, **kwargs)
+
+            sc_work = root / "sc-work"
+            sc_work.mkdir()
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=fake_run_sc
+            ):
+                sc_res = verify_anneal_spec_zerocopy.run_negative_controls(
+                    args, unit, sc_work
+                )
+            self.assertEqual(
+                set(sc_res.keys()),
+                {"mutated_spec_rs", "mismatched_signature", "tampered_spec_closure"},
+            )
+            refreshed = json.loads(
+                (sc_work / "neg-mismatched_signature/spec-closure.golden").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertNotEqual(refreshed["root_spec_module"]["sha256"], "0" * 64)
+            tampered_spec_lean = (
+                sc_work / "neg-tampered_spec_closure/Specs/zerocopy/zc02.lean"
+            ).read_text(encoding="utf-8")
+            self.assertEqual(tampered_spec_lean, orig_spec_text)
+            tampered_golden = json.loads(
+                (sc_work / "neg-tampered_spec_closure/spec-closure.golden").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertFalse(
+                tampered_golden["envelope_summary"]["entries"][0]["terminates"]
+            )
+
+            # A `tampered_spec_closure` failure not citing `spec-closure`
+            # fails closed so the control cannot pass via an unrelated failure.
+            sc_work_bad = root / "sc-work-bad"
+            sc_work_bad.mkdir()
+            with mock.patch(
+                "verify_anneal_spec_zerocopy.subprocess.run", side_effect=fake_run
+            ):
+                with self.assertRaisesRegex(RuntimeError, "expected spec-closure mismatch"):
+                    verify_anneal_spec_zerocopy.run_negative_controls(
+                        args, unit, sc_work_bad
+                    )
+
     def test_trusted_module_order_puts_imports_first_and_rejects_cycles(self):
         with tempfile.TemporaryDirectory() as tmp:
             trusted = make_trusted_tree(Path(tmp))

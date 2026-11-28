@@ -9,8 +9,8 @@
 use std::{fs, path::Path, process::Command};
 
 use anneal_spec_lower::{
-    ast::mangle_slug, list_targets, lower, lower_with, module_path, Format, Lowered, Options,
-    Source,
+    ast::mangle_slug, closure::parse_capture_json, list_targets, lower, lower_with, module_path,
+    Format, Lowered, Options, Scope, Source,
 };
 
 fn src(label: &str, text: &str) -> Source {
@@ -111,6 +111,12 @@ fn zerocopy_units_match_checked_in_goldens() {
         let l = lower_with(&sources, &opts)
             .unwrap_or_else(|e| panic!("{}: {}", unit.claim, e[0].render(&sources)));
         assert_eq!(l.spec_lean, fs::read_to_string(unit.module()).unwrap(), "{}", unit.claim);
+        assert_eq!(
+            l.spec_closure,
+            fs::read_to_string(unit.dir.join("spec-closure.golden")).unwrap(),
+            "{}",
+            unit.claim
+        );
     }
 }
 
@@ -160,8 +166,18 @@ fn cli_v1_out_dir_and_check_round_trip() {
             .unwrap()
     };
     assert!(run("--out-dir").status.success());
-    assert!(out.join("Spec.lean").is_file() && out.join("spec_span_map.json").is_file());
+    assert!(
+        out.join("Spec.lean").is_file()
+            && out.join("spec_span_map.json").is_file()
+            && out.join("spec-closure.golden").is_file()
+    );
     assert!(run("--check").status.success());
+    let orig_closure = fs::read_to_string(out.join("spec-closure.golden")).unwrap();
+    fs::write(out.join("spec-closure.golden"), "{}").unwrap();
+    let stale_closure = run("--check");
+    assert_eq!(stale_closure.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&stale_closure.stderr).contains("spec-closure.golden is stale"));
+    fs::write(out.join("spec-closure.golden"), orig_closure).unwrap();
     fs::write(out.join("spec_span_map.json"), "{}").unwrap();
     let stale = run("--check");
     fs::remove_dir_all(&tmp).unwrap();
@@ -247,7 +263,7 @@ fn requires_on_safe_fn_restricts_behavior_but_never_excuses_ub() {
     .unwrap();
     assert!(
         split.spec_lean.contains(
-            "def fn0_safety (q : Query) : Prop :=\n  (((specInt (specArg q 0)) ≠ (0 : Int)) ∧ ((specInt (specArg q 0)) < (9 : Int)))"
+            "def fn0_safety (_q__anneal : Query) : Prop :=\n  (((specInt (specArg _q__anneal 0)) ≠ (0 : Int)) ∧ ((specInt (specArg _q__anneal 0)) < (9 : Int)))"
         ),
         "{}",
         split.spec_lean
@@ -264,17 +280,41 @@ fn effect_qualifiers_set_the_effect_mask() {
         let l = lower_one(&wrap(attr, "fn f()")).unwrap();
         l.spec_lean.lines().find(|l| l.contains("effects :=")).unwrap().trim().to_string()
     };
-    assert_eq!(mask("ensures(|_| true)"), "effects := { terminates := true, noUnwind := true }");
-    assert_eq!(mask("total"), "effects := { terminates := true, noUnwind := true }");
-    assert_eq!(mask("no_panic"), "effects := { terminates := true, noUnwind := true }");
-    assert_eq!(mask("no_unwind"), "effects := { terminates := true, noUnwind := true }");
-    assert_eq!(mask("terminates"), "effects := { terminates := true, noUnwind := true }");
-    assert_eq!(mask("may_diverge"), "effects := { terminates := false, noUnwind := true }");
-    assert_eq!(mask("may_unwind"), "effects := { terminates := true, noUnwind := false }");
-    assert_eq!(mask("may_panic"), "effects := { terminates := true, noUnwind := false }");
+    assert_eq!(
+        mask("ensures(|_| true)"),
+        "effects := { terminates := true, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("total"),
+        "effects := { terminates := true, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("no_panic"),
+        "effects := { terminates := true, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("no_unwind"),
+        "effects := { terminates := true, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("terminates"),
+        "effects := { terminates := true, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("may_diverge"),
+        "effects := { terminates := false, noUnwind := true, noAbort := true }"
+    );
+    assert_eq!(
+        mask("may_unwind"),
+        "effects := { terminates := true, noUnwind := false, noAbort := true }"
+    );
+    assert_eq!(
+        mask("may_panic"),
+        "effects := { terminates := true, noUnwind := false, noAbort := true }"
+    );
     assert_eq!(
         mask("may_diverge, may_unwind"),
-        "effects := { terminates := false, noUnwind := false }"
+        "effects := { terminates := false, noUnwind := false, noAbort := true }"
     );
     expect_error(&wrap("may_diverge, terminates", "fn f()"), "E_ANNEAL_CONFLICTING_EFFECTS");
     expect_error(&wrap("may_diverge, total", "fn f()"), "E_ANNEAL_CONFLICTING_EFFECTS");
@@ -302,7 +342,7 @@ fn effect_qualifiers_set_the_effect_mask() {
             .find(|l| l.contains("effects :="))
             .unwrap()
             .trim(),
-        "effects := { terminates := true, noUnwind := false }"
+        "effects := { terminates := true, noUnwind := false, noAbort := true }"
     );
     assert_eq!(
         lower_one(&wrap("may_diverge", "fn spin() -> !"))
@@ -312,7 +352,7 @@ fn effect_qualifiers_set_the_effect_mask() {
             .find(|l| l.contains("effects :="))
             .unwrap()
             .trim(),
-        "effects := { terminates := false, noUnwind := true }"
+        "effects := { terminates := false, noUnwind := true, noAbort := true }"
     );
     lower_one(&wrap("safety_requires(false)", "unsafe fn unreachable() -> !")).unwrap();
 }
@@ -326,6 +366,7 @@ fn vacuous_ok_waives_inhabitation_and_requires_a_reason() {
     .unwrap();
     assert!(l.spec_lean.contains("-- vacuous_ok: intentionally empty domain"), "{}", l.spec_lean);
     assert!(l.spec_lean.contains("requireInhabited := false"), "{}", l.spec_lean);
+    assert!(l.spec_lean.contains(".waivedInhabitation fn0_id"), "{}", l.spec_lean);
     expect_error(
         "anneal::external_spec! { #[anneal::vacuous_ok(reason = \"\")] #[anneal::spec(total)] fn f(); }",
         "E_ANNEAL_VACUOUS_OK_REASON",
@@ -345,9 +386,9 @@ fn pure_helpers_lower_in_call_order_and_reject_recursion() {
     let inner = l.spec_lean.find("def pure_inner").unwrap();
     let outer = l.spec_lean.find("def pure_outer").unwrap();
     assert!(inner < outer, "{}", l.spec_lean);
-    assert!(l
-        .spec_lean
-        .contains("(Spec.pure_outer (specInt (specArg q 0)) (specInt (specArg q 1)))"));
+    assert!(l.spec_lean.contains(
+        "(Spec.pure_outer (specInt (specArg _q__anneal 0)) (specInt (specArg _q__anneal 1)))"
+    ));
     expect_error(
         "anneal::external_spec! {
             #[anneal::pure] fn a(x: u8) -> bool { b(x) }
@@ -370,13 +411,15 @@ fn arithmetic_requires_an_explicit_meaning() {
         "fn f(a: usize, b: usize) -> usize",
     ))
     .unwrap();
-    assert!(l
-        .spec_lean
-        .contains("((specInt out.ret) = ((specInt (specArg q 0)) + (specInt (specArg q 1))))"));
+    assert!(l.spec_lean.contains(
+        "((specInt _ret__anneal) = ((specInt (specArg _q__anneal 0)) + (specInt (specArg _q__anneal 1))))"
+    ));
     let w = lower_one(&wrap("ensures(|r| r == wrapping_add(a, b))", "fn f(a: u8, b: u8) -> u8"))
         .unwrap();
     assert!(
-        w.spec_lean.contains("(Trusted.MirSemantics.intEmod ((specInt (specArg q 0)) + (specInt (specArg q 1))) 256)"),
+        w.spec_lean.contains(
+            "(Trusted.MirSemantics.intEmod ((specInt (specArg _q__anneal 0)) + (specInt (specArg _q__anneal 1))) 256)"
+        ),
         "{}",
         w.spec_lean
     );
@@ -384,13 +427,19 @@ fn arithmetic_requires_an_explicit_meaning() {
         .unwrap();
     assert!(
         s.spec_lean.contains(
-            "(Trusted.MirSemantics.intEmod ((specInt (specArg q 0)) - (specInt (specArg q 1)) + 128) 256 - 128)"
+            "(Trusted.MirSemantics.intEmod ((specInt (specArg _q__anneal 0)) - (specInt (specArg _q__anneal 1)) + 128) 256 - 128)"
         ),
         "{}",
         s.spec_lean
     );
     let o = lower_one(&wrap("requires(no_overflow_mul(a, b))", "fn f(a: u16, b: u16)")).unwrap();
-    assert!(o.spec_lean.contains("((0 : Int) ≤ (specInt (specArg q 0)) * (specInt (specArg q 1)) ∧ (specInt (specArg q 0)) * (specInt (specArg q 1)) < 65536)"), "{}", o.spec_lean);
+    assert!(
+        o.spec_lean.contains(
+            "((0 : Int) ≤ (specInt (specArg _q__anneal 0)) * (specInt (specArg _q__anneal 1)) ∧ (specInt (specArg _q__anneal 0)) * (specInt (specArg _q__anneal 1)) < 65536)"
+        ),
+        "{}",
+        o.spec_lean
+    );
 }
 
 #[test]
@@ -406,7 +455,7 @@ fn division_needs_a_nonzero_guard() {
     .unwrap();
     assert!(
         l.spec_lean.contains(
-            "(Trusted.MirSemantics.intTdiv (specInt (specArg q 0)) (specInt (specArg q 1)))"
+            "(Trusted.MirSemantics.intTdiv (specInt (specArg _q__anneal 0)) (specInt (specArg _q__anneal 1)))"
         ),
         "{}",
         l.spec_lean
@@ -877,14 +926,14 @@ fn helper_parameters_cannot_capture_generated_names() {
          (((Trusted.MirSemantics.intTdiv «intTdiv» (2 : Int)) = \
          (Trusted.MirSemantics.intTmod «Val» (2 : Int))) ∧ \
          (Trusted.MirSemantics.Val.unit = Trusted.MirSemantics.Val.unit))",
-        "(Spec.pure_h (specInt (specArg q 0)))",
+        "(Spec.pure_h (specInt (specArg _q__anneal 0)))",
     ] {
         assert!(l.spec_lean.contains(want), "missing {want:?} in\n{}", l.spec_lean);
     }
     // A parameter named after the root of a qualified reference would capture
     // it (`True`, or `Trusted` in `Trusted.MirSemantics.intTdiv`), and the
     // `Spec.lean` policy rejects `_root_`.
-    for name in ["True", "False", "Int", "Trusted", "Spec", "Specs", "_root_"] {
+    for name in ["True", "False", "Int", "Trusted", "Spec", "Specs", "_root_", "p__anneal"] {
         let msg = expect_error(
             &format!(
                 "anneal::external_spec! {{
@@ -939,16 +988,16 @@ fn contract_signature_is_emitted_in_spec_lean() {
     let safe = lower_one(&wrap("total", "fn f(a: u8, b: bool) -> i128")).unwrap();
     assert!(
         safe.spec_lean.contains(
-            "signature := some { isUnsafe := false, params := [.int .i8 false, .bool], ret := .int .i128 true }"
+            "def fn0_sig : MirSignature :=\n  { isUnsafe := false, abi := .rust, params := [.int .i8 false, .bool], ret := .int .i128 true }"
         ),
         "{}",
         safe.spec_lean
     );
     let unsafe_never = lower_one(&wrap("may_diverge", "unsafe fn spin() -> !")).unwrap();
     assert!(
-        unsafe_never
-            .spec_lean
-            .contains("signature := some { isUnsafe := true, params := [], ret := .never }"),
+        unsafe_never.spec_lean.contains(
+            "def fn0_sig : MirSignature :=\n  { isUnsafe := true, abi := .rust, params := [], ret := .never }"
+        ),
         "{}",
         unsafe_never.spec_lean
     );
@@ -1109,25 +1158,35 @@ fn v2_modules_are_span_free_lean_modules() {
     };
     let m = lower_selected(CLAIMS_SPEC, &opts).unwrap();
     assert_eq!(m.module_path.as_deref(), Some("Specs/zerocopy/pair.lean"));
-    assert_eq!(m.outputs(), [("Specs/zerocopy/pair.lean", m.spec_lean.as_str())]);
+    assert_eq!(
+        m.outputs(),
+        [
+            ("Specs/zerocopy/pair.lean", m.spec_lean.as_str()),
+            ("spec-closure.golden", m.spec_closure.as_str()),
+        ]
+    );
     assert!(m.span_map.is_empty());
     for needle in [
-        "\nmodule\nprelude\npublic import Trusted.MirSemantics\n\n@[expose] public section\n\n\
+        "\nmodule\nprelude\npublic import Trusted.MirSemantics\npublic import Trusted.Framework.Bridge\n\n@[expose] public section\n\n\
          namespace Specs.«zerocopy».«pair»\n",
-        "(Specs.«zerocopy».«pair».pure_positive (specInt (specArg q 0)))",
+        "(Specs.«zerocopy».«pair».pure_positive (specInt (specArg _q__anneal 0)))",
         "(Specs.«zerocopy».«pair».pure_nonzero «x»)",
         "\nend Specs.«zerocopy».«pair»\n\nend\n",
     ] {
         assert!(m.spec_lean.contains(needle), "missing {needle:?} in\n{}", m.spec_lean);
     }
     assert!(!m.spec_lean.contains("Spec.pure_"), "{}", m.spec_lean);
-    // `max_steps` declarations that `Spec.lean` keeps private are public in a
-    // module, whose public `specs` refers to them.
+    // Both `Spec.lean` and `v2-module` emit public declarations so
+    // `spec-closure.golden` user declaration names match kernel exports.
     let steps = wrap("total, max_steps = 2", "fn f()");
-    assert!(lower_one(&steps).unwrap().spec_lean.contains("private noncomputable def"));
+    assert!(!lower_one(&steps).unwrap().spec_lean.contains("private"));
     let module =
         lower_selected(&steps, &Options { claim: Some("f".into()), ..opts.clone() }).unwrap();
-    assert!(module.spec_lean.contains("noncomputable def contractSpecs"), "{}", module.spec_lean);
+    assert!(
+        module.spec_lean.contains("noncomputable def specs : MirEnvelopeSpec"),
+        "{}",
+        module.spec_lean
+    );
     assert!(!module.spec_lean.contains("private"), "{}", module.spec_lean);
 
     // A derived claim that is not a valid module name (`open` is a Lean
@@ -1326,4 +1385,121 @@ fn cli_selects_lists_and_writes_v2_modules() {
     assert_eq!(run(&["--list-targets", "--out-dir", "x"]).status.code(), Some(2));
     assert_eq!(run(&["--crate-slug", "zerocopy", "--out-dir", "x"]).status.code(), Some(2));
     fs::remove_dir_all(&tmp).unwrap();
+}
+
+#[test]
+fn reserved_anneal_suffix_is_rejected_across_params_helpers_and_binders() {
+    expect_error(
+        &wrap("ensures(|r| r == x__anneal)", "fn f(x__anneal: u8) -> u8"),
+        "E_ANNEAL_RESERVED_PARAM_NAME",
+    );
+    expect_error(
+        &wrap("ensures(|r__anneal| r__anneal == x)", "fn f(x: u8) -> u8"),
+        "E_ANNEAL_RESERVED_PARAM_NAME",
+    );
+    expect_error(
+        "anneal::external_spec! {
+            #[anneal::pure] fn h__anneal(x: u8) -> bool { x == 0u8 }
+            #[anneal::spec(requires(h__anneal(a)))] fn f(a: u8);
+        }",
+        "E_ANNEAL_RESERVED_HELPER_NAME",
+    );
+}
+
+#[test]
+fn scope_and_capture_json_synthesize_safe_callees_and_reject_unannotated_unsafe() {
+    let spec = "anneal::external_spec! { #[anneal::spec(total, ensures(|r| r == x))] fn entry(x: u8) -> u8; }";
+    let crate_out =
+        lower_selected(spec, &Options { scope: Scope::Crate, ..Options::default() }).unwrap();
+    assert!(
+        crate_out.spec_lean.contains("gaps := defaultMirDownstreamGaps"),
+        "{}",
+        crate_out.spec_lean
+    );
+    let crate_closure: serde_json::Value = serde_json::from_str(&crate_out.spec_closure).unwrap();
+    assert_eq!(
+        crate_closure["envelope_summary"]["gaps"],
+        serde_json::json!([
+            "unverifiedDownstream(rustc_mir_opt)",
+            "unverifiedDownstream(llvm_codegen)",
+            "unverifiedDownstream(linker)",
+            "unverifiedDownstream(microarch_timing)",
+        ])
+    );
+
+    let capture_json = serde_json::json!({
+        "program": {
+            "scope": "crate",
+            "mir_profile_version": 2,
+            "bodies": [
+                {
+                    "identity": "rust-path-v1::entry",
+                    "is_unsafe": false,
+                    "arg_count": 1,
+                    "local_tys": [
+                        {"kind": "int", "width": "i8", "signed": false},
+                        {"kind": "int", "width": "i8", "signed": false},
+                    ]
+                },
+                {
+                    "identity": "rust-path-v1::helper_safe",
+                    "is_unsafe": false,
+                    "arg_count": 1,
+                    "local_tys": [
+                        {"kind": "unit"},
+                        {"kind": "raw_ptr", "mutability": "shared", "pointee": {"kind": "bool"}},
+                    ]
+                }
+            ]
+        }
+    })
+    .to_string();
+    let cap = parse_capture_json(&capture_json).unwrap();
+    let with_callee = lower_selected(
+        spec,
+        &Options { scope: Scope::Crate, capture: Some(cap), ..Options::default() },
+    )
+    .unwrap();
+    assert!(with_callee
+        .spec_lean
+        .contains("def callee0_id : String :=\n  \"rust-path-v1::helper_safe\""));
+    assert!(with_callee
+        .spec_lean
+        .contains("effects := { terminates := false, noUnwind := false, noAbort := false }"));
+    assert!(with_callee.spec_lean.contains(".unbridgedSemantics \"mir_profile_v2\""));
+    assert!(with_callee.spec_lean.contains(".callerRawPtrAliasing \"mir_profile_v2\""));
+    let v2_closure: serde_json::Value = serde_json::from_str(&with_callee.spec_closure).unwrap();
+    assert_eq!(v2_closure["envelope_summary"]["entries"].as_array().unwrap().len(), 2);
+    assert_eq!(
+        v2_closure["non_normative_context"]["expanded_contracts"].as_array().unwrap().len(),
+        2
+    );
+
+    let bad_capture_json = serde_json::json!({
+        "bodies": [
+            {
+                "identity": "rust-path-v1::entry",
+                "is_unsafe": false,
+                "arg_count": 1,
+                "local_tys": [
+                    {"kind": "int", "width": "i8", "signed": false},
+                    {"kind": "int", "width": "i8", "signed": false},
+                ]
+            },
+            {
+                "identity": "rust-path-v1::unannotated_unsafe",
+                "is_unsafe": true,
+                "arg_count": 0,
+                "local_tys": [{"kind": "unit"}]
+            }
+        ]
+    })
+    .to_string();
+    let bad_cap = parse_capture_json(&bad_capture_json).unwrap();
+    assert_eq!(
+        lower_selected(spec, &Options { capture: Some(bad_cap), ..Options::default() })
+            .err()
+            .unwrap(),
+        ["E_ANNEAL_UNANNOTATED_UNSAFE_CALLEE"]
+    );
 }

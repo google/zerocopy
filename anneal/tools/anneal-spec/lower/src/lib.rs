@@ -6,25 +6,28 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Lowers Rust-syntax Anneal specifications to `Spec.lean`.
+//! Lowers Rust-syntax Anneal specifications to `Spec.lean` and
+//! `spec-closure.golden`.
 //!
 //! The surface language attaches to Rust code in two forms that share one
 //! grammar: inert inline attributes (`#[cfg_attr(anneal, anneal::spec(...))]`)
 //! and out-of-tree companion files (`anneal::external_spec! { ... }`). Both
 //! lower deterministically to a declarative `Spec.lean` built on
-//! `Trusted.MirSemantics.Contract` (`FnContract`, `ContractSpecs`), which
-//! `cargo-anneal`'s `spec-preflight` and target audit then check like any
+//! `Trusted.Framework.MirEnvelopeSpec`, accompanied by `spec-closure.golden`,
+//! which `cargo-anneal`'s `spec-preflight` and target audit check like any
 //! hand-written specification. Nothing here is trusted: a lowering bug can
 //! only produce a `Spec.lean` that reviewers read and the auditor checks.
 
 pub mod ast;
 pub mod check;
+pub mod closure;
 pub mod diag;
 mod emit;
 pub mod parse;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
+pub use closure::{CapturedBodySummary, CapturedProgramSummary, Scope};
 pub use diag::{Diagnostic, SourceMap, SrcSpan};
 pub use emit::Lowered;
 use proc_macro2::Span;
@@ -71,12 +74,14 @@ pub fn module_path(rel: &str) -> Vec<String> {
 /// The layout of the lowering's output.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Format {
-    /// `Spec.lean` in namespace `Spec`, plus `spec_span_map.json`.
+    /// `Spec.lean` in namespace `Spec`, plus `spec_span_map.json` and
+    /// `spec-closure.golden`.
     #[default]
     V1,
     /// One span-free Lean module, `Specs/<crate>/<claim>.lean`, in namespace
-    /// `Specs.<crate>.<claim>`. It records no Rust source positions, so edits
-    /// elsewhere in the Rust file leave it unchanged.
+    /// `Specs.<crate>.<claim>`, plus `spec-closure.golden`. It records no Rust
+    /// source positions, so edits elsewhere in the Rust file leave it
+    /// unchanged.
     V2Module,
 }
 
@@ -90,6 +95,13 @@ pub struct Options {
     pub format: Format,
     /// The crate component of the `Format::V2Module` namespace.
     pub crate_slug: Option<String>,
+    /// Verification scope recorded in `MirEnvelopeSpec.gaps` (defaults to
+    /// [`Scope::Unit`]; must match `capture.scope` when `capture` is `Some`).
+    pub scope: Scope,
+    /// Optional `capture.json` summary used to synthesize default UB-freedom
+    /// entries for unannotated safe callees and reject unannotated `unsafe`
+    /// callees.
+    pub capture: Option<CapturedProgramSummary>,
 }
 
 impl Options {
@@ -100,11 +112,32 @@ impl Options {
     /// Checks that the options are consistent, returning the Lean namespace
     /// the output is written in.
     pub fn validate(&self) -> Result<String, String> {
+        self.validate_names().map(|(ns, _)| ns)
+    }
+
+    fn validate_names(&self) -> Result<(String, String), String> {
+        if let Some(cap) = &self.capture {
+            if !matches!(cap.mir_profile_version, 1 | 2) {
+                return Err(format!(
+                    "unsupported capture `mir_profile_version` {} (expected 1 or 2)",
+                    cap.mir_profile_version
+                ));
+            }
+            if cap.scope != self.scope {
+                return Err(format!(
+                    "`Options::scope` ({:?}) conflicts with capture JSON scope ({:?})",
+                    self.scope, cap.scope
+                ));
+            }
+        }
         match self.format {
             Format::V1 if self.crate_slug.is_some() => {
                 Err("`--crate-slug` needs `--format v2-module`".into())
             }
-            Format::V1 => Ok(check::SPEC_NAMESPACE.to_string()),
+            Format::V1 => {
+                let ns = check::SPEC_NAMESPACE.to_string();
+                Ok((ns.clone(), ns))
+            }
             Format::V2Module => {
                 let (Some(slug), Some(claim)) = (&self.crate_slug, &self.claim) else {
                     return Err("`--format v2-module` needs `--crate-slug` and `--claim`".into());
@@ -120,9 +153,13 @@ impl Options {
                         ));
                     }
                 }
-                // Escaped, so that the generated Lean parses whatever
-                // keywords are declared.
-                Ok(format!("{}.«{slug}».«{claim}»", check::SPECS_ROOT))
+                // Escaped in syntax so that the generated Lean parses whatever
+                // keywords are declared, paired with the un-escaped Lean
+                // module identifier used in `request.json` and `Name.toString`.
+                Ok((
+                    format!("{}.«{slug}».«{claim}»", check::SPECS_ROOT),
+                    format!("{}.{slug}.{claim}", check::SPECS_ROOT),
+                ))
             }
         }
     }
@@ -167,6 +204,45 @@ pub fn list_targets(sources: &[Source]) -> Result<Vec<TargetInfo>, Vec<LowerErro
         .collect())
 }
 
+fn resolve_unannotated_callees(
+    fns: &[(&ast::SpecFn, check::LoweredFn)],
+    opts: &Options,
+) -> Result<(Scope, Vec<CapturedBodySummary>), Vec<LowerError>> {
+    let Some(cap) = &opts.capture else {
+        return Ok((opts.scope, Vec::new()));
+    };
+    let annotated_ids: BTreeSet<String> =
+        fns.iter().map(|(f, _)| format!("rust-path-v1::{}", f.path)).collect();
+    let mut errors = Vec::new();
+    let mut safe_callees = Vec::new();
+    for body in &cap.bodies {
+        if annotated_ids.contains(&body.identity) {
+            continue;
+        }
+        if body.is_unsafe {
+            let short = body.identity.strip_prefix("rust-path-v1::").unwrap_or(&body.identity);
+            errors.push(LowerError {
+                file: 0,
+                diag: Diagnostic::new(
+                    "E_ANNEAL_UNANNOTATED_UNSAFE_CALLEE",
+                    Span::call_site(),
+                    format!(
+                        "captured `unsafe` body `{short}` has no `anneal::spec` contract; \
+                         `unsafe` callees cannot receive an implicit contract"
+                    ),
+                )
+                .help("add an explicit `#[cfg_attr(anneal, anneal::spec(...))]` or `external_spec!` entry"),
+            });
+        } else {
+            safe_callees.push(body.clone());
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    Ok((cap.scope, safe_callees))
+}
+
 /// Parses, checks, and lowers the items of `sources` that `opts` selects.
 ///
 /// Every item is checked, selected or not, so a selection never hides an
@@ -174,7 +250,7 @@ pub fn list_targets(sources: &[Source]) -> Result<Vec<TargetInfo>, Vec<LowerErro
 /// items reach are emitted; without a selection the output is exactly
 /// [`lower`]'s.
 pub fn lower_with(sources: &[Source], opts: &Options) -> Result<Lowered, Vec<LowerError>> {
-    let namespace = opts.validate().map_err(|msg| {
+    let (namespace, lean_module) = opts.validate_names().map_err(|msg| {
         vec![LowerError {
             file: 0,
             diag: Diagnostic::new("E_ANNEAL_INVALID_OPTIONS", Span::call_site(), msg),
@@ -201,7 +277,19 @@ pub fn lower_with(sources: &[Source], opts: &Options) -> Result<Lowered, Vec<Low
         let helpers: Vec<_> =
             a.helper_bodies.iter().map(|(i, b)| (&a.helpers[*i], b.clone())).collect();
         let fns: Vec<_> = a.fns.iter().zip(a.lowered_fns).collect();
-        return Ok(emit::emit(sources, &helpers, &fns, &a.runtime, &namespace, module_path));
+        let (eff_scope, safe_callees) = resolve_unannotated_callees(&fns, opts)?;
+        return Ok(emit::emit(
+            sources,
+            &helpers,
+            &fns,
+            &safe_callees,
+            opts.capture.as_ref(),
+            eff_scope,
+            &a.runtime,
+            &namespace,
+            &lean_module,
+            module_path,
+        ));
     }
 
     let selected = select(&a.fns, opts)?;
@@ -256,7 +344,19 @@ pub fn lower_with(sources: &[Source], opts: &Options) -> Result<Lowered, Vec<Low
     if !errors.is_empty() {
         return Err(errors);
     }
-    Ok(emit::emit(sources, &helper_bodies, &lowered_fns, &runtime, &namespace, module_path))
+    let (eff_scope, safe_callees) = resolve_unannotated_callees(&lowered_fns, opts)?;
+    Ok(emit::emit(
+        sources,
+        &helper_bodies,
+        &lowered_fns,
+        &safe_callees,
+        opts.capture.as_ref(),
+        eff_scope,
+        &runtime,
+        &namespace,
+        &lean_module,
+        module_path,
+    ))
 }
 
 /// The items `opts` selects from `fns`, in `fns`' order.

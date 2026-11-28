@@ -11,29 +11,41 @@
 module
 prelude
 public import Trusted.MirSemantics
+public import Trusted.Framework.Bridge
 
 @[expose] public section
 
 namespace Specs.«zerocopy».«zc03_macros_unsafe»
 
-open Trusted.MirAst Trusted.MirSemantics
+open Trusted.MirAst Trusted.MirSemantics Trusted.Framework
 
 /-- `unsafe fn util::macros::__unsafe() -> ()` -/
 def fn0_id : String :=
   "rust-path-v1::util::macros::__unsafe"
 
-/-- Normal-return postcondition of `util::macros::__unsafe`. -/
-noncomputable def fn0_post (_q : Query) (out : Out) : Prop :=
-  (out.ret = Trusted.MirSemantics.Val.unit)
+/-- MIR signature of `util::macros::__unsafe`. -/
+def fn0_sig : MirSignature :=
+  { isUnsafe := true, abi := .rust, params := [], ret := .unit }
 
-noncomputable def fn0_contract : FnContract := {
+/-- Normal-return postcondition of `util::macros::__unsafe`. -/
+noncomputable def fn0_post (_q__anneal : Query) (_ret__anneal : Val)
+    (_mem__anneal : CallerMemory) : Prop :=
+  (_ret__anneal = Trusted.MirSemantics.Val.unit)
+
+noncomputable def fn0_contract :
+    Trusted.Framework.FnContract Query Val CallerMemory := {
   postReturn := fn0_post
-  effects := { terminates := true, noUnwind := true }
+  effects := { terminates := true, noUnwind := true, noAbort := true }
 }
 
-noncomputable def specs : Specs := ContractSpecs [
-  { identity := fn0_id, contract := fn0_contract, signature := some { isUnsafe := true, params := [], ret := .unit } }
-]
+noncomputable def specs : MirEnvelopeSpec := {
+  entries := [
+    { identity := fn0_id, sig := fn0_sig, contract := fn0_contract }
+  ]
+  claimShapes := [.forallSafety, .termination]
+  gaps := .selectedUnitScope :: defaultMirDownstreamGaps
+  laws := []
+}
 
 end Specs.«zerocopy».«zc03_macros_unsafe»
 

@@ -11,6 +11,7 @@
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -136,6 +137,8 @@ def discover_spec_units(proofs_dir, src_dir):
                 f"{list(SPEC_INPUT_FILES)}, found {spec_inputs}"
             )
         declared.add(spec_inputs[0])
+        if (entry / "spec-closure.golden").is_file():
+            declared.add("spec-closure.golden")
         if spec_inputs[0] == "spec_sources.json":
             load_spec_sources(entry, request, resolved_src)
         for source in sources:
@@ -300,6 +303,20 @@ def discover_crate_units(zerocopy_proofs_dir, src_dir):
                 f"the specification source {expected} and proof.specification "
                 f"{module}.specs"
             )
+        spec_closure_file = entry / "spec-closure.golden"
+        if spec_closure_file.is_symlink():
+            raise RuntimeError(
+                f"symlink disallowed in proof unit: {spec_closure_file}"
+            )
+        if spec_closure_file.is_file() or "spec_closure" in proof:
+            if (
+                proof.get("spec_closure") != "spec-closure.golden"
+                or not spec_closure_file.is_file()
+            ):
+                raise RuntimeError(
+                    f"{entry.name}: claim-bound unit with spec-closure.golden "
+                    "must set proof.spec_closure to 'spec-closure.golden'"
+                )
         # One claim is one module and one proof: splitting it across units
         # would give two modules the same name.
         if module in seen:
@@ -457,7 +474,9 @@ def check_contract_uniqueness(arguments, units, crate_units=()):
     }
 
 
-def trusted_module_order(trusted_root, root_module=SPEC_IMPORT_ROOT):
+def trusted_module_order(
+    trusted_root, root_module=SPEC_IMPORT_ROOT, *, extra_roots=()
+):
     """Return `(module, source)` for `root_module`'s `Trusted.*` closure.
 
     Modules come in dependency order, so each compiles after its imports.
@@ -486,6 +505,8 @@ def trusted_module_order(trusted_root, root_module=SPEC_IMPORT_ROOT):
         order.append((module, sources[module]))
 
     visit(root_module, [root_module])
+    for extra in extra_roots:
+        visit(extra, [extra])
     return order
 
 
@@ -545,7 +566,15 @@ def run_lean_compile_check(arguments, work_dir):
             "lean-compile: anneal-spec-lower failed: "
             f"{lower_proc.stdout}{lower_proc.stderr}"
         )
-    modules = trusted_module_order(arguments.trusted_lean)
+    bridge_src = arguments.trusted_lean / "Trusted/Framework/Bridge.lean"
+    extra_roots = (
+        ("Trusted.Framework.Bridge",)
+        if bridge_src.exists() or bridge_src.is_symlink()
+        else ()
+    )
+    modules = trusted_module_order(
+        arguments.trusted_lean, extra_roots=extra_roots
+    )
     for module, source in modules:
         olean = lib_dir / f"{module.replace('.', '/')}.olean"
         olean.parent.mkdir(parents=True, exist_ok=True)
@@ -773,10 +802,35 @@ def _specification_path(unit_dir):
     return unit_dir / paths[0]
 
 
+def _refresh_root_spec_closure_source(neg_dir, mutated_spec_text):
+    """Update `root_spec_module` source lines/digest in `spec-closure.golden`."""
+    sc_path = neg_dir / "spec-closure.golden"
+    if not sc_path.is_file():
+        return
+    sc_data = load_strict_json(sc_path.read_text(encoding="utf-8"))
+    trailing_newline = mutated_spec_text.endswith("\n")
+    body = (
+        mutated_spec_text[:-1]
+        if trailing_newline
+        else mutated_spec_text
+    )
+    sc_data["root_spec_module"]["sha256"] = hashlib.sha256(
+        mutated_spec_text.encode("utf-8")
+    ).hexdigest()
+    sc_data["root_spec_module"]["trailing_newline"] = trailing_newline
+    sc_data["root_spec_module"]["lines"] = (
+        [] if (not body and not trailing_newline) else body.split("\n")
+    )
+    sc_path.write_text(json.dumps(sc_data, indent=2) + "\n", encoding="utf-8")
+
+
 def run_negative_controls(arguments, base_unit_dir, work_dir):
-    """Confirm mutated Rust specs and mismatched signatures fail closed."""
+    """Confirm mutated Rust specs, mismatched signatures, and stale closures fail closed."""
+    cases = ["mutated_spec_rs", "mismatched_signature"]
+    if (base_unit_dir / "spec-closure.golden").is_file():
+        cases.append("tampered_spec_closure")
     results = {}
-    for case in ("mutated_spec_rs", "mismatched_signature"):
+    for case in cases:
         neg_dir = work_dir / f"neg-{case}"
         shutil.copytree(base_unit_dir, neg_dir, symlinks=True)
         _rewrite_source_root(neg_dir, arguments.src_dir)
@@ -794,7 +848,7 @@ def run_negative_controls(arguments, base_unit_dir, work_dir):
                     f"{case}: anneal-spec-lower failed: "
                     f"{lower_proc.stdout}{lower_proc.stderr}"
                 )
-        else:
+        elif case == "mismatched_signature":
             spec_lean = _specification_path(neg_dir)
             lean_text = spec_lean.read_text(encoding="utf-8")
             mutated = lean_text.replace(
@@ -804,9 +858,24 @@ def run_negative_controls(arguments, base_unit_dir, work_dir):
             )
             if mutated == lean_text:
                 raise RuntimeError(
-                    f"failed to mutate ContractSignature in {spec_lean.name}"
+                    f"failed to mutate MirSignature in {spec_lean.name}"
                 )
             spec_lean.write_text(mutated, encoding="utf-8")
+            _refresh_root_spec_closure_source(neg_dir, mutated)
+        elif case == "tampered_spec_closure":
+            sc_path = neg_dir / "spec-closure.golden"
+            sc_data = load_strict_json(sc_path.read_text(encoding="utf-8"))
+            entries = sc_data.get("envelope_summary", {}).get("entries", [])
+            if not entries:
+                raise RuntimeError(
+                    f"{case}: expected non-empty envelope_summary.entries in {sc_path}"
+                )
+            entries[0]["terminates"] = not bool(entries[0]["terminates"])
+            sc_path.write_text(
+                json.dumps(sc_data, indent=2) + "\n", encoding="utf-8"
+            )
+        else:
+            raise RuntimeError(f"unknown negative control case {case!r}")
 
         art_dir = work_dir / f"neg-artifacts-{case}"
         proc = subprocess.run(
@@ -852,6 +921,12 @@ def run_negative_controls(arguments, base_unit_dir, work_dir):
         if receipt.get("status") != "proof_failed":
             raise RuntimeError(
                 f"{case}: expected status 'proof_failed', got {receipt!r}"
+            )
+        if case == "tampered_spec_closure" and "spec-closure" not in json.dumps(
+            receipt
+        ):
+            raise RuntimeError(
+                f"{case}: expected spec-closure mismatch in receipt, got {receipt!r}"
             )
         results[case] = {"status": receipt["status"], "exit": proc.returncode}
     return results

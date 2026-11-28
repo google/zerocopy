@@ -11,50 +11,68 @@
 module
 prelude
 public import Trusted.MirSemantics
+public import Trusted.Framework.Bridge
 
 @[expose] public section
 
 namespace Specs.«zerocopy».«zc02_unit_pointer_metadata»
 
-open Trusted.MirAst Trusted.MirSemantics
+open Trusted.MirAst Trusted.MirSemantics Trusted.Framework
 
 /-- Mathematical value of an integer `Val` (`0` for any other value, which a
 well-typed argument or return value never is). -/
 noncomputable def specInt : Val → Int
-  | .scalar s => scalarAsInt s
+  | .scalar _s__anneal => scalarAsInt _s__anneal
   | _ => 0
 
 /-- `fn <() as PointerMetadata>::from_elem_count(_elems: usize) -> ()` -/
 def fn0_id : String :=
   "rust-path-v1::<() as PointerMetadata>::from_elem_count"
 
+/-- MIR signature of `<() as PointerMetadata>::from_elem_count`. -/
+def fn0_sig : MirSignature :=
+  { isUnsafe := false, abi := .rust, params := [.int .isize false], ret := .unit }
+
 /-- Normal-return postcondition of
 `<() as PointerMetadata>::from_elem_count`. -/
-noncomputable def fn0_post (_q : Query) (out : Out) : Prop :=
-  (out.ret = Trusted.MirSemantics.Val.unit)
+noncomputable def fn0_post (_q__anneal : Query) (_ret__anneal : Val)
+    (_mem__anneal : CallerMemory) : Prop :=
+  (_ret__anneal = Trusted.MirSemantics.Val.unit)
 
-noncomputable def fn0_contract : FnContract := {
+noncomputable def fn0_contract :
+    Trusted.Framework.FnContract Query Val CallerMemory := {
   postReturn := fn0_post
-  effects := { terminates := true, noUnwind := true }
+  effects := { terminates := true, noUnwind := true, noAbort := true }
 }
 
 /-- `fn <() as PointerMetadata>::to_elem_count(self: ()) -> usize` -/
 def fn1_id : String :=
   "rust-path-v1::<() as PointerMetadata>::to_elem_count"
 
-/-- Normal-return postcondition of `<() as PointerMetadata>::to_elem_count`. -/
-noncomputable def fn1_post (_q : Query) (out : Out) : Prop :=
-  ((specInt out.ret) = (0 : Int))
+/-- MIR signature of `<() as PointerMetadata>::to_elem_count`. -/
+def fn1_sig : MirSignature :=
+  { isUnsafe := false, abi := .rust, params := [.unit], ret := .int .isize false }
 
-noncomputable def fn1_contract : FnContract := {
+/-- Normal-return postcondition of `<() as PointerMetadata>::to_elem_count`. -/
+noncomputable def fn1_post (_q__anneal : Query) (_ret__anneal : Val)
+    (_mem__anneal : CallerMemory) : Prop :=
+  ((specInt _ret__anneal) = (0 : Int))
+
+noncomputable def fn1_contract :
+    Trusted.Framework.FnContract Query Val CallerMemory := {
   postReturn := fn1_post
-  effects := { terminates := true, noUnwind := true }
+  effects := { terminates := true, noUnwind := true, noAbort := true }
 }
 
-noncomputable def specs : Specs := ContractSpecs [
-  { identity := fn0_id, contract := fn0_contract, signature := some { isUnsafe := false, params := [.int .isize false], ret := .unit } },
-  { identity := fn1_id, contract := fn1_contract, signature := some { isUnsafe := false, params := [.unit], ret := .int .isize false } }
-]
+noncomputable def specs : MirEnvelopeSpec := {
+  entries := [
+    { identity := fn0_id, sig := fn0_sig, contract := fn0_contract },
+    { identity := fn1_id, sig := fn1_sig, contract := fn1_contract }
+  ]
+  claimShapes := [.forallSafety, .termination]
+  gaps := .selectedUnitScope :: defaultMirDownstreamGaps
+  laws := []
+}
 
 end Specs.«zerocopy».«zc02_unit_pointer_metadata»
 
