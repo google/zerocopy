@@ -30,13 +30,6 @@ fn rejects_compiler_overrides_in_source_root() {
             fs::create_dir_all(p.join(".cargo")).unwrap();
             fs::write(p.join(".cargo/config"), "[build]\nrustflags = []\n").unwrap();
         })),
-        ("rust-toolchain-toml", Box::new(|p: &Path| {
-            fs::write(p.join("rust-toolchain.toml"), "[toolchain]\nchannel = \"nightly\"\n")
-                .unwrap();
-        })),
-        ("rust-toolchain", Box::new(|p: &Path| {
-            fs::write(p.join("rust-toolchain"), "nightly\n").unwrap();
-        })),
         ("dot-cargo-file", Box::new(|p: &Path| {
             fs::write(p.join(".cargo"), "not a directory").unwrap();
         })),
@@ -92,6 +85,48 @@ fn rejects_compiler_overrides_in_source_root() {
         );
         let res = run_verify_inv(&staged, &inv);
         expect_failed(&res, 1, "unsupported", Some("cargo"), "compiler overrides");
+    }
+}
+
+/// Package-root `rust-toolchain` and `rust-toolchain.toml` files do not abort
+/// `--manifest-path`, because `cargo metadata` runs from a fresh temporary
+/// working directory with `RUSTUP_TOOLCHAIN` cleared and capture always uses
+/// Anneal's pinned toolchain. Uses nonexistent custom toolchain targets so the
+/// test fails if `rustup` ever honors the manifest's file.
+#[test]
+fn allows_rust_toolchain_manifests_in_cargo_shortcut() {
+    let staged = new_workspace("anneal-rust-toolchain-ok-").stage().unwrap();
+    let work = staged.work_dir();
+    write_scalar_baseline(work);
+    let lean_dir = work.join("lean");
+    let base_manifest = "[package]\nname = \"scalar\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
+                         [lib]\npath = \"lib.rs\"\n";
+
+    for (case, file, contents) in [
+        (
+            "rust-toolchain-toml",
+            "rust-toolchain.toml",
+            "[toolchain]\npath = \"/nonexistent/anneal-toolchain\"\n",
+        ),
+        ("rust-toolchain", "rust-toolchain", "anneal-nonexistent-toolchain\n"),
+    ] {
+        let pkg = work.join(format!("ok-{case}"));
+        fs::create_dir_all(&pkg).unwrap();
+        fs::write(pkg.join("Cargo.toml"), base_manifest).unwrap();
+        fs::write(pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
+        fs::write(pkg.join(file), contents).unwrap();
+        let manifest = pkg.join("Cargo.toml");
+        let inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        );
+        let res = run_verify_inv(&staged, &inv);
+        expect_verified(&res, "crate_verified", true);
     }
 }
 
@@ -259,8 +294,8 @@ fn enforces_ancestor_and_cargo_home_compiler_override_policy() {
     let base_manifest = "[package]\nname = \"scalar\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
                          [lib]\npath = \"lib.rs\"\n";
 
-    // (a) Ancestor above `workspace_root` with `[build]`, `[env]`,
-    //     `rust-toolchain.toml`, or symlinked `.cargo` is rejected.
+    // (a) Ancestor above `workspace_root` with `[build]`, `[env]`, or symlinked
+    //     `.cargo` is rejected.
     for (case, setup, expected_reason) in [
         (
             "build-table",
@@ -278,14 +313,6 @@ fn enforces_ancestor_and_cargo_home_compiler_override_policy() {
                 write_cargo_config(anc, "[env]\nRUSTFLAGS = \"--cfg=evil\"\n");
             }),
             "table [env]",
-        ),
-        (
-            "rust-toolchain-toml",
-            Box::new(|anc: &Path| {
-                fs::write(anc.join("rust-toolchain.toml"), "[toolchain]\nchannel = \"nightly\"\n")
-                    .unwrap();
-            }),
-            "toolchain override",
         ),
         (
             "symlink-dot-cargo",
@@ -416,4 +443,85 @@ fn enforces_ancestor_and_cargo_home_compiler_override_policy() {
     .env("CARGO_HOME", &benign_cargo_home);
     let benign_res = run_verify_inv(&staged, &benign_inv);
     expect_verified(&benign_res, "crate_verified", true);
+
+    // (d) Ancestor `rust-toolchain` and `rust-toolchain.toml` files strictly
+    //     above `workspace_root` are ignored because `cargo metadata` runs from
+    //     a fresh temporary working directory with `RUSTUP_TOOLCHAIN` cleared
+    //     and capture uses Anneal's pinned toolchain. Uses nonexistent custom
+    //     toolchain targets so the test fails if `rustup` ever honors them.
+    for (case, file, contents) in [
+        (
+            "rust-toolchain-toml",
+            "rust-toolchain.toml",
+            "[toolchain]\npath = \"/nonexistent/anneal-toolchain\"\n",
+        ),
+        ("rust-toolchain", "rust-toolchain", "anneal-nonexistent-toolchain\n"),
+    ] {
+        let tc_ancestor = work.join(format!("ancestor-ok-{case}"));
+        let tc_pkg = tc_ancestor.join("pkg");
+        fs::create_dir_all(&tc_pkg).unwrap();
+        fs::write(tc_ancestor.join(file), contents).unwrap();
+        fs::write(tc_pkg.join("Cargo.toml"), base_manifest).unwrap();
+        fs::write(tc_pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
+        let tc_manifest = tc_pkg.join("Cargo.toml");
+        let tc_inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                tc_manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        );
+        let tc_res = run_verify_inv(&staged, &tc_inv);
+        expect_verified(&tc_res, "crate_verified", true);
+    }
+
+    // (e) Ambient `rust-toolchain` and `rust-toolchain.toml` files in an
+    //     ancestor of `probe_cwd` (via `$TMPDIR`) fail closed before spawning
+    //     `cargo metadata`.
+    for (case, file) in [("toml", "rust-toolchain.toml"), ("plain", "rust-toolchain")] {
+        let tmp_tc_dir = work.join(format!("tmpdir-tc-{case}"));
+        fs::create_dir_all(&tmp_tc_dir).unwrap();
+        fs::write(tmp_tc_dir.join(file), "[toolchain]\npath = \"/nonexistent/anneal-toolchain\"\n")
+            .unwrap();
+        let tmp_inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                benign_manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        )
+        .env("TMPDIR", &tmp_tc_dir);
+        let tmp_res = run_verify_inv(&staged, &tmp_inv);
+        expect_failed(&tmp_res, 1, "unsupported", Some("cargo"), "compiler overrides");
+    }
+
+    #[cfg(unix)]
+    {
+        let sym_target = work.join("tmpdir-sym-target");
+        let sym_sub = sym_target.join("sub");
+        fs::create_dir_all(&sym_sub).unwrap();
+        fs::write(
+            sym_target.join("rust-toolchain.toml"),
+            "[toolchain]\npath = \"/nonexistent/anneal-toolchain\"\n",
+        )
+        .unwrap();
+        let sym_link = work.join("tmpdir-symlink");
+        symlink(&sym_sub, &sym_link).unwrap();
+        let sym_inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                benign_manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        )
+        .env("TMPDIR", &sym_link);
+        let sym_res = run_verify_inv(&staged, &sym_inv);
+        expect_failed(&sym_res, 1, "unsupported", Some("cargo"), "cargo metadata probe directory");
+    }
 }

@@ -127,10 +127,12 @@ download overrides while admitting `[net]`, `[registries]`, `[registry]`, and
 `[source]` so offline and vendored host setups keep working), and pins child
 `cargo metadata` processes to that exact inspected `$CARGO_HOME`. Any other
 table (for example `[build]`, `[target]`, `[profile]`, `[env]`, `[patch]`,
-`[http]`, or `[install]`), unparseable TOML, a symlinked or non-regular config
-file, `.cargo` directory, or `$CARGO_HOME` directory, or a `rust-toolchain` or
-`rust-toolchain.toml` in the package directory or any ancestor is refused as
-`unsupported`. In that case, write an explicit `request.json` instead.
+`[http]`, or `[install]`), unparseable TOML, or a symlinked or non-regular
+config file, `.cargo` directory, or `$CARGO_HOME` directory is refused as
+`unsupported`. A `rust-toolchain` or `rust-toolchain.toml` file in the resolved
+ancestry of `$TMPDIR` (the temporary working directory used to run
+`cargo metadata`) is likewise refused; clear `$TMPDIR`, point it at a clean
+directory, or write an explicit `request.json` instead.
 
 Each `instantiations` entry, like each `--instantiate` value, names a generic
 function of the crate being verified by its `rustc` path (`path`) and lists
