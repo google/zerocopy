@@ -39,7 +39,7 @@ class CarryForwardProbeSuite:
     """The probe suite of `CodexReviewPropertyTests`."""
 
     def _run_carry_forward_probe_suite(self, mod: types.ModuleType) -> None:
-        """Exercise all 42 carry-forward guards in-memory (no disk writes)."""
+        """Exercise all 49 carry-forward guards in-memory (no disk writes)."""
         clean_anchor = gate2_review(
             review_id=20,
             head_sha=ANCHOR_HEAD,
@@ -691,15 +691,19 @@ class CarryForwardProbeSuite:
             ).state,
             "success",
         )
-        # Legacy Codex blocking summary on unrelated head blocks carry-forward
-        # (`history_codex_off`):
+        # Legacy Codex blocking summary does NOT poison carry-forward when
+        # authentic cross-family Gate 2 history exists
+        # (`history_gate2_decouple_off`), while still blocking
+        # `_carry_forward_blocked_by_history` when zero valid cross-family
+        # Gate 2 items exist (`history_codex_off` and
+        # `history_gate2_auth_off`):
         bad_codex = summary(
             head="9" * 40,
             status="completed",
             has_any_findings=True,
             has_unresolved_findings=True,
         )
-        self.assertNotEqual(
+        self.assertEqual(
             mod.review_result(
                 NEW_HEAD,
                 [bad_codex],
@@ -712,32 +716,136 @@ class CarryForwardProbeSuite:
             ).state,
             "success",
         )
+        self.assertTrue(
+            mod._carry_forward_blocked_by_history(
+                [bad_codex], [], AUTH_REVIEWERS, ANCHOR_HEAD, TREE
+            )
+        )
+        same_fam_other = gate2_review(
+            review_id=29,
+            head_sha="9" * 40,
+            base_sha=OLD_BASE,
+            tree_sha=OTHER_TREE,
+            reviewer_family="claude",
+            author_family="claude",
+            submitted_at="2026-11-23T00:30:00Z",
+        )
+        self.assertTrue(
+            mod._carry_forward_blocked_by_history(
+                [bad_codex], [same_fam_other], AUTH_REVIEWERS, ANCHOR_HEAD, TREE
+            )
+        )
+        dismissed_other = gate2_review(
+            review_id=28,
+            head_sha="9" * 40,
+            base_sha=OLD_BASE,
+            tree_sha=OTHER_TREE,
+            state="DISMISSED",
+            submitted_at="2026-11-23T00:30:00Z",
+        )
+        self.assertTrue(
+            mod._carry_forward_blocked_by_history(
+                [bad_codex], [dismissed_other], AUTH_REVIEWERS,
+                ANCHOR_HEAD, TREE,
+            )
+        )
+        multi_inc_same_fam = gate2_review(
+            review_id=27,
+            head_sha="9" * 40,
+            base_sha=OLD_BASE,
+            tree_sha=OTHER_TREE,
+            reviewer_family="multi",
+            author_family="claude",
+            verdict="incomplete",
+            findings=[],
+            panel_seats=[
+                {
+                    "seat": "s1",
+                    "family": "claude",
+                    "status": "completed",
+                    "verdict": "incomplete",
+                }
+            ],
+            submitted_at="2026-11-23T00:30:00Z",
+        )
+        self.assertTrue(
+            mod._carry_forward_blocked_by_history(
+                [bad_codex], [multi_inc_same_fam], AUTH_REVIEWERS,
+                ANCHOR_HEAD, TREE,
+            )
+        )
+        tombstoned_other_cmt = gate2_comment(
+            comment_id=26,
+            head_sha="9" * 40,
+            base_sha=OLD_BASE,
+            tree_sha=OTHER_TREE,
+            created_at="2026-11-23T00:30:00Z",
+        )
+        self.assertTrue(
+            mod._carry_forward_blocked_by_history(
+                [bad_codex, tombstoned_other_cmt], [], AUTH_REVIEWERS,
+                ANCHOR_HEAD, TREE, deleted_through=26,
+            )
+        )
 
-        # 5. Isolated direct unit mock for `codex_gate_off`:
-        with (
-            patch.object(
-                mod,
-                "review_codex_result",
-                side_effect=[
-                    mod.Result("failure", "mock codex failure"),
-                    mod.Result("pending", "anchor codex clear"),
-                ],
-            ),
-            patch.object(
-                mod, "_carry_forward_blocked_by_history", return_value=False
-            ),
-        ):
-            res_codex_off = mod.review_result(
-                NEW_HEAD,
-                [],
+        # 5. Direct Gate 2 vs. legacy Codex precedence (`gate2_precedence_off`,
+        # `gate2_failure_precedence_off`, and
+        # `pending_gate2_masks_codex_failure`):
+        bad_codex_anchor = summary(
+            head=ANCHOR_HEAD,
+            status="completed",
+            has_any_findings=True,
+            has_unresolved_findings=True,
+        )
+        self.assertEqual(
+            mod.review_result(
+                ANCHOR_HEAD,
+                [bad_codex_anchor],
                 reviews=[clean_anchor],
-                base_sha=NEW_BASE,
+                base_sha=OLD_BASE,
                 tree_sha=TREE,
                 authorized_reviewers=AUTH_REVIEWERS,
                 identity_key=ANCHOR_IK,
-                carry_forward_verifier=verifier,
-            )
-            self.assertNotEqual(res_codex_off.state, "success")
+            ).state,
+            "success",
+        )
+        incomplete_anchor = gate2_review(
+            review_id=25,
+            head_sha=ANCHOR_HEAD,
+            base_sha=OLD_BASE,
+            tree_sha=TREE,
+            verdict="incomplete",
+            findings=[],
+            submitted_at="2026-11-23T01:00:00Z",
+        )
+        self.assertEqual(
+            mod.review_result(
+                ANCHOR_HEAD,
+                [bad_codex_anchor],
+                reviews=[incomplete_anchor],
+                base_sha=OLD_BASE,
+                tree_sha=TREE,
+                authorized_reviewers=AUTH_REVIEWERS,
+                identity_key=ANCHOR_IK,
+            ).state,
+            "failure",
+        )
+        malformed_anchor = {
+            **clean_anchor,
+            "body": "<!-- anneal-gate2-review:v1 [] -->",
+        }
+        self.assertEqual(
+            mod.review_result(
+                ANCHOR_HEAD,
+                [summary(head=ANCHOR_HEAD)],
+                reviews=[malformed_anchor],
+                base_sha=OLD_BASE,
+                tree_sha=TREE,
+                authorized_reviewers=AUTH_REVIEWERS,
+                identity_key=ANCHOR_IK,
+            ).state,
+            "failure",
+        )
 
         # 6. `reconcile` wiring (`reconcile_unwired`):
         class ReconcileCarryGH(FakeGitHub):

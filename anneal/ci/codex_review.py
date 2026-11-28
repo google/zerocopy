@@ -670,21 +670,56 @@ def base_drift_allows_carry_forward(compare_status, base_files, paths):
     return frozenset(relaxed)
 
 
+def _is_valid_cross_family_gate2_item(source, item, authorized_reviewers,
+                                      deleted_through=0):
+    """Whether `item` is an authentic, well-formed cross-family Gate 2 entry."""
+    if not authentic_gate2_item(item, authorized_reviewers):
+        return False
+    if ((source == "review" or "state" in item)
+            and item.get("state") != "COMMENTED"):
+        return False
+    try:
+        payload, _, author_norm, completed_seat_families = parse_gate2_payload(
+            item.get("body") or ""
+        )
+    except ValueError:
+        return False
+    if (completed_seat_families is not None
+            and not any(fam != author_norm for fam in completed_seat_families)):
+        return False
+    has_findings = bool(payload["findings"] or payload["verdict"] == "findings")
+    if source == "comment" and item["id"] <= deleted_through and not has_findings:
+        return False
+    res, _ = _evaluate_gate2_item(
+        source, item, payload["head_sha"], payload["base_sha"],
+        payload["tree_sha"], None,
+    )
+    return res.state in ("success", "pending") or (
+        has_findings and res.reason.startswith("Gate 2 review reported ")
+    )
+
+
 def _carry_forward_blocked_by_history(comments, reviews, authorized_reviewers,
                                       anchor_head, anchor_tree,
                                       deleted_through=0):
-    """Whether any Gate 2 or Codex evidence on the anchor could still block.
+    """Whether any Gate 2 or fallback Codex evidence on the anchor blocks.
 
-    Conservative: any legacy Codex summary that is not a completed clean
-    review stops the carry-forward, as does any Gate 2 item recorded on the
-    anchor's head or tree (every commit with the anchor's one-commit
-    identity has that tree) that has findings or fails on its own recorded
-    identity, mirroring which failures the normal rules keep blocking.
+    Any Gate 2 item recorded on the anchor's head or tree (every commit with
+    the anchor's one-commit identity has that tree) that has findings or fails
+    on its own recorded identity stops carry-forward, mirroring which failures
+    the normal rules keep blocking. Carry-forward anchors on a verified clean
+    cross-family Gate 2 review, so legacy Codex summaries never block it; the
+    legacy summary loop remains as defense-in-depth for direct callers when no
+    authentic cross-family Gate 2 entry exists on the PR.
     """
+    has_authentic_gate2 = False
     for source, entries in (("comment", comments), ("review", reviews)):
         for item in entries:
             if not authentic_gate2_item(item, authorized_reviewers):
                 continue
+            if _is_valid_cross_family_gate2_item(
+                    source, item, authorized_reviewers, deleted_through):
+                has_authentic_gate2 = True
             try:
                 payload, _, _, _ = parse_gate2_payload(
                     item.get("body") or "", strict_identity_key=False,
@@ -702,6 +737,8 @@ def _carry_forward_blocked_by_history(comments, reviews, authorized_reviewers,
                     source, item, payload["head_sha"], payload["base_sha"],
                     payload["tree_sha"]):
                 return True
+    if has_authentic_gate2:
+        return False
     for comment in comments:
         if not authentic_summary(comment):
             continue
@@ -1251,8 +1288,7 @@ def review_result(head, comments, deleted_through=0, base_changed_at=None, *,
         historical_trees=historical_trees,
     )
     if (gate2_res is not None and gate2_res.state == "pending"
-            and carry_forward_verifier is not None
-            and (codex_res is None or codex_res.state != "failure")):
+            and carry_forward_verifier is not None):
         carried = _carry_forward_result(
             head, comments, reviews or (), deleted_through, base_sha,
             tree_sha, authorized_reviewers, identity_key,
@@ -1266,12 +1302,10 @@ def review_result(head, comments, deleted_through=0, base_changed_at=None, *,
         return codex_res
     if codex_res is None:
         return gate2_res
-    if gate2_res.state == "failure":
+    if gate2_res.state in ("failure", "success"):
         return gate2_res
     if codex_res.state == "failure":
         return codex_res
-    if gate2_res.state == "success":
-        return gate2_res
     if codex_res.state == "success":
         if (gate2_payload is not None
                 and _matches_gate2_identity(

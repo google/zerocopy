@@ -11,8 +11,9 @@ those terms. -->
 Anneal pairs local `change-review`, `trust-review`, CI, and human review with
 an independent cross-family automated review (**Gate 2**). Gate 2 accepts
 either an independent cross-family `COMMENT` review carrying a structured
-`anneal-gate2-review:v1` footer or, for backwards compatibility, a healthy
-`chatgpt-codex-connector[bot]` review summary. Until
+`anneal-gate2-review:v1` footer or, for backwards compatibility when no
+authentic `anneal-gate2-review:v1` verdict covers the current identity, a
+healthy `chatgpt-codex-connector[bot]` review summary. Until
 [#4013](https://github.com/google/zerocopy/issues/4013) is resolved, Gate 2 is
 enforced by the manual merge gates below rather than by a GitHub ruleset.
 
@@ -122,10 +123,11 @@ gate whenever the identity changes:
        one-commit identity (clean, cross-family, `COMMENTED`, current
        `merge_base`, no active failure);
      - no Gate 2 item recorded on the reviewed head or tree has findings or,
-       unless it is a deleted comment, fails on its own recorded identity; every
-       other head with Gate 2 findings or failures makes different changes than
-       the reviewed head; and every legacy Codex summary on the PR is a
-       completed clean review;
+       unless it is a deleted comment, fails on its own recorded identity, and
+       every other head with Gate 2 findings or failures makes different
+       changes than the reviewed head (legacy
+       `codex-pull-request-review-summary` comments never block carry-forward
+       of a clean cross-family `anneal-gate2-review:v1` review);
      - both heads are single commits on their bases with the same commit
        message;
      - every file's added and removed lines, status, rename source, resulting
@@ -148,8 +150,18 @@ gate whenever the identity changes:
      the PR and base changes to other files (outside the review rules above)
      are left to Gate 3 CI and the merge queue.
    - **Legacy Codex summary (`codex-review-state:v1`):** For backwards
-     compatibility, a complete code review by an authentic
-     `chatgpt-codex-connector[bot]` covering the current identity.
+     compatibility when no completed authentic cross-family
+     `anneal-gate2-review:v1` verdict covers the current identity, a complete
+     code review by an authentic `chatgpt-codex-connector[bot]` covering the
+     current identity. Once a completed authentic cross-family
+     `anneal-gate2-review:v1` verdict covers the current identity (directly or
+     via rebase-only carry-forward), that Gate 2 verdict is authoritative in
+     `ci/codex_review.py` over legacy Codex summary failures or connector
+     errors (while a pending, incomplete, dismissed, or base-stale Gate 2
+     entry still lets a legacy Codex failure report `failure`); any legacy
+     Codex finding posted on the PR still follows the manual resolution rule
+     below (fixed or dispositioned at Gate 5), which static
+     `codex-review-state:v1` comments cannot record.
 
    An aborted run, a request answered with an error, a `verdict: "incomplete"`
    run, or a run that has not completed is never a passing Gate 2 review. Every
@@ -339,13 +351,24 @@ failure stops blocking only when it carries a mismatched structured
 `identity_key` or a stale `merge_base`, or when it is an issue comment with
 `id <= deleted_through` (whose historical commit is then never looked up). If
 GitHub cannot resolve the historical commit of such a failure (HTTP 404 or
-422), the evaluator fails closed instead of dropping it. For
-legacy `codex-review-state:v1` summaries, active completed findings on the
-current head or a historical commit whose GitHub tree matches `tree_sha`
-(including still-present comments with `id <= deleted_through`) continue
-blocking across rewrites; such a summary records no tree, so one on a
-historical commit GitHub cannot resolve (HTTP 404 or 422) is treated like a
-finding on a different tree and does not block. `review_snapshot` tracks those
+422), the evaluator fails closed instead of dropping it. Once a completed
+authentic cross-family `anneal-gate2-review:v1` verdict covers the current
+identity (directly or via rebase-only carry-forward), `ci/codex_review.py`
+treats that Gate 2 verdict as authoritative over legacy
+`codex-review-state:v1` summaries (including completed findings and connector
+errors, leaving manual resolution or Gate 5 disposition of any posted legacy
+Codex finding to the merge gates above) and never lets legacy summaries block
+rebase carry-forward (retaining the legacy summary check in
+`_carry_forward_blocked_by_history` only when no authentic cross-family Gate 2
+entry exists). When no completed authentic Gate 2 verdict covers the current
+identity, legacy `codex-review-state:v1` failures still report `failure` (and
+legacy `success` applies when no pending Gate 2 entry matches the current
+identity): active completed findings on the current head or a historical
+commit whose GitHub tree matches `tree_sha` (including still-present comments
+with `id <= deleted_through`) continue blocking across rewrites; such a summary
+records no tree, so one on a historical commit GitHub cannot resolve (HTTP
+404 or 422) is treated like a finding on a different tree and does not
+block. `review_snapshot` tracks those
 active summaries alongside the latest summary, and freshness rules still reject
 a completed review when Codex edits an older summary or supplies only a prose
 receipt; deletion records are no longer updated automatically.

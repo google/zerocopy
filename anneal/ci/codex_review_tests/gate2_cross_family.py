@@ -355,37 +355,180 @@ class Gate2CrossFamilyTests(unittest.TestCase):
         )
 
     def test_coexistence_with_legacy_codex_summaries(self):
-        # Silent Codex failure (status="failed", has_any_findings=True) is
-        # unblocked by a clean anneal-gate2-review:v1.
-        codex_silent_fail = summary(status="failed", has_any_findings=True, has_unresolved_findings=True)
         clean_gate2 = gate2_review()
-        self.assertEqual(
-            review_result(
-                HEAD, [codex_silent_fail], reviews=[clean_gate2],
-                base_sha=BASE, tree_sha=TREE,
+        connector_error = {
+            "id": 10,
+            "created_at": "2026-11-08T10:00:00Z",
+            "user": dict(summary()["user"]),
+            "body": (
+                "<!-- codex-pull-request-review-summary -->\n"
+                "To use Codex here, create a Codex account and connect to github."
             ),
-            Result("success", "Independent cross-family Gate 2 review passed (gemini)"),
-        )
-        # Completed Codex findings on current head still block even if Gate 2 is
-        # clean.
-        codex_completed_finding = summary(status="completed", has_any_findings=True, has_unresolved_findings=True)
+        }
+        malformed_codex = {
+            "id": 10,
+            "created_at": "2026-11-08T10:00:00Z",
+            "user": dict(summary()["user"]),
+            "body": (
+                "<!-- codex-pull-request-review-summary -->\n"
+                "<!-- codex-review-state:v1 [] -->"
+            ),
+        }
+        # (a) Authentic cross-family Gate 2 success on current identity is
+        # authoritative over legacy Codex failures, findings, and errors.
+        for label, codex_cmt in (
+            ("silent_fail", summary(
+                status="failed", has_any_findings=True, has_unresolved_findings=True,
+            )),
+            ("completed_findings", summary(
+                status="completed", has_any_findings=True, has_unresolved_findings=True,
+            )),
+            ("connector_error", connector_error),
+            ("malformed_state", malformed_codex),
+            ("in_progress", summary(status="running")),
+        ):
+            with self.subTest(gate2_wins_over_codex=label):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [codex_cmt], reviews=[clean_gate2],
+                        base_sha=BASE, tree_sha=TREE,
+                    ),
+                    Result(
+                        "success",
+                        "Independent cross-family Gate 2 review passed (gemini)",
+                    ),
+                )
+
+        # (b) Authentic Gate 2 failure on current identity wins over legacy
+        # Codex success.
+        finding = {"severity": "P1", "summary": "Soundness defect"}
+        for label, failing_gate2 in (
+            ("findings", gate2_review(verdict="findings", findings=[finding])),
+            ("changes_requested", gate2_review(state="CHANGES_REQUESTED")),
+            ("approved", gate2_review(state="APPROVED")),
+            ("same_family", gate2_review(
+                reviewer_family="claude", author_family="claude",
+            )),
+            ("wrong_tree", gate2_review(tree_sha=OTHER_TREE)),
+            ("wrong_commit_id", gate2_review(commit_id=OTHER_HEAD)),
+        ):
+            with self.subTest(gate2_failure_wins=label):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [summary()], reviews=[failing_gate2],
+                        base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    "failure",
+                )
+
+        # (d) Without an authentic Gate 2 review covering the current identity,
+        # legacy Codex fallback behavior is preserved.
+        old_gate2 = gate2_review(head_sha=OTHER_HEAD, tree_sha=OTHER_TREE)
+        for g2_list in ([], [old_gate2]):
+            self.assertEqual(
+                review_result(
+                    HEAD, [summary()], reviews=g2_list,
+                    base_sha=BASE, tree_sha=TREE,
+                ).state,
+                "success",
+            )
+            self.assertEqual(
+                review_result(
+                    HEAD, [summary(has_any_findings=True, has_unresolved_findings=True)],
+                    reviews=g2_list, base_sha=BASE, tree_sha=TREE,
+                ).state,
+                "failure",
+            )
+            self.assertEqual(
+                review_result(
+                    HEAD, [connector_error], reviews=g2_list,
+                    base_sha=BASE, tree_sha=TREE,
+                ).state,
+                "failure",
+            )
+            self.assertEqual(
+                review_result(
+                    HEAD, [summary(status="running")], reviews=g2_list,
+                    base_sha=BASE, tree_sha=TREE,
+                ).state,
+                "pending",
+            )
+
+        # (e) Unauthenticated or malformed Gate 2 markers fail closed and never
+        # override legacy Codex failures (or pass via legacy Codex success).
+        codex_finding = summary(has_any_findings=True, has_unresolved_findings=True)
+        for assoc in ("NONE", "CONTRIBUTOR", "FIRST_TIME_CONTRIBUTOR", None):
+            unauth_rev = gate2_review(
+                author_association=assoc, login="outsider", user_id=999,
+            )
+            unauth_cmt = gate2_comment(
+                comment_id=30, author_association=assoc,
+                login="outsider", user_id=999,
+            )
+            with self.subTest(unauthenticated_assoc=assoc):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [codex_finding], reviews=[unauth_rev],
+                        base_sha=BASE, tree_sha=TREE,
+                    ),
+                    Result("failure", "Codex findings remain or the verdict is unknown"),
+                )
+                self.assertEqual(
+                    review_result(
+                        HEAD, [codex_finding, unauth_cmt],
+                        base_sha=BASE, tree_sha=TREE,
+                    ),
+                    Result("failure", "Codex findings remain or the verdict is unknown"),
+                )
+                self.assertEqual(
+                    review_result(
+                        HEAD, [], reviews=[unauth_rev],
+                        base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    "pending",
+                )
+        for bad_label, bad_body in (
+            ("unsupported_v2", clean_gate2["body"].replace("review:v1", "review:v2")),
+            ("duplicate_key", clean_gate2["body"].replace(
+                '"verdict": "clean"', '"verdict": "clean", "verdict": "clean"',
+            )),
+            ("non_object", "<!-- anneal-gate2-review:v1 [] -->"),
+            ("contradictory_clean", gate2_review(
+                verdict="clean", findings=[finding],
+            )["body"]),
+            ("bad_identity_key", gate2_review(identity_key="one:bad")["body"]),
+        ):
+            bad_rev = {**clean_gate2, "body": bad_body}
+            with self.subTest(malformed_gate2=bad_label):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [summary()], reviews=[bad_rev],
+                        base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    "failure",
+                )
+                self.assertEqual(
+                    review_result(
+                        HEAD, [codex_finding], reviews=[bad_rev],
+                        base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    "failure",
+                )
+        # Tombstoned clean Gate 2 comment cannot override a live Codex failure.
+        tombstoned_g2 = gate2_comment(comment_id=10)
+        later_codex_fail = summary(has_any_findings=True, has_unresolved_findings=True)
+        later_codex_fail["id"] = 25
         self.assertEqual(
             review_result(
-                HEAD, [codex_completed_finding], reviews=[clean_gate2],
-                base_sha=BASE, tree_sha=TREE,
+                HEAD, [tombstoned_g2, later_codex_fail],
+                deleted_through=15, base_sha=BASE, tree_sha=TREE,
             ).state,
             "failure",
         )
-        # Old Gate 2 on OTHER_HEAD does not block clean Codex on HEAD.
-        old_gate2 = gate2_review(head_sha=OTHER_HEAD, tree_sha=OTHER_TREE)
-        self.assertEqual(
-            review_result(
-                HEAD, [summary()], reviews=[old_gate2],
-                base_sha=BASE, tree_sha=TREE,
-            ).state,
-            "success",
-        )
-        # Incomplete Gate 2 on HEAD holds pending even if Codex passed.
+
+        # Non-passing Gate 2 entries on HEAD (incomplete, dismissed, pending,
+        # or base-stale) hold a clean Codex summary pending, without
+        # downgrading a legacy Codex failure from failure to pending.
         incomplete_gate2 = gate2_review(verdict="incomplete", findings=[])
         self.assertEqual(
             review_result(
@@ -394,6 +537,31 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             ).state,
             "pending",
         )
+        stale_clean_gate2 = gate2_review(submitted_at="2026-11-23T01:00:00Z")
+        fresh_codex_fail = summary(
+            created_at="2026-11-23T03:00:00Z",
+            completed_at="2026-11-23T03:01:00Z",
+            has_any_findings=True,
+            has_unresolved_findings=True,
+        )
+        for pending_label, pending_g2, changed_at in (
+            ("incomplete", incomplete_gate2, None),
+            ("dismissed", gate2_review(state="DISMISSED"), None),
+            ("pending_state", gate2_review(state="PENDING"), None),
+            ("base_stale", stale_clean_gate2, "2026-11-23T02:00:00Z"),
+        ):
+            with self.subTest(pending_gate2_preserves_codex_failure=pending_label):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [fresh_codex_fail], reviews=[pending_g2],
+                        base_changed_at=changed_at,
+                        base_sha=BASE, tree_sha=TREE,
+                    ),
+                    Result(
+                        "failure",
+                        "Codex findings remain or the verdict is unknown",
+                    ),
+                )
 
     def test_reconcile_and_transport_for_reviews_and_commit_tree(self):
         with patch("sys.stdout", new=io.StringIO()):
@@ -1311,8 +1479,10 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             "pending",
         )
 
-        # Completed legacy Codex findings on OTHER_HEAD cannot be
-        # bypassed via no-op amend or squash-rebase with matching identity_key.
+        # Authentic cross-family Gate 2 clean verdicts covering HEAD's current
+        # identity are authoritative over prior or running legacy Codex
+        # summaries, while legacy Codex fallback still blocks same-tree
+        # findings when no authentic Gate 2 review covers HEAD.
         codex_old_findings = summary(
             OTHER_HEAD, status="completed",
             has_any_findings=True, has_unresolved_findings=True,
@@ -1343,10 +1513,8 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                     parents={HEAD: [pr_obj["base"]["sha"]], OTHER_HEAD: [BASE]},
                     messages={HEAD: msg, OTHER_HEAD: msg},
                 )
-                self.assertEqual(reconcile(gh, publish=True)[HEAD].state, "failure")
+                self.assertEqual(reconcile(gh, publish=True)[HEAD].state, "success")
 
-        # Even if a newer Codex summary on HEAD is running or clean, an active
-        # historical completed Codex finding on the same identity still blocks.
         codex_running_new = summary(HEAD, status="running")
         codex_running_new["id"] = 11
         gh_codex_running = FakeGitHub(
@@ -1356,11 +1524,11 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             parents={HEAD: [OTHER_BASE], OTHER_HEAD: [BASE]},
             messages={HEAD: msg, OTHER_HEAD: msg},
         )
-        self.assertEqual(reconcile(gh_codex_running, publish=True)[HEAD].state, "failure")
+        self.assertEqual(reconcile(gh_codex_running, publish=True)[HEAD].state, "success")
 
-        # A newer clean, completed Codex summary on HEAD does not mask an older
-        # completed-findings summary on HEAD or on a same-tree historical
-        # commit.
+        # Without an authentic Gate 2 review, a newer clean or running Codex
+        # summary on HEAD does not mask an older completed-findings Codex
+        # summary on HEAD or on a same-tree historical commit.
         codex_old_findings_head = summary(
             HEAD, has_any_findings=True, has_unresolved_findings=True,
         )
@@ -1393,8 +1561,21 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                     expected,
                 )
 
-        # Changing only the commit message keeps historical same-tree Codex
-        # findings blocking; changing the tree clears them.
+        # In legacy Codex fallback mode (no Gate 2 review), changing only the
+        # commit message keeps historical same-tree Codex findings blocking,
+        # while changing the tree or adding an authentic clean Gate 2 review
+        # on HEAD passes.
+        gh_codex_fallback_same_tree_msg = FakeGitHub(
+            [pr_amended], {1: [codex_old_findings, codex_clean_new]},
+            reviews={1: []},
+            trees={HEAD: TREE, OTHER_HEAD: TREE, BASE: parent_tree},
+            parents={HEAD: [BASE], OTHER_HEAD: [BASE]},
+            messages={HEAD: msg, OTHER_HEAD: other_msg},
+        )
+        self.assertEqual(
+            reconcile(gh_codex_fallback_same_tree_msg, publish=True)[HEAD].state,
+            "failure",
+        )
         gh_codex_same_tree_msg = FakeGitHub(
             [pr_amended], {1: [codex_old_findings]},
             reviews={1: [gate2_review(
@@ -1405,13 +1586,10 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             parents={HEAD: [BASE], OTHER_HEAD: [BASE]},
             messages={HEAD: msg, OTHER_HEAD: other_msg},
         )
-        self.assertEqual(reconcile(gh_codex_same_tree_msg, publish=True)[HEAD].state, "failure")
+        self.assertEqual(reconcile(gh_codex_same_tree_msg, publish=True)[HEAD].state, "success")
         gh_codex_changed_tree = FakeGitHub(
-            [pr_amended], {1: [codex_old_findings]},
-            reviews={1: [gate2_review(
-                review_id=23, head_sha=HEAD, base_sha=BASE, tree_sha=TREE,
-                identity_key=ik, submitted_at="2026-11-23T03:00:00Z",
-            )]},
+            [pr_amended], {1: [codex_old_findings, codex_clean_new]},
+            reviews={1: []},
             trees={HEAD: TREE, OTHER_HEAD: OTHER_TREE, BASE: parent_tree},
             parents={HEAD: [BASE], OTHER_HEAD: [BASE]},
             messages={HEAD: msg, OTHER_HEAD: msg},
@@ -1541,8 +1719,10 @@ class Gate2CrossFamilyTests(unittest.TestCase):
         pr_amended = {"number": 1, "head": {"sha": HEAD}, "base": {"ref": "main", "sha": BASE}, "draft": False}
         pr_multi = {"number": 1, "head": {"sha": HEAD}, "base": {"ref": "main", "sha": OTHER_BASE}, "draft": False}
 
-        # Live undeleted Gate 2 and Codex finding comments <=
-        # deleted_through still block clean comment #30 and clean review #5.
+        # Live undeleted Gate 2 finding comments <= deleted_through still block
+        # clean Gate 2 comment #30 and clean review #5; live Codex finding
+        # comments <= deleted_through still block fallback Codex clean #30
+        # while authentic Gate 2 clean verdicts remain authoritative.
         live_g2_finding_head = gate2_comment(
             comment_id=12, head_sha=HEAD, base_sha=BASE, tree_sha=TREE,
             created_at="2026-11-23T01:00:00Z",
@@ -1563,6 +1743,8 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             has_any_findings=True, has_unresolved_findings=True,
         )
         live_codex_finding_hist["id"] = 10
+        clean_codex_30 = summary(HEAD)
+        clean_codex_30["id"] = 30
         clean_cmt_30 = gate2_comment(
             comment_id=30, head_sha=HEAD, base_sha=BASE, tree_sha=TREE,
             identity_key=ik, created_at="2026-11-23T03:00:00Z",
@@ -1571,16 +1753,18 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             review_id=5, head_sha=HEAD, base_sha=BASE, tree_sha=TREE,
             identity_key=ik, submitted_at="2026-11-23T03:00:00Z",
         )
-        for label, cmts, revs in (
-            ("g2_head_cmt_vs_clean_cmt", [live_g2_finding_head, clean_cmt_30], []),
-            ("g2_head_cmt_vs_clean_rev", [live_g2_finding_head], [clean_rev_5]),
-            ("g2_head_cmt_sole_tombstoned", [live_g2_finding_head], []),
-            ("g2_hist_cmt_vs_clean_cmt", [live_g2_finding_hist, clean_cmt_30], []),
-            ("g2_hist_cmt_vs_clean_rev", [live_g2_finding_hist], [clean_rev_5]),
-            ("codex_head_vs_clean_cmt", [live_codex_finding_head, clean_cmt_30], []),
-            ("codex_head_vs_clean_rev", [live_codex_finding_head], [clean_rev_5]),
-            ("codex_hist_vs_clean_cmt", [live_codex_finding_hist, clean_cmt_30], []),
-            ("codex_hist_vs_clean_rev", [live_codex_finding_hist], [clean_rev_5]),
+        for label, cmts, revs, expected in (
+            ("g2_head_cmt_vs_clean_cmt", [live_g2_finding_head, clean_cmt_30], [], "failure"),
+            ("g2_head_cmt_vs_clean_rev", [live_g2_finding_head], [clean_rev_5], "failure"),
+            ("g2_head_cmt_sole_tombstoned", [live_g2_finding_head], [], "failure"),
+            ("g2_hist_cmt_vs_clean_cmt", [live_g2_finding_hist, clean_cmt_30], [], "failure"),
+            ("g2_hist_cmt_vs_clean_rev", [live_g2_finding_hist], [clean_rev_5], "failure"),
+            ("codex_head_vs_clean_codex", [live_codex_finding_head, clean_codex_30], [], "failure"),
+            ("codex_hist_vs_clean_codex", [live_codex_finding_hist, clean_codex_30], [], "failure"),
+            ("codex_head_vs_clean_cmt", [live_codex_finding_head, clean_cmt_30], [], "success"),
+            ("codex_head_vs_clean_rev", [live_codex_finding_head], [clean_rev_5], "success"),
+            ("codex_hist_vs_clean_cmt", [live_codex_finding_hist, clean_cmt_30], [], "success"),
+            ("codex_hist_vs_clean_rev", [live_codex_finding_hist], [clean_rev_5], "success"),
         ):
             with self.subTest(live_finding_comment=label):
                 gh = FakeGitHub(
@@ -1592,7 +1776,7 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                     parents={HEAD: [BASE], OTHER_HEAD: [BASE]},
                     messages={HEAD: msg, OTHER_HEAD: other_msg},
                 )
-                self.assertEqual(reconcile(gh, publish=True)[HEAD].state, "failure")
+                self.assertEqual(reconcile(gh, publish=True)[HEAD].state, expected)
 
         # Live tombstoned-era Gate 2 finding on 404 OTHER_HEAD fails closed.
         gh_live_g2_404 = FakeGitHub(
@@ -1673,8 +1857,9 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                 )
                 self.assertEqual(reconcile(gh_toctou, publish=True)[HEAD].state, "pending")
 
-        # Multi-commit HEAD preserving TREE still blocks on prior
-        # same-tree Gate 2 or Codex findings on OTHER_HEAD.
+        # Multi-commit HEAD preserving TREE still blocks on prior same-tree
+        # Gate 2 findings (or fallback Codex findings without Gate 2), while an
+        # authentic clean Gate 2 review on HEAD is authoritative over Codex.
         live_g2_rev_hist = gate2_review(
             review_id=59, head_sha=OTHER_HEAD, base_sha=BASE, tree_sha=TREE,
             submitted_at="2026-11-23T01:00:00Z",
@@ -1685,9 +1870,10 @@ class Gate2CrossFamilyTests(unittest.TestCase):
             identity_key=f"multi:{OTHER_BASE}:{HEAD}",
             submitted_at="2026-11-23T03:00:00Z",
         )
-        for label, cmts, revs, expected_substr in (
-            ("multi_same_tree_g2", [], [live_g2_rev_hist, multi_clean], "finding"),
-            ("multi_same_tree_codex", [live_codex_finding_hist], [multi_clean], "Codex findings"),
+        for label, cmts, revs, expected_state, expected_substr in (
+            ("multi_same_tree_g2", [], [live_g2_rev_hist, multi_clean], "failure", "finding"),
+            ("multi_same_tree_codex_fallback", [live_codex_finding_hist, clean_codex_30], [], "failure", "Codex findings"),
+            ("multi_same_tree_codex_with_gate2", [live_codex_finding_hist], [multi_clean], "success", "Clean Gate 2"),
         ):
             with self.subTest(same_tree_rewrite=label):
                 gh_multi_same_tree = FakeGitHub(
@@ -1699,7 +1885,7 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                     messages={HEAD: msg, OTHER_HEAD: other_msg},
                 )
                 verdict = reconcile(gh_multi_same_tree, publish=True)[HEAD]
-                self.assertEqual(verdict.state, "failure")
+                self.assertEqual(verdict.state, expected_state)
                 self.assertIn(expected_substr, verdict.reason)
 
         # Direct review_result() keeps same-head, same-tree findings

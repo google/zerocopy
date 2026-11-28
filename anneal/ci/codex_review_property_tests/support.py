@@ -45,8 +45,9 @@ MSG_HASH = hashlib.sha256(MSG.encode("utf-8")).hexdigest()
 ANCHOR_IK = f"one:{PARENT_TREE}:{TREE}:{MSG_HASH}"
 AUTH_REVIEWERS = {"reviewer"}
 
-# Exact 42 single-guard mutants protecting carry-forward evaluation, GitHub
-# verification, and history/tombstone ordering.
+# Exact 49 single-guard mutants protecting carry-forward evaluation, GitHub
+# verification, Gate 2 vs. legacy Codex precedence, and history/tombstone
+# ordering.
 CF_MUTANTS: dict[str, tuple[str, str]] = {
     "context_lines_compared": (
         '            if line.startswith(("+", "-", "\\\\"))]',
@@ -228,9 +229,50 @@ CF_MUTANTS: dict[str, tuple[str, str]] = {
         "                carry_forward_verifier=verify,\n",
         "",
     ),
-    "codex_gate_off": (
-        '            and (codex_res is None or codex_res.state != "failure")):',
-        "            ):",
+    "history_gate2_decouple_off": (
+        "    if has_authentic_gate2:\n        return False",
+        "    if False:\n        return False",
+    ),
+    "history_gate2_auth_off": (
+        "            if _is_valid_cross_family_gate2_item(\n"
+        "                    source, item, authorized_reviewers, deleted_through):",
+        "            if True or _is_valid_cross_family_gate2_item(\n"
+        "                    source, item, authorized_reviewers, deleted_through):",
+    ),
+    "helper_state_check_off": (
+        '    if ((source == "review" or "state" in item)\n'
+        '            and item.get("state") != "COMMENTED"):\n'
+        "        return False",
+        "    if False:\n        return False",
+    ),
+    "helper_seat_family_off": (
+        "    if (completed_seat_families is not None\n"
+        "            and not any(fam != author_norm for fam in completed_seat_families)):\n"
+        "        return False",
+        "    if False:\n        return False",
+    ),
+    "helper_tombstone_off": (
+        '    if source == "comment" and item["id"] <= deleted_through and not has_findings:\n'
+        "        return False",
+        "    if False:\n        return False",
+    ),
+    "gate2_precedence_off": (
+        '    if gate2_res.state in ("failure", "success"):\n'
+        "        return gate2_res",
+        '    if gate2_res.state == "failure":\n'
+        "        return gate2_res\n"
+        '    if codex_res.state == "failure":\n'
+        "        return codex_res",
+    ),
+    "gate2_failure_precedence_off": (
+        '    if gate2_res.state in ("failure", "success"):\n'
+        "        return gate2_res",
+        '    if gate2_res.state == "success":\n'
+        "        return gate2_res",
+    ),
+    "pending_gate2_masks_codex_failure": (
+        '    if codex_res.state == "failure":\n        return codex_res',
+        "    if False:\n        return codex_res",
     ),
     "policy_path_ignored": (
         "        if any(path in CARRY_FORWARD_POLICY_PATHS\n"
@@ -317,12 +359,37 @@ def _oracle_has_active_blocker_for_head(
     is_carry_forward: bool = False,
 ) -> bool:
     """Independent oracle checking generated fixtures."""
+    eligible_g2 = [
+        g
+        for g in gen_items
+        if g["kind"] == "g2_rev"
+        or (g["kind"] == "g2_cmt" and g["id"] > deleted_through)
+    ]
+    latest_g2 = eligible_g2[-1] if eligible_g2 else None
+    latest_ik = latest_g2["ik"] if latest_g2 is not None else None
+    gate2_authoritative = is_carry_forward or (
+        latest_g2 is not None
+        and latest_g2["head"] == head
+        and latest_g2["base"] == base
+        and latest_g2["tree"] == tree
+        and latest_g2["verdict"] == "clean"
+        and not latest_g2["findings"]
+        and latest_g2["reviewer_fam"] == "gemini"
+        and latest_g2["state"] in (None, "COMMENTED")
+        and latest_g2["cid"] == latest_g2["head"]
+        and not (
+            latest_ik is not None
+            and (latest_ik.startswith("one:") or latest_ik.startswith("multi:"))
+            and latest_ik != target_ik
+        )
+    )
     for item in gen_items:
         if item["malformed"]:
             continue
         if item["kind"] == "codex":
             if (
-                item["head"] == head
+                not gate2_authoritative
+                and item["head"] == head
                 and item["status"] == "completed"
                 and (
                     item["any_findings"] is not False
